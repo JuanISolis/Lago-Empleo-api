@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('actividads', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->string('tipo');
+            $table->text('descripcion');
+            $table->date ('fecha');
+            $table->string('rol');
             $table->timestamps();
         });
     }

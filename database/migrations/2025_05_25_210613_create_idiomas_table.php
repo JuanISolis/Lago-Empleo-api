@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('idiomas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('libreria_idiomas_id');
+            $table->foreign('libreria_idiomas_id')->references('id')->on('libreria_idiomas');
+            $table->unsignedBigInteger('postulante_id');
+            $table->foreign('postulante_id')->references('id')->on('postulantes');
+            $table->string ('nivel');
             $table->timestamps();
+            
         });
     }
 

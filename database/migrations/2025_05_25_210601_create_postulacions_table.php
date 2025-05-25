@@ -13,8 +13,24 @@ return new class extends Migration
     {
         Schema::create('postulacions', function (Blueprint $table) {
             $table->id();
+            $table->date('fecha_postulacion');
+            $table->boolean('estado');
+
+            
+            $table->unsignedBigInteger('ofertalab_id');
+            $table->foreign('ofertalab_id')->references('id')->on('oferta_laborars');
+
+            
+            $table->unsignedBigInteger('postulante_id');
+            $table->foreign('postulante_id')->references('id')->on('postulantes');
+
+
             $table->timestamps();
         });
+
+   
+
+           
     }
 
     /**
