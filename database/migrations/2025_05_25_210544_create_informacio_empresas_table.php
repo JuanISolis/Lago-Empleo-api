@@ -13,8 +13,21 @@ return new class extends Migration
     {
         Schema::create('informacio_empresas', function (Blueprint $table) {
             $table->id();
+            $table->integer('ruc')->unique();
+            $table->string('imagen_empresa');
+            $table->string('nombre_empresa');
+            $table->text('descripcion');
+            
+            $table->unsignedBigInteger('empleador_id');
+            $table->foreign('empleador_id')->references('id')->on('empleadors');
+        
             $table->timestamps();
         });
+
+       
+
+         
+
     }
 
     /**

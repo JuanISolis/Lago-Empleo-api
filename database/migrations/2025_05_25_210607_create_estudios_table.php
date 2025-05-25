@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('estudios', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('postulante_id');
+            $table->foreign('postulante_id')->references('id')->on('postulantes');
+            $table->string ('titulo');
+            $table->string ('unidad_educativa');
+            $table->string ('modalidad');
+            $table->string ('doc_titulo');
             $table->timestamps();
         });
     }

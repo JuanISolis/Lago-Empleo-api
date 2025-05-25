@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExperienciaLaboral extends Model
 {
-    //
+    protected $fillable = [
+        'lugar_trabajo',
+        'fecha_inicio',
+        'fecha_fin',
+    ];
 }

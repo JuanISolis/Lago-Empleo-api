@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('libreria_habilidads', function (Blueprint $table) {
             $table->id();
+            $table->string('habilidad');
             $table->timestamps();
         });
     }

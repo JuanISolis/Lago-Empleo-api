@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Estudio extends Model
 {
-    //
+    protected $fillable = [
+        'titulo',
+        'unidad_educativa',
+        'modalidad',
+        'doc_titulo',
+    ];
 }
