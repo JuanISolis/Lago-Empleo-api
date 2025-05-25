@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\LibreriaIdioma;
+use App\Models\User;
 
-class LibreriaIdiomaController
+class UserController
 {
     /**
      * Display a listing of the resource.
