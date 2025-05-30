@@ -1,0 +1,11 @@
+En programación, un Service (servicio) es una clase o módulo que encapsula una lógica específica o 
+funcionalidad reutilizable, separándola del resto del código para mantener un diseño limpio, escalable 
+y fácil de mantener.
+Los servicios no deben encargarse de manejar peticiones HTTP ni de renderizar vistas. Su responsabilidad
+es "hacer algo" bien definido.
+app/
+├── Http/
+├── Models/
+├── Services/
+│   ├── CorreoService.php
+│   └── NotificacionService.php
