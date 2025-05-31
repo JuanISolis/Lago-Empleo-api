@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('nombre_empresa');
             $table->text('descripcion');
             
-            $table->unsignedBigInteger('empleador_id');
-            $table->foreign('empleador_id')->references('id')->on('empleadors');
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios');
         
             $table->timestamps();
         });
