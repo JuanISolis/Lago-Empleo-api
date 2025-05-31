@@ -43,8 +43,8 @@ class Postulante extends Model
     {
         return $this->hasMany(Postulacion::class);
     }
-    public function user()
+    public function usuario()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Usuario::class);
     }
 }

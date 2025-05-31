@@ -14,5 +14,9 @@ class Idioma extends Model
     {
         return $this->belongsTo(Postulante::class);
     }
+    public function libreriaidioma()
+    {
+        return $this->belongsTo(LibreriaIdioma::class);
+    }
 }
 
