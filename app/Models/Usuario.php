@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Actividad extends Model
+class Usuario extends Model
 {
     protected $fillable = [
         'user_id',
-        'tipo',
-        'descripcion',
-        'rol',
+        'ci',
+        'foto_perfil',
+        'apellido',
+        'fecha_nacimiento',
+        'sexo',
+        'contacto',
+        'direccion',
     ];
 
     public function user()
