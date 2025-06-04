@@ -9,7 +9,7 @@ class UsuarioClase implements MercadoLaboral{
     
     public function obtenerTodos()
     {
-        return Libro::all();
+        return Usuario::all();
     }
 
     public function crear(array $datos)

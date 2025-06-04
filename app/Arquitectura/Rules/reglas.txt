@@ -1,2 +1,0 @@
-En frameworks como Laravel, las Rules son clases que definen reglas de validación personalizadas para 
-validar campos de formularios o datos de entrada.
