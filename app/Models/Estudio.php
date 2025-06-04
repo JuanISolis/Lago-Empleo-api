@@ -12,4 +12,9 @@ class Estudio extends Model
         'modalidad',
         'doc_titulo',
     ];
+
+    public function postulante()
+    {
+        return $this->belongsTo(Postulante::class);
+    }
 }
