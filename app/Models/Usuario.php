@@ -10,6 +10,7 @@ class Usuario extends Model
         'user_id',
         'ci',
         'foto_perfil',
+        'nombre',
         'apellido',
         'fecha_nacimiento',
         'sexo',

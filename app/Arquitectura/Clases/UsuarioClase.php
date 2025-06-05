@@ -2,7 +2,7 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Arquitectura\Interfaces;
+use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\Usuario;
 
 class UsuarioClase implements MercadoLaboral{
@@ -14,17 +14,17 @@ class UsuarioClase implements MercadoLaboral{
 
     public function crear(array $datos)
     {
-        return Libro::create($datos);
+        return Usuario::create($datos);
     }
 
     public function show(int $id)
     {
-        return Libro::create($datos);
+        return Usuario::create($datos);
     }
 
     public function actualizar(array $datos)
     {
-        return Libro::create($datos);
+        return Usuario::create($datos);
     }
 
 }
