@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\UserClase;
 use App\Http\Requests\CrearUserRequest;
+use App\Http\Requests\ActualizarPassRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -66,7 +67,7 @@ class UserController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ActualizarPassRequest $request, string $email)
     {
         //
     }
