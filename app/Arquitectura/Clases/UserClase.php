@@ -35,15 +35,15 @@ class UserClase implements MercadoLaboral{
 
     }
 
-    public function actualizar(array $datos, string $email)
+    public function actualizar(array $datos, string $user)
     {
-        $user = User::where('email', $validated['email'])->first();
+        $user = User::where('email', $user)->first();
         
         if (!$user) {
             return response()->json(['error' => 'Usuario no encontrado'], 404);
         }
 
-        if (!$user -> recuperacion){
+        if (!$user->recuperacion) {
             return response()->json(['message' => 'No se registra peticion de cambio de password'], 404);
         }
         
@@ -54,6 +54,8 @@ class UserClase implements MercadoLaboral{
             'password' => $datos['password'],
             'recuperacion' => false,
         ]);
+
+        return response()->json(['message' => 'Contraseña actualizada correctamente'], 200);
     }
 
 }

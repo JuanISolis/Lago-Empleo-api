@@ -67,9 +67,14 @@ class UserController
     /**
      * Update the specified resource in storage.
      */
-    public function update(ActualizarPassRequest $request, string $email)
+    public function update(ActualizarPassRequest $request, string $user)
     {
-        //
+        $user = $this->user->actualizar($request->validated(), $user);
+        
+        return response()->json([
+            'message' => 'Contraseña actualizada correctamente',
+            'usuario' => $user
+        ], 201);
     }
 
     /**
@@ -79,4 +84,6 @@ class UserController
     {
         //
     }
+
+    
 }
