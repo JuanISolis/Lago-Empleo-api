@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Arquitectura\Clases\SesionClase;
 use App\Http\Requests\CrearUserRequest;
 use App\Http\Requests\ActualizarPassRequest;
+use App\Http\Requests\InicioSesionRequest;
 
 class SesionController
 {
@@ -14,6 +15,7 @@ class SesionController
     public function __construct(SesionClase $sesion) {
         $this->sesion = $sesion;
     }
+
     public function store(CrearUserRequest $request)
     {
         $user = $this->sesion->crear($request->validated());
@@ -37,10 +39,12 @@ class SesionController
     {
         return response()->json($this->sesion->actualizar($request->validated(), $user));
     }
-    public function iniciosesion(Request $request)
+
+    public function iniciosesion(InicioSesionRequest $request)
     {
-        return response()->json($this->sesion->iniciosesion($request->all()));
+        return response()->json($this->sesion->iniciosesion($request),['message' => 'Sesion iniciada correctamente'], 200);
     }
+
     public function destroy(string $id)
     {
         // Implementación pendiente

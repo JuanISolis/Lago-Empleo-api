@@ -16,7 +16,7 @@ class SesionClase extends UserClase implements MercadoLaboral
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
-        return response()->json(['message' => 'Inicio de sesión exitoso', 'usuario' => $user], 200);
+        return $user;
         
     }
 
