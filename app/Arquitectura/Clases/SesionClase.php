@@ -5,10 +5,11 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class SesionClase extends UserClase implements MercadoLaboral
 {
-    public function iniciosesion(array $datos)
+    public function iniciosesion($datos)
     {
         $user = User::where('email', $datos['email'])->first();
 
@@ -20,27 +21,29 @@ class SesionClase extends UserClase implements MercadoLaboral
         
     }
 
-    public function crear(array $datos)
+    public function passolvidada($datos)
     {
-        $datos['password'] = Hash::make($datos['password']);
-        unset($datos['repeatpassword']);
+        $user = User::where('email', $datos)->first();
 
-        return User::create($datos);
-    }
-
-    public function show(int $id)
-    {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        if (!$user){
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
         }
 
-        return $user;
-    }
+        $temppassword = Str::random(10);
+        $hashpass = bcrypt($temppassword);
+        
+        $user->update([
+            'password'=> $hashpass,
+            'recuperacion' => true,
+        ]);
 
-    public function actualizar(array $datos, string $user)
-    {
-        // Implementación pendiente
+        return response()->json([
+            'message' => 'Se confirma solicitud de recuperacion de contraseña',
+            'contraseña' => $temppassword,
+            'user' => [
+                'id' => $user->id,
+                'recuperacion' => $user->recuperacion
+            ] 
+        ], 200);
     }
 }
