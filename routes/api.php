@@ -3,7 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
 use App\Http\Controllers\UserController;
+
+
+
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\EmpleadorController;
 use App\Http\Controllers\EstudioController;
@@ -19,6 +26,10 @@ use App\Http\Controllers\PostulanteController;
 
 
 Route::apiResource('user', UserController::class);
+
+
+
+
 Route::apiResource('actividad', ActividadController::class);
 Route::apiResource('empleador', EmpleadorController::class);
 Route::apiResource('estudio', EstudioController::class);

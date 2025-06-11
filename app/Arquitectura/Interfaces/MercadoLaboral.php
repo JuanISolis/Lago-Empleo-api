@@ -7,6 +7,6 @@ interface MercadoLaboral {
     public function crear(array $datos);
     public function obtenerTodos();
     public function show(int $id);
-    public function actualizar(array $datos);
+    public function actualizar(array $datos, string $user);
     
 }

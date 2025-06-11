@@ -14,14 +14,15 @@ class CrearUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'=> 'required|integer|min:18',
-            'ci'=> 'required|integer|min:18',
-            'foto_perfil'=> 'required|integer|min:18',
-            'apellido'=> 'required|integer|min:18',
-            'fecha_nacimiento'=> 'required|integer|min:18',
-            'sexo'=> 'required|integer|min:18',
-            'contacto'=> 'required|integer|min:18',
-            'direccion'=> 'required|integer|min:18',
+            'user_id' => 'required|integer|max:9999999',
+            'ci' => 'required|integer|unique:usuarios,ci',
+            'foto_perfil' => 'nullable|string',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'fecha_nacimiento' => 'required|date',
+            'sexo' => 'required|string|in:masculino,femenino',
+            'contacto' => 'required|integer|max:999999999',
+            'direccion' => 'nullable|string|max:255',
         ];
     }
 }
