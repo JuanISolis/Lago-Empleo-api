@@ -10,9 +10,18 @@ class EstudioController
     /**
      * Display a listing of the resource.
      */
+
+     protected $estudios;
+
+    // Inyección de dependencias
+    public function __construct(Estudios $estudios)
+    {
+        $this->estudios = $estudios;
+    }
+
     public function index()
     {
-        //
+        return response()->json($this->estudios->obtenerTodos());
     }
 
     /**
@@ -28,7 +37,8 @@ class EstudioController
      */
     public function store(Request $request)
     {
-        //
+        $datos = $request->all();
+        return response()->json($this->estudios->crear($datos));
     }
 
     /**
@@ -36,7 +46,8 @@ class EstudioController
      */
     public function show(string $id)
     {
-        //
+        return response()->json($this->estudios->show($id));
+
     }
 
     /**
@@ -52,7 +63,9 @@ class EstudioController
      */
     public function update(Request $request, string $id)
     {
-        //
+        $datos = $request->all();
+        $datos['id'] = $id;
+        return response()->json($this->estudios->actualizar($datos));
     }
 
     /**
