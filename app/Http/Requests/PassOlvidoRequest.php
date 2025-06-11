@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class InicioSesionRequest extends FormRequest
+class PassOlvidoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,6 @@ class InicioSesionRequest extends FormRequest
     {
         return [
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8|max:255|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/|regex:/[@$!%*?&]/',
         ];
     }
 }

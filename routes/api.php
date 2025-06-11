@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SesionController;
 
 
 
@@ -26,6 +27,8 @@ use App\Http\Controllers\PostulanteController;
 
 
 Route::apiResource('user', UserController::class);
+Route::post('sesion/iniciarsesion', [SesionController::class, 'iniciosesion']);
+Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
 
 
 

@@ -67,9 +67,9 @@ class UserController
     /**
      * Update the specified resource in storage.
      */
-    public function update(ActualizarPassRequest $request, string $user)
+    public function update(ActualizarPassRequest $request, string $id)
     {
-        $user = $this->user->actualizar($request->validated(), $user);
+        $user = $this->user->actualizar($request->validated(), $id);
         
         return response()->json([
             'message' => 'Contraseña actualizada correctamente',
