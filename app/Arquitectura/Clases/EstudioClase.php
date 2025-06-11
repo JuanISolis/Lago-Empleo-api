@@ -5,7 +5,7 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces;
 use App\Models\Estudio;
 
-class EstudiosClase implements Estudios
+class EstudioClase implements Estudios
 {
     public function obtenerTodos()
     {

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Estudio;
+use App\Arquitectura\Clases\EstudioClase;
+use App\Arquitectura\Requests\CrearEstudioRequest;
+
 
 class EstudioController
 {
@@ -11,17 +14,17 @@ class EstudioController
      * Display a listing of the resource.
      */
 
-     protected $estudios;
+    protected $estudio;
 
     // Inyección de dependencias
-    public function __construct(Estudios $estudios)
+    public function __construct(EstudioClase $estudio)
     {
-        $this->estudios = $estudios;
+        $this->estudio = $estudio;
     }
 
     public function index()
     {
-        return response()->json($this->estudios->obtenerTodos());
+        return response()->json($this->estudio->obtenerTodos());
     }
 
     /**
@@ -35,10 +38,10 @@ class EstudioController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CrearEstudioRequest $request)
     {
         $datos = $request->all();
-        return response()->json($this->estudios->crear($datos));
+        return response()->json($this->estudio->crear($datos));
     }
 
     /**
@@ -46,7 +49,7 @@ class EstudioController
      */
     public function show(string $id)
     {
-        return response()->json($this->estudios->show($id));
+        return response()->json($this->estudio->show($id));
 
     }
 
@@ -61,11 +64,11 @@ class EstudioController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CrearEstudioRequest $request, string $id)
     {
         $datos = $request->all();
         $datos['id'] = $id;
-        return response()->json($this->estudios->actualizar($datos));
+        return response()->json($this->estudio->actualizar($datos));
     }
 
     /**
