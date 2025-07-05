@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Arquitectura\Clases\UserClase;
 use App\Http\Requests\CrearUserRequest;
 use App\Http\Requests\ActualizarPassRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Routing\Controller;
 
-class UserController
+class UserController extends Controller
 {
     protected $user;
 

@@ -13,6 +13,18 @@ class SesionClase extends UserClase implements MercadoLaboral
     {
         $user = User::where('email', $datos['email'])->first();
 
+        if ($user->recuperacion) {
+
+            if (!$user || !Hash::check($datos['password'], $user->password)) {
+                return response()->json(['message' => 'Credenciales incorrectas'], 401);
+            }else {
+                return response()->json([
+                    'message' => 'El usuario ha solicitado cambio de contraseña',
+                    'id' => $user->id
+                ], 401);
+            }
+        }
+
         if (!$user || !Hash::check($datos['password'], $user->password)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
