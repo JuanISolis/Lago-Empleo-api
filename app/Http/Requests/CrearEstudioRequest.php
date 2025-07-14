@@ -22,8 +22,6 @@ class CrearEstudioRequest extends FormRequest
     public function rules(): array
     {
         return [
-
-        'postulante_id' => 'required|exists:postulantes,id',
         'titulo' => 'required|string|max:255',
         'unidad_educativa' => 'required|string|max:255',
         'modalidad' => 'required|in:presencial,virtual,semi-presencial',

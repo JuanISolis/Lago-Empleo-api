@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+        \App\Arquitectura\Interfaces\MercadoLaboral::class,
+        \App\Arquitectura\Clases\EstudioClase::class
+    );
     }
 
     /**

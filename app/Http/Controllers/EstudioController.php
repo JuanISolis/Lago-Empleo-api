@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Estudio;
 use App\Arquitectura\Clases\EstudioClase;
 use App\Arquitectura\Requests\CrearEstudioRequest;
+use App\Arquitectura\Interfaces\MercadoLaboral;
 
 
 class EstudioController
@@ -17,7 +18,7 @@ class EstudioController
     protected $estudio;
 
     // Inyección de dependencias
-    public function __construct(EstudioClase $estudio)
+    public function __construct(MercadoLaboral $estudio)
     {
         $this->estudio = $estudio;
     }
