@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SesionController;
+use App\Http\Controllers\UsuarioController;
 
 
 
@@ -29,6 +30,8 @@ use App\Http\Controllers\PostulanteController;
 Route::apiResource('user', UserController::class);
 Route::post('sesion/iniciarsesion', [SesionController::class, 'iniciosesion']);
 Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
+Route::apiResource('usuario', UsuarioController::class);
+
 
 
 

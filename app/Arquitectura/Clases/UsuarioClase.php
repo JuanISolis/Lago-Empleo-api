@@ -19,12 +19,12 @@ class UsuarioClase implements MercadoLaboral{
 
     public function show(int $id)
     {
-        return Usuario::create($datos);
+        // return Usuario::create($datos);
     }
 
-    public function actualizar(array $datos)
+    public function actualizar(array $datos, string $id)
     {
-        return Usuario::create($datos);
+        // return Usuario::create($datos);
     }
 
 }

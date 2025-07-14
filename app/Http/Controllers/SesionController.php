@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Arquitectura\Clases\SesionClase;
 use App\Http\Requests\InicioSesionRequest;
 use App\Http\Requests\PassOlvidoRequest;
+use Illuminate\Routing\Controller;
 
-class SesionController
+class SesionController extends Controller
 {
     protected $sesion;
 
@@ -20,8 +21,8 @@ class SesionController
         $user = $this->sesion->iniciosesion($request->validated());
 
         return response()->json([
-            'message' => 'Sesion iniciada correctamente'
-            , $user
+            // 'message' => 'Sesion iniciada correctamente'
+            $user
         ], 200);
     }
 
