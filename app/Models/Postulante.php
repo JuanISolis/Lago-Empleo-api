@@ -8,14 +8,7 @@ class Postulante extends Model
 {
     //
      protected $fillable = [
-        'ci',
-        'foto_perfil',
-        'nombre',
-        'apellido',
-        'fecha_nacimiento',
-        'sexo',
-        'contacto',
-        'direccion',
+        
         'profesion',
         'descripcion',
         'discapacidad',
