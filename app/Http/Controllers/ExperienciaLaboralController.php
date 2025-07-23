@@ -2,64 +2,62 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\Experiencia_laboralClase;
+use App\Http\Requests\CrearExperienciaLaboralRequest;
 use Illuminate\Http\Request;
-use App\Models\ExperienciaLaboral;
+use Illuminate\Routing\Controller;
 
-class ExperienciaLaboralController
+class ExperienciaLaboralController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $experiencia;
+
+    public function __construct(Experiencia_laboralClase $experiencia)
+    {
+        $this->experiencia = $experiencia;
+    }
+
     public function index()
     {
-        //
+        return response()->json($this->experiencia->obtenerTodos());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CrearExperienciaLaboralRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $exp = $this->experiencia->crear($validated);
+
+        return response()->json([
+            'message' => 'Experiencia laboral creada correctamente',
+            'experiencia' => $exp
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $exp = $this->experiencia->show($id);
+
+        return response()->json([
+            'experiencia' => $exp
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(CrearExperienciaLaboralRequest $request, string $id)
     {
-        //
+        $exp = $this->experiencia->actualizar($request->validated(), $id);
+
+        return response()->json([
+            'message' => 'Experiencia laboral actualizada correctamente',
+            'experiencia' => $exp
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $exp = $this->experiencia->show($id);
+        $exp->delete();
+
+        return response()->json([
+            'message' => 'Experiencia laboral eliminada correctamente'
+        ]);
     }
 }

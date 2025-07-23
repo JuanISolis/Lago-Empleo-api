@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CrearPostulanteRequest extends FormRequest
+class CrearExperienciaLaboralRequest extends FormRequest
 {
     public function failedValidation(Validator $validator)
     {
@@ -24,12 +24,10 @@ class CrearPostulanteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:usuarios,id',
-            'profesion' => 'nullable|string',
-            'descripcion' => 'nullable|string',
-            'discapacidad' => 'required|boolean',
-            'tipo_discapacidad' => 'nullable|string',
-            'porcent_discapacidad' => 'nullable|integer',
+            'postulante_id' => 'required|exists:postulantes,id',
+            'lugar_trabajo' => 'required|string|max:255',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
         ];
     }
 }

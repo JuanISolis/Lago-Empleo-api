@@ -2,11 +2,9 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Arquitectura\Interfaces;
 use App\Models\Estudio;
-use App\Arquitectura\Interfaces\MercadoLaboral;
 
-class EstudioClase implements MercadoLaboral
+class EstudioClase
 {
     public function obtenerTodos()
     {
@@ -23,9 +21,9 @@ class EstudioClase implements MercadoLaboral
         return Estudio::findOrFail($id);
     }
 
-    public function actualizar(array $datos, string $user)
+    public function actualizar(array $datos, string $id)
     {
-        $estudio = Estudio::findOrFail($datos['id']);
+        $estudio = Estudio::findOrFail($id);
         $estudio->update($datos);
         return $estudio;
     }
