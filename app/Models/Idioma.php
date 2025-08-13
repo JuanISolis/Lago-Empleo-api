@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Idioma extends Model
 {
      protected $fillable = [
+        'id_postulante',
+        'id_libreria_idiomas',
         'nivel',
     ];
 
