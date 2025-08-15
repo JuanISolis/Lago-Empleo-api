@@ -2,12 +2,11 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class SesionClase extends UserClase implements MercadoLaboral
+class SesionClase extends UserClase 
 {
     public function iniciosesion($datos)
     {
