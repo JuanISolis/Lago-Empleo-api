@@ -14,15 +14,7 @@ return new class extends Migration
         Schema::create('postulantes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->integer ('ci')-> unique ();
-            $table->string ('foto_perfil');
-            $table->string ('nombre');
-            $table->string ('apellido');
-            $table->date ('fecha_nacimiento');
-            $table->string ('sexo');
-            $table->integer ('contacto');
-            $table->string ('direccion')->nullable();
+            $table->foreign('user_id')->references('id')->on('usuarios');
             $table->string ('profesion')->nullable();
             $table->text('descripcion')->nullable();
             $table->boolean ('discapacidad');
