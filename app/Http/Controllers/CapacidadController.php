@@ -25,7 +25,7 @@ class CapacidadController extends Controller
         return response()->json($this->capacidades->obtenerTodos());
     }
 
-    public function store(Request $request)
+    public function store(CrearCapacidadRequest $request)
     {
         try {
             $capacidad = $this->capacidades->crear($request->all());
