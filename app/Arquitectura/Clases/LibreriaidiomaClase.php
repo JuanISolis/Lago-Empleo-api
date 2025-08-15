@@ -4,27 +4,28 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\Idioma;
 
-class LibreriaidiomaClase  implements MercadoLaboral
+class LibreriaidiomaClase 
 {
-    public function obtenerTodos()
+    public function listaridioma()
     {
         return Idioma::all();
     }
 
-    public function crear(array $datos)
+    public function crearidioma(array $datos)
     {
         return Idioma::create($datos);
     }
 
-    public function show(int $id)
+    public function buscar($busquedaidioma)
     {
-        return Idioma::findOrFail($id);
+        $idioma = Libro::where('habilidad', 'like', "%{$busquedaidioma}%")
+            ->get();
+
+        if ($libros->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
+        }
+
+        return response()->json($idioma, 200);
     }
 
-    public function actualizar(array $datos, string $id)
-    {
-        $idioma = Idioma::findOrFail($id);
-        $idioma->update($datos);
-        return $idioma;
-    }
 }

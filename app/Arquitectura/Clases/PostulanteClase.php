@@ -6,7 +6,8 @@ namespace App\Arquitectura\Clases;
 use App\Models\Postulante;
 
 
-class PostulanteClase implements MercadoLaboral 
+
+class PostulanteClase extends UsuarioClase
 {
     public function obtenerTodos()
     {
