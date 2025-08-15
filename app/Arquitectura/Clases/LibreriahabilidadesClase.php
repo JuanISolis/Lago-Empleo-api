@@ -5,27 +5,37 @@ use App\Models\Habilidad;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 
         
-class LibreriahabilidadesClase implements MercadoLaboral
+class LibreriahabilidadesClase 
 {
-    public function obtenerTodos()
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validación fallida',
+            'errors' => $validator->errors()
+        ], 422));
+    }
+
+    public function listarhabilidad()
     {
         return Habilidad::all();
     }
 
-    public function crear(array $datos)
+    public function crearhabilidad(array $datos)
     {
         return Habilidad::create($datos);
     }
 
-    public function show(int $id)
+    public function buscar($busquedahabilidad)
     {
-        return Habilidad::findOrFail($id);
+        $habilidad = Libro::where('habilidad', 'like', "%{$busquedahabilidad}%")
+            ->get();
+
+        if ($libros->isEmpty()) {
+            return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
+        }
+
+        return response()->json($habilidad, 200);
     }
 
-    public function actualizar(array $datos, string $id)
-    {
-        $habilidad = Habilidad::findOrFail($id);
-        $habilidad->update($datos);
-        return $habilidad;
-    }
+   
 }

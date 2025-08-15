@@ -2,64 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\Empleador;
+use App\Http\Requests\CrearEmpresaRequest;
 use Illuminate\Http\Request;
-use App\Models\Empleador;
+use Illuminate\Routing\Controller;
 
-class EmpleadorController
+
+class EmpleadorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $empleador;
+
+    public function __construct(Empleador $empleador)
+    {
+        $this->empleador = $empleador;
+    }
+
     public function index()
     {
-        //
+        return response()->json($this->empleador->obtenerTodos());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+      public function store(CrearEmpresaRequest $request)
     {
-        //
+        $result = $this->empleador->crear($request->validated());
+
+        return response()->json([
+            'message' => 'Empleador y empresa creados correctamente',
+            'usuario' => $result['usuario'],
+            'empresa' => $result['empresa']
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function show(int $id)
     {
-        //
+        return $this->empleador->show($id);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(CrearEmpresaRequest $request, int $id)
     {
-        //
+        return $this->empleador->actualizar($request->validated(), $id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
 }

@@ -5,7 +5,7 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\ExperienciaLaboral;
 
-class Experiencia_laboralClase implements MercadoLaboral
+class Experiencia_laboralClase extends PostulanteClase 
 {
     public function obtenerTodos()
     {
