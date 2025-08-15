@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\OfertaLaboral;
+use Illuminate\Routing\Controller;
 
-class OfertaLaboralController
+class OfertaLaboralController extends Controller
+
+
 {
     /**
      * Display a listing of the resource.
