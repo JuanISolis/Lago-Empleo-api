@@ -4,7 +4,7 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\Idioma;
 
-class LibreriaidiomaClase implements MercadoLaboral
+class LibreriaidiomaClase  implements MercadoLaboral
 {
     public function obtenerTodos()
     {

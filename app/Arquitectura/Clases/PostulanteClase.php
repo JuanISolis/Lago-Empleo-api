@@ -4,9 +4,9 @@
 namespace App\Arquitectura\Clases;
 
 use App\Models\Postulante;
-use App\Arquitectura\Interfaces\MercadoLaboral;
 
-class PostulanteClase implements MercadoLaboral
+
+class PostulanteClase implements MercadoLaboral 
 {
     public function obtenerTodos()
     {
