@@ -39,10 +39,10 @@ class UsuarioController extends Controller
 
     public function show(string $id)
     {
-        $user = $this->user->show($id);
+        $usuario = $this->usuario->show($id);
         
         return response()->json([
-            'usuario' => $user
+            'usuario' => $usuario
         ], 201);
 
     }
