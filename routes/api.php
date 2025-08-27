@@ -14,7 +14,7 @@ use App\Http\Controllers\UsuarioController;
 
 
 use App\Http\Controllers\ActividadController;
-use App\Http\Controllers\EmpleadorController;
+use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstudioController;
 use App\Http\Controllers\ExperienciaLaboralController;
 use App\Http\Controllers\CapacidadController;
@@ -28,25 +28,31 @@ use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\PostulanteController;
 
 
+Route::get('/test', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
 Route::apiResource('user', UserController::class);
-Route::post('sesion/iniciarsesion', [SesionController::class, 'iniciosesion']);
+Route::post('login', [SesionController::class, 'iniciosesion']);
 Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
 Route::apiResource('usuario', UsuarioController::class);
 
 
 
-
-
 Route::apiResource('actividad', ActividadController::class);
-Route::apiResource('empleador', EmpleadorController::class);
+Route::apiResource('empresas', EmpresasController::class)->middleware('auth:sanctum');;
+
+
+
+
 Route::apiResource('estudio', EstudioController::class);
 Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
 Route::apiResource('capacidad', CapacidadController::class);
 // Route::apiResource('habilidad', HabilidadController::class);
 // Route::apiResource('idioma', IdiomaController::class);
 Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
-Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
+//Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
+//Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
 Route::apiResource('oferta_laboral', OfertaLaboralController::class);
 Route::apiResource('postulacion', PostulacionController::class);
 Route::apiResource('postulante', PostulanteController::class);
