@@ -7,15 +7,14 @@ use App\Models\OfertaLaboral;
 use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
-
-
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $ofertas = OfertaLaboral::all();
+        return response()->json($ofertas);
     }
 
     /**
@@ -31,7 +30,16 @@ class OfertaLaboralController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'empresa' => 'required|string|max:255',
+            'salario' => 'nullable|numeric',
+            // Agrega aquí los campos que tenga tu modelo
+        ]);
+
+        $oferta = OfertaLaboral::create($validated);
+        return response()->json($oferta, 201);
     }
 
     /**
@@ -39,7 +47,11 @@ class OfertaLaboralController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $oferta = OfertaLaboral::find($id);
+        if (!$oferta) {
+            return response()->json(['error' => 'Oferta no encontrada'], 404);
+        }
+        return response()->json($oferta);
     }
 
     /**
@@ -55,7 +67,21 @@ class OfertaLaboralController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $oferta = OfertaLaboral::find($id);
+        if (!$oferta) {
+            return response()->json(['error' => 'Oferta no encontrada'], 404);
+        }
+
+        $validated = $request->validate([
+            'titulo' => 'sometimes|required|string|max:255',
+            'descripcion' => 'sometimes|required|string',
+            'empresa' => 'sometimes|required|string|max:255',
+            'salario' => 'nullable|numeric',
+            // Agrega aquí los campos que tenga tu modelo
+        ]);
+
+        $oferta->update($validated);
+        return response()->json($oferta);
     }
 
     /**
@@ -63,6 +89,11 @@ class OfertaLaboralController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $oferta = OfertaLaboral::find($id);
+        if (!$oferta) {
+            return response()->json(['error' => 'Oferta no encontrada'], 404);
+        }
+        $oferta->delete();
+        return response()->json(['message' => 'Oferta eliminada correctamente']);
     }
 }
