@@ -5,8 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
-class CrearEmpresaRequest extends FormRequest
+class ActualizarEmpresasRequest extends FormRequest
 {
 
     public function failedValidation(Validator $validator)
@@ -26,7 +27,7 @@ class CrearEmpresaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ruc' => 'required|integer|unique:informacio_empresas,ruc',
+            'ruc' =>['required','integer', Rule::unique('informacio_empresas, ruc ')->ignore()],
             'nombre_empresa' => 'required|string|max:255',
             'descripcion' => 'required|string',
             

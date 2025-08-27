@@ -5,14 +5,16 @@ namespace App\Arquitectura\Clases;
 use App\Arquitectura\Clases\UsuarioClase;
 
 use App\Models\InformacioEmpresa;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class Empleador extends UsuarioClase 
+class Empresas 
 {
     // Obtener todas las empresas
-    public function obtenerTodos()
+    public function obtenerTodos($usuario)
     {
-        return InformacioEmpresa::with('usuario')->get(); 
+        
+        return InformacioEmpresa::where('usuario_id', $usuario->id )->get(); 
         // with('usuario') trae también información del usuario dueño
     }
 
@@ -40,7 +42,7 @@ class Empleador extends UsuarioClase
     }
 
     // Actualizar empresa
-    public function actualizar(array $datos, string $user)
+    public function actualizar(array $datos, int $id)
     {
         $empresa = InformacioEmpresa::find($id);
 
