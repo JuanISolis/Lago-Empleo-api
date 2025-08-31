@@ -25,6 +25,15 @@ class EstudioController extends Controller
     {
         $validated = $request->validated();
         $estudio = $this->estudio->crear($validated);
+        
+        if ($request->hasFile('doc_titulo')) {
+        $archivo = $request->file('doc_titulo');
+        $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+        $archivo->move(public_path('assets/estudios'), $nombreArchivo);
+        $validated['doc_titulo'] = 'assets/estudios/' . $nombreArchivo;
+        }
+
+        $estudio = $this->estudio->crear($validated);
 
         return response()->json([
             'message' => 'Estudio creado correctamente',
