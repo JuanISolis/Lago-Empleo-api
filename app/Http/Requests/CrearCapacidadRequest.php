@@ -7,8 +7,15 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 
-class StoreCapacidadesRequest extends FormRequest
+class CrearCapacidadRequest extends FormRequest
 {
+     public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validación fallida',
+            'errors' => $validator->errors()
+        ], 422));
+    }
     public function rules()
     {
         return [

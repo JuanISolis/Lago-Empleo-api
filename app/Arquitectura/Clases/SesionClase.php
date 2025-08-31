@@ -2,12 +2,12 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Arquitectura\Interfaces\MercadoLaboral;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class SesionClase extends UserClase implements MercadoLaboral
+
+class SesionClase extends UserClase 
 {
     public function iniciosesion($datos)
     {
@@ -29,7 +29,14 @@ class SesionClase extends UserClase implements MercadoLaboral
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
-        return $user;
+        $token = $user->createToken('token-api')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Bienvenido',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'data' => $user
+        ], 200);
         
     }
 
