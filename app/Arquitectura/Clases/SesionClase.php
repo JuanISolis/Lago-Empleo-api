@@ -14,7 +14,7 @@ class SesionClase extends UserClase
         $user = User::where('email', $datos['email'])->first();
 
         if (!$user || !Hash::check($datos['password'], $user->password)) {
-            return null;
+            return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
         // Si el usuario solicitó recuperación, puedes manejarlo aparte si lo necesitas
