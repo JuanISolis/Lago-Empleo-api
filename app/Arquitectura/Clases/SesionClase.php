@@ -13,31 +13,17 @@ class SesionClase extends UserClase
     {
         $user = User::where('email', $datos['email'])->first();
 
-        if ($user->recuperacion) {
-
-            if (!$user || !Hash::check($datos['password'], $user->password)) {
-                return response()->json(['message' => 'Credenciales incorrectas'], 401);
-            }else {
-                return response()->json([
-                    'message' => 'El usuario ha solicitado cambio de contraseña',
-                    'id' => $user->id
-                ], 401);
-            }
-        }
-
         if (!$user || !Hash::check($datos['password'], $user->password)) {
-            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+            return null;
         }
 
-        $token = $user->createToken('token-api')->plainTextToken;
+        // Si el usuario solicitó recuperación, puedes manejarlo aparte si lo necesitas
+        if ($user->recuperacion) {
+            // Opcional: puedes retornar el usuario y que el controlador decida el mensaje
+            return $user;
+        }
 
-        return response()->json([
-            'message' => 'Bienvenido',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'data' => $user
-        ], 200);
-        
+        return $user;
     }
 
     public function passolvidada($datos)
