@@ -25,15 +25,26 @@ class UsuarioController extends Controller
 
     public function store(CrearUsuarioRequest $request)
     {
-        $validated = $request->validated(); 
-        
+        $validated = $request->validated();
+    
+        //Procesa la imagen aquí
+        if ($request->hasFile('foto_perfil')) {
+            $imagen = $request->file('foto_perfil');
+            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            $rutaPublica = base_path('../../public/assets');
+            $imagen->move($rutaPublica . '/fotos', $nombreImagen);
+            $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
+        }
+    
+        //Pasa solo un array limpio sin archivos
         $usuario = $this->usuario->crear($validated);
-
+    
         return response()->json([
             'message' => 'Usuario creado correctamente',
             'usuario' => $usuario
         ], 201);
     }
+
 
     
 

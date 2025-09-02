@@ -27,7 +27,7 @@ class CrearUsuarioRequest extends FormRequest
         return [
             'user_id' => 'required|integer|exists:users,id|unique:usuarios,user_id',
             'ci' => 'required|digits:10|unique:usuarios,ci',
-            'foto_perfil' => 'nullable|string',
+            'foto_perfil' => 'nullable|file|image|max:2048',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'fecha_nacimiento' => 'required|date',
