@@ -27,7 +27,7 @@ class UsuarioController extends Controller
     {
         $validated = $request->validated();
     
-        // 👉 Procesa la imagen aquí
+        //Procesa la imagen aquí
         if ($request->hasFile('foto_perfil')) {
             $imagen = $request->file('foto_perfil');
             $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
@@ -36,7 +36,7 @@ class UsuarioController extends Controller
             $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
         }
     
-        // 👉 Pasa solo un array limpio sin archivos
+        //Pasa solo un array limpio sin archivos
         $usuario = $this->usuario->crear($validated);
     
         return response()->json([
