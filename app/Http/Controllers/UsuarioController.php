@@ -32,8 +32,8 @@ class UsuarioController extends Controller
             $imagen = $request->file('foto_perfil');
             $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
             $rutaPublica = base_path('../../public/assets');
-            $imagen->move($rutaPublica . '/fotoperfil', $nombreImagen);
-            $validated['foto_perfil'] = 'assets/fotoperfil/' . $nombreImagen;
+            $imagen->move($rutaPublica . '/fotos', $nombreImagen);
+            $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
         }
     
         // 👉 Pasa solo un array limpio sin archivos
