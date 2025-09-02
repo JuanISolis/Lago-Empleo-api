@@ -13,6 +13,7 @@ class EstudioClase
 
     public function crear(array $datos)
     {
+        
         return Estudio::create($datos);
     }
 
@@ -25,6 +26,7 @@ class EstudioClase
     {
         $estudio = Estudio::findOrFail($id);
         $estudio->update($datos);
+
         return $estudio;
     }
 }
