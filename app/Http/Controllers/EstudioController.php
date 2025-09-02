@@ -2,64 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\EstudioClase;
+use App\Http\Requests\CrearEstudioRequest;
 use Illuminate\Http\Request;
-use App\Models\Estudio;
+use Illuminate\Routing\Controller;
 
-class EstudioController
+class EstudioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $estudio;
+
+    public function __construct(EstudioClase $estudio)
+    {
+        $this->estudio = $estudio;
+    }
+
     public function index()
     {
-        //
+        return response()->json($this->estudio->obtenerTodos());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CrearEstudioRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $estudio = $this->estudio->crear($validated);
+
+        return response()->json([
+            'message' => 'Estudio creado correctamente',
+            'estudio' => $estudio
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $estudio = $this->estudio->show($id);
+
+        return response()->json([
+            'estudio' => $estudio
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(CrearEstudioRequest $request, string $id)
     {
-        //
-    }
+        $estudio = $this->estudio->actualizar($request->validated(), $id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'message' => 'Estudio actualizado correctamente',
+            'estudio' => $estudio
+        ], 200);
     }
 }

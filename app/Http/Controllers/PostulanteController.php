@@ -1,65 +1,57 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\PostulanteClase;
+use App\Http\Requests\CrearPostulanteRequest;
 use Illuminate\Http\Request;
-use App\Models\Postulante;
+use Illuminate\Routing\Controller;
 
-class PostulanteController
+class PostulanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $postulante;
+
+    public function __construct(PostulanteClase $postulante) {
+        $this->postulante = $postulante;
+    }
+
     public function index()
     {
-        //
+        return response()->json($this->postulante->obtenerTodos());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CrearPostulanteRequest $request)
     {
-        //
+        $postulante = $this->postulante->crear($request->validated());
+
+        return response()->json([
+            'message' => 'Postulante creado correctamente',
+            'postulante' => $postulante
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $postulante = $this->postulante->show($id);
+
+        return response()->json([
+            'postulante' => $postulante
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(CrearPostulanteRequest $request, string $id)
     {
-        //
+        $postulante = $this->postulante->actualizar($request->validated(), $id);
+
+        return response()->json([
+            'message' => 'Postulante actualizado correctamente',
+            'postulante' => $postulante
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        // Implementar si es necesario
     }
 }

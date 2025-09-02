@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Arquitectura\Clases;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+
+class SesionClase extends UserClase 
+{
+    public function iniciosesion($datos)
+    {
+        $user = User::where('email', $datos['email'])->first();
+
+        if (!$user || !Hash::check($datos['password'], $user->password)) {
+            return null;
+        }
+
+        // Si el usuario solicitó recuperación, puedes manejarlo aparte si lo necesitas
+        if ($user->recuperacion) {
+            // Opcional: puedes retornar el usuario y que el controlador decida el mensaje
+            return $user;
+        }
+
+        return $user;
+    }
+
+    public function passolvidada($datos)
+    {
+        $user = User::where('email', $datos)->first();
+
+        if (!$user){
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        $temppassword = Str::random(10);
+        $hashpass = bcrypt($temppassword);
+        
+        $user->update([
+            'password'=> $hashpass,
+            'recuperacion' => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Se confirma solicitud de recuperacion de contraseña',
+            'contraseña' => $temppassword,
+            'user' => [
+                'id' => $user->id,
+                'recuperacion' => $user->recuperacion
+            ] 
+        ], 200);
+    }
+}
