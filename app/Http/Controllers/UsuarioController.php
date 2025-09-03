@@ -28,11 +28,18 @@ class UsuarioController extends Controller
         $validated = $request->validated();
     
         //Procesa la imagen aquí
-        if ($request->hasFile('foto_perfil')) {
+       if ($request->hasFile('foto_perfil')) {
             $imagen = $request->file('foto_perfil');
             $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $rutaPublica = base_path('../../public/assets');
-            $imagen->move($rutaPublica . '/fotos', $nombreImagen);
+            
+            $rutaPublica = public_path('assets/fotos'); // ✅ Ruta correcta
+            
+            // Crea la carpeta si no existe
+            if (!file_exists($rutaPublica)) {
+                mkdir($rutaPublica, 0755, true);
+            }
+        
+            $imagen->move($rutaPublica, $nombreImagen);
             $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
         }
     

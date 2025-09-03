@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string ('apellido');
             $table->date ('fecha_nacimiento');
             $table->string ('sexo');
-            $table->integer ('contacto');
+            $table->unsignedBigInteger ('contacto');
             $table->string ('direccion')->nullable();
             $table->timestamps();
         });
