@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer ('ci')-> unique ();
-            $table->string ('foto_perfil');
+            $table->unsignedBigInteger('ci')->unique();
+            $table->string ('foto_perfil')->nullable();
             $table->string ('nombre');
             $table->string ('apellido');
             $table->date ('fecha_nacimiento');
