@@ -68,11 +68,11 @@ class UsuarioController extends Controller
 
     public function update(UsuarioRequest $request, string $id)
     {
-        $user = $this->user->actualizar($request->validated(), $id);
+        $ususuarioer = $this->usuario->actualizar($request->validated(), $id);
         
         return response()->json([
             'message' => 'Contraseña actualizada correctamente',
-            'usuario' => $user
+            'usuario' => $usuario
         ], 201);
     }
 }
