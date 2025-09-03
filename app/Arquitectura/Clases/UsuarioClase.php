@@ -14,18 +14,9 @@ class UsuarioClase implements MercadoLaboral{
 
     public function crear(array $datos)
     {
-
-        $rutaPublica = base_path('../../public/assets');
-
-        if ($datos->hasFile('foto_perfil')) {
-            $imagen = $datos->file('foto_perfil');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $imagen->move($rutaPublica . '/fotoperfil', $nombreImagen);
-            $datos['foto_perfil'] = 'assets/fotoperfil/' . $nombreImagen; 
-        }
-
         return Usuario::create($datos);
     }
+
 
     public function show(int $id)
     {
