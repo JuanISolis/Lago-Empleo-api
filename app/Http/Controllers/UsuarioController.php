@@ -66,9 +66,9 @@ class UsuarioController extends Controller
     }
 
 
-    public function update(UsuarioRequest $request, string $id)
+    public function update(CrearUsuarioRequest $request, string $id)
     {
-        $ususuarioer = $this->usuario->actualizar($request->validated(), $id);
+        $usuario = $this->usuario->actualizar($request->validated(), $id);
         
         return response()->json([
             'message' => 'Contraseña actualizada correctamente',
