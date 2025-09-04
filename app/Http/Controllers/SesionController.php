@@ -18,12 +18,22 @@ class SesionController extends Controller
 
     public function iniciosesion(InicioSesionRequest $request)
     {
-        $user = $this->sesion->iniciosesion($request->validated());
-
+         $user = $this->sesion->iniciosesion($request->validated());
+ if (!$user) {
         return response()->json([
-            // 'message' => 'Sesion iniciada correctamente'
-            $user
-        ], 200);
+            "message" => "Usuario o contraseña incorrectos"
+        ], 401);
+    }
+
+    // Genera el token (si usas Sanctum)
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        "email" => $user->email, // <-- Accede al modelo de usuario
+        "rol" => $user->rol,
+        "token" => $token,
+        "message" => "Sesión iniciada correctamente"
+    ], 200);
     }
 
     public function passolvidada(PassOlvidoRequest $request)

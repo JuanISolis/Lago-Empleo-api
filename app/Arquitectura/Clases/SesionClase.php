@@ -6,30 +6,24 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+
 class SesionClase extends UserClase 
 {
     public function iniciosesion($datos)
     {
         $user = User::where('email', $datos['email'])->first();
 
-        if ($user->recuperacion) {
-
-            if (!$user || !Hash::check($datos['password'], $user->password)) {
-                return response()->json(['message' => 'Credenciales incorrectas'], 401);
-            }else {
-                return response()->json([
-                    'message' => 'El usuario ha solicitado cambio de contraseña',
-                    'id' => $user->id
-                ], 401);
-            }
+        if (!$user || !Hash::check($datos['password'], $user->password)) {
+            return null;
         }
 
-        if (!$user || !Hash::check($datos['password'], $user->password)) {
-            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+        // Si el usuario solicitó recuperación, puedes manejarlo aparte si lo necesitas
+        if ($user->recuperacion) {
+            // Opcional: puedes retornar el usuario y que el controlador decida el mensaje
+            return $user;
         }
 
         return $user;
-        
     }
 
     public function passolvidada($datos)

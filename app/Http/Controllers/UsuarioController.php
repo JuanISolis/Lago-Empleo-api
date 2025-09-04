@@ -25,15 +25,33 @@ class UsuarioController extends Controller
 
     public function store(CrearUsuarioRequest $request)
     {
-        $validated = $request->validated(); 
+        $validated = $request->validated();
+    
+        //Procesa la imagen aquí
+       if ($request->hasFile('foto_perfil')) {
+            $imagen = $request->file('foto_perfil');
+            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            
+            $rutaPublica = public_path('assets/fotos'); // ✅ Ruta correcta
+            
+            // Crea la carpeta si no existe
+            if (!file_exists($rutaPublica)) {
+                mkdir($rutaPublica, 0755, true);
+            }
         
+            $imagen->move($rutaPublica, $nombreImagen);
+            $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
+        }
+    
+        //Pasa solo un array limpio sin archivos
         $usuario = $this->usuario->crear($validated);
-
+    
         return response()->json([
             'message' => 'Usuario creado correctamente',
             'usuario' => $usuario
         ], 201);
     }
+
 
     
 
@@ -50,11 +68,11 @@ class UsuarioController extends Controller
 
     public function update(UsuarioRequest $request, string $id)
     {
-        $user = $this->user->actualizar($request->validated(), $id);
+        $ususuarioer = $this->usuario->actualizar($request->validated(), $id);
         
         return response()->json([
             'message' => 'Contraseña actualizada correctamente',
-            'usuario' => $user
+            'usuario' => $usuario
         ], 201);
     }
 }
