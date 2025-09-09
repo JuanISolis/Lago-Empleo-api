@@ -18,37 +18,54 @@ class SesionController extends Controller
 
     public function iniciosesion(InicioSesionRequest $request)
     {
-         $user = $this->sesion->iniciosesion($request->validated());
- if (!$user) {
-        return response()->json([
-            "message" => "Usuario o contraseña incorrectos"
-        ], 401);
+        $validated = $request->validated();
+
+        try {
+            $loginData = $this->sesion->iniciosesion($validated);
+
+            return response()->json([
+                'login' => $loginData
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+
     }
+    
+    public function logout(Request $request)
+    {
+        
+        $request->user()->currentAccessToken()->delete();
 
-    // Genera el token (si usas Sanctum)
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    return response()->json([
-        "email" => $user->email, // <-- Accede al modelo de usuario
-        "rol" => $user->rol,
-        "token" => $token,
-        "message" => "Sesión iniciada correctamente"
-    ], 200);
+        return response()->json([
+            'mensaje' => 'Sesión cerrada correctamente.'
+        ], 200);
     }
 
     public function passolvidada(PassOlvidoRequest $request)
     {
-        $user = $this->sesion->passolvidada($request->validated());
-        
-        return response()->json([
-            'message' => 'recuperacion de pass correcta', 
-            $user
-        ], 200);
+        $validated = $request->validated();
+
+        try {
+            $resetPassword = $this->sesion->passolvidada($validated);
+
+            return response()->json([
+                'login' => $resetPassword
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
-    public function destroy(string $id)
-    {
-        // Implementación pendiente
-        return response()->json(['message' => 'Función de eliminación no implementada'], 501);
-    }
+    // public function destroy(string $id)
+    // {
+    //     // Implementación pendiente
+    //     return response()->json(['message' => 'Función de eliminación no implementada'], 501);
+    // }
 }

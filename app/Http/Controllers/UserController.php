@@ -35,12 +35,20 @@ class UserController extends Controller
      */
     public function store(CrearUserRequest $request)
     {
-        $user = $this->user->crear($request->validated());
+        $validated = $request->validated();
 
-        return response()->json([
-            'message' => 'Usuario creado correctamente',
-            'usuario' => $user
-        ], 201);
+        try {
+            $userData = $this->user->crear($validated);
+
+            return response()->json([
+                'usuario' => $userData
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     /**
@@ -67,15 +75,28 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ActualizarPassRequest $request, string $id)
+    // public function update(ActualizarPassRequest $request, $id)
+    // {
+
+    // }
+
+    public function actualizarPassword(ActualizarPassRequest $request)
     {
-        $user = $this->user->actualizar($request->validated(), $id);
-        
-        return response()->json([
-            'message' => 'Contraseña actualizada correctamente',
-            'usuario' => $user
-        ], 201);
+        $validated = $request->validated();
+        try {
+            $respuesta = $this->user->actualizar($validated);
+
+            return response()->json([
+                'actualizacion' => $respuesta
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.

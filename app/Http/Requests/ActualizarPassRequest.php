@@ -13,12 +13,12 @@ class ActualizarPassRequest extends FormRequest
      */
 
     public function failedValidation(Validator $validator)
-        {
-            throw new HttpResponseException(response()->json([
-                'message' => 'Validación fallida',
-                'errors' => $validator->errors()
-            ], 422));
-        }
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Validación fallida',
+            'errors' => $validator->errors()
+        ], 422));
+    }
 
     public function authorize(): bool
     {
