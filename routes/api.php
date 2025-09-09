@@ -27,36 +27,35 @@ use App\Http\Controllers\OfertaLaboralController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\PostulanteController;
 
-Route::prefix('sesion')->group(function () {
 
-    Route::post('/', [SesionController::class, 'iniciosesion']);
+Route::get('/test', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
-    Route::post('/resetpass', [SesionController::class, 'passolvidada']);
+Route::apiResource('user', UserController::class);
+Route::post('login', [SesionController::class, 'iniciosesion']);
+Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
+Route::apiResource('usuario', UsuarioController::class)->middleware('auth:sanctum');
+Route::get('usuario/perfil', [UsuarioController::class, 'show'])->middleware('auth:sanctum');
 
-});
+
+
+Route::apiResource('actividad', ActividadController::class);
+Route::apiResource('empresas', EmpresasController::class)->middleware('auth:sanctum');;
 
 
 
 
+Route::apiResource('estudio', EstudioController::class);
+Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
+Route::apiResource('capacidad', CapacidadController::class);
 // Route::apiResource('habilidad', HabilidadController::class);
 // Route::apiResource('idioma', IdiomaController::class);
+Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
 //Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
 //Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
+Route::apiResource('oferta_laboral', OfertaLaboralController::class);
+Route::apiResource('postulacion', PostulacionController::class);
+Route::apiResource('postulante', PostulanteController::class);
 
-Route::middleware('auth:sanctum')->group(function () {
-    
-    Route::post('/logout', [SesionController::class, 'logout']);
-    Route::apiResource('user', UserController::class);
-    Route::put('resetpassword', [UserController::class, 'actualizarPassword']);
-    Route::apiResource('usuario', UsuarioController::class);
-    Route::apiResource('actividad', ActividadController::class);
-    Route::apiResource('empresas', EmpresasController::class)->middleware('auth:sanctum');;
-    Route::apiResource('postulante', PostulanteController::class);
-    Route::apiResource('estudio', EstudioController::class);
-    Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
-    Route::apiResource('capacidad', CapacidadController::class);
-    Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-    Route::apiResource('oferta_laboral', OfertaLaboralController::class);
-    Route::apiResource('postulacion', PostulacionController::class);
-    
-});
+
