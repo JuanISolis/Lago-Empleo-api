@@ -35,7 +35,8 @@ Route::get('/test', function (Request $request) {
 Route::apiResource('user', UserController::class);
 Route::post('login', [SesionController::class, 'iniciosesion']);
 Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
-Route::apiResource('usuario', UsuarioController::class);
+Route::apiResource('usuario', UsuarioController::class)->middleware('auth:sanctum');
+Route::get('usuario/perfil', [UsuarioController::class, 'show'])->middleware('auth:sanctum');
 
 
 

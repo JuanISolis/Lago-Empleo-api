@@ -55,12 +55,14 @@ class UsuarioController extends Controller
 
     
 
-    public function show(string $id)
+    public function show(Request $request)
     {
-        $usuario = $this->usuario->show($id);
+        $usuario = $request->user();
+        $perfil = Usuario::where('user_id', 5)->first();
         
         return response()->json([
-            'usuario' => $usuario
+            'usuario' => $usuario,
+            'perfil' => $perfil  // Accede al perfil relacionado
         ], 201);
 
     }
