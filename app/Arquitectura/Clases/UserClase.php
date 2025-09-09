@@ -41,16 +41,25 @@ class UserClase implements MercadoLaboral{
 
     public function show(int $id)
     {
-        $user = User::find($id);
 
-        if (!$user) {
-
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
-
+        try {
+            $user = User::find($id);
+        
+            if (!$user) {
+                throw new \Exception('Usuario no encontrado.', 404);
+            }
+        
+            return [
+                'mensaje' => 'Usuario encontrado correctamente.',
+                'usuario' => $user
+            ];
+        
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500
+            ];
         }
-
-        return $user;
-
     }
 
     public function actualizar(array $datos)
