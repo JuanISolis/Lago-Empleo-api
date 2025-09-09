@@ -31,7 +31,7 @@ class UsuarioClase implements MercadoLaboral{
         return $usuario;
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
         $usuario = User::find($id);
         

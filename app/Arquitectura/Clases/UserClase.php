@@ -15,10 +15,27 @@ class UserClase implements MercadoLaboral{
 
     public function crear(array $datos)
     {
-        $datos['password'] = Hash::make($datos['password']);
-        unset($datos['repeatpassword']);
+        try {
+            
+            $datos['password'] = Hash::make($datos['password']);
+            unset($datos['repeatpassword']);
 
-        return User::create($datos);
+            $user = User::create($datos);
+
+            $token = $user->createToken('token_de_acceso')->plainTextToken;
+
+            return [
+                'mensaje' => 'Usuario creado exitosamente.',
+                'token' => $token
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500,
+                'reset' => false
+            ];
+        }
     }
 
     public function show(int $id)
@@ -35,38 +52,35 @@ class UserClase implements MercadoLaboral{
 
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
-        $user = User::find($id);
+        $usuarioAutenticado= auth()->user();
         
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-
-        if (!$user->recuperacion) {
-            return response()->json([
-                'message' => 'No se registra peticion de cambio de password',
-                'user' => [
-                    'recuperacion' => $user->recuperacion
-                ] 
-            ], 404);
+        if (!$usuarioAutenticado) {
+            throw new \Exception('Usuario no encontrado.', 404);
         }
         
-        $datos['password'] = Hash::make($datos['password']);
-        unset($datos['repeatpassword']);
-
-        $user->update([
-            'password' => $datos['password'],
+        $datosResetPass = collect($datos)
+        ->except(['repeatpassword'])
+        ->merge([
+            'password' => bcrypt($datos['password']),
             'recuperacion' => false,
-        ]);
+            ])
+        ->toArray();
 
-        return response()->json([
-            'message' => 'Contraseña actualizada correctamente',
-            'user' => [
-                'id' => $user->id,
-                'recuperacion' => $user->recuperacion
-            ] 
-        ], 200);
+        $actualizado = $usuarioAutenticado->update($datosResetPass);
+
+        if (!$actualizado) {
+            $usuarioAutenticado->currentAccessToken()?->delete();
+            throw new \Exception('No se guardó correctamente la nueva contraseña.', 500);
+        }
+
+        return [
+            'mensaje' => 'Contraseña actualizada correctamente',
+            'recuperacion' => false
+        ];
+
+
     }
 
 }

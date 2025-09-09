@@ -13,42 +13,67 @@ class SesionClase extends UserClase
     {
         $user = User::where('email', $datos['email'])->first();
 
-        if (!$user || !Hash::check($datos['password'], $user->password)) {
-            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+        if (!$user || $user->estado) {
+            throw new \Exception('Usuario no encontrado o inactivo.', 404);
         }
 
-        // Si el usuario solicitó recuperación, puedes manejarlo aparte si lo necesitas
-        if ($user->recuperacion) {
-            // Opcional: puedes retornar el usuario y que el controlador decida el mensaje
-            return $user;
+        if (!Hash::check($datos['password'], $user->password)) {
+            throw new \Exception('Contraseña incorrecta.', 401);
         }
 
-        return $user;
+        $token = $user->createToken('token_de_acceso')->plainTextToken;
+
+        $debeReestablecer = $user->recuperacion;
+
+        if ($debeReestablecer) {
+            return [
+                'mensaje' => 'Debe reestablecer su contraseña',
+                'token' => $token,
+                'reset' => true
+            ];
+        }
+    
+        return [
+            'mensaje' => 'Inicio de sesión exitoso',
+            'token' => $token,
+            'reset' => false
+        ];
     }
+
+    public function logout()
+    {
+        auth()->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'mensaje' => 'Sesión cerrada correctamente.'
+        ], 200);
+    }
+
 
     public function passolvidada($datos)
     {
         $user = User::where('email', $datos)->first();
 
-        if (!$user){
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        if (!$user) {
+            throw new \Exception('Usuario no encontrado.', 404);
         }
 
-        $temppassword = Str::random(10);
-        $hashpass = bcrypt($temppassword);
-        
+        if ($user->estado) {
+            throw new \Exception('Usuario inactivo.', 404);
+        }
+
+        $resetPassword = Str::random(10);
+        $hashpass = bcrypt($resetPassword);
+
         $user->update([
             'password'=> $hashpass,
             'recuperacion' => true,
         ]);
 
-        return response()->json([
-            'message' => 'Se confirma solicitud de recuperacion de contraseña',
-            'contraseña' => $temppassword,
-            'user' => [
-                'id' => $user->id,
-                'recuperacion' => $user->recuperacion
-            ] 
-        ], 200);
+        return [
+            'mensaje' => 'Contraseña reseteada, por favor vuelva a intentar iniciar sesion',
+            'contraseña' => $resetPassword,
+        ];
+
     }
 }
