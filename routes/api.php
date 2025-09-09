@@ -35,6 +35,9 @@ Route::prefix('sesion')->group(function () {
 
 });
 
+// Crear usuario sin autenticación
+Route::post('/user', [UserController::class, 'store']);
+
 
 
 
@@ -46,11 +49,11 @@ Route::prefix('sesion')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/logout', [SesionController::class, 'logout']);
-    Route::apiResource('user', UserController::class);
+    Route::apiResource('user', UserController::class)->except(['store']);
     Route::put('resetpassword', [UserController::class, 'actualizarPassword']);
     Route::apiResource('usuario', UsuarioController::class);
     Route::apiResource('actividad', ActividadController::class);
-    Route::apiResource('empresas', EmpresasController::class)->middleware('auth:sanctum');;
+    Route::apiResource('empresas', EmpresasController::class);
     Route::apiResource('postulante', PostulanteController::class);
     Route::apiResource('estudio', EstudioController::class);
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
