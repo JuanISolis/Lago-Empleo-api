@@ -16,8 +16,8 @@ class UserClase implements MercadoLaboral{
     public function crear(array $datos)
     {
         try {
-            
             $datos['password'] = Hash::make($datos['password']);
+
             unset($datos['repeatpassword']);
 
             $user = User::create($datos);
@@ -31,7 +31,8 @@ class UserClase implements MercadoLaboral{
 
         } catch (\Exception $e) {
             return [
-                'mensaje' => $e->getMessage(),
+                'mensaje' => 'Ocurrió un error al crear el usuario.',
+                'error' => $e->getMessage(),
                 'codigo' => $e->getCode() ?: 500,
                 'reset' => false
             ];
@@ -40,16 +41,25 @@ class UserClase implements MercadoLaboral{
 
     public function show(int $id)
     {
-        $user = User::find($id);
 
-        if (!$user) {
-
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
-
+        try {
+            $user = User::find($id);
+        
+            if (!$user) {
+                throw new \Exception('Usuario no encontrado.', 404);
+            }
+        
+            return [
+                'mensaje' => 'Usuario encontrado correctamente.',
+                'usuario' => $user
+            ];
+        
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500
+            ];
         }
-
-        return $user;
-
     }
 
     public function actualizar(array $datos)
