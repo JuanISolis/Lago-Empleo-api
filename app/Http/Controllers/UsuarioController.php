@@ -25,31 +25,37 @@ class UsuarioController extends Controller
 
     public function store(CrearUsuarioRequest $request)
     {
-        $validated = $request->validated();
-    
-        //Procesa la imagen aquí
-       if ($request->hasFile('foto_perfil')) {
-            $imagen = $request->file('foto_perfil');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            
-            $rutaPublica = public_path('assets/fotos'); // ✅ Ruta correcta
-            
-            // Crea la carpeta si no existe
-            if (!file_exists($rutaPublica)) {
-                mkdir($rutaPublica, 0755, true);
+        try {
+            $validated = $request->validated();
+
+            // Procesar imagen de perfil si existe
+            if ($request->hasFile('foto_perfil')) {
+                $imagen = $request->file('foto_perfil');
+                $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+
+                $rutaPublica = public_path('assets/fotos');
+
+                if (!file_exists($rutaPublica)) {
+                    mkdir($rutaPublica, 0755, true);
+                }
+
+                $imagen->move($rutaPublica, $nombreImagen);
+                $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
             }
-        
-            $imagen->move($rutaPublica, $nombreImagen);
-            $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
+
+            // Crear el perfil asociado al usuario autenticado
+            $respuesta = $this->usuario->crear($validated);
+
+            return response()->json([
+                'perfil' => $respuesta
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
         }
-    
-        //Pasa solo un array limpio sin archivos
-        $usuario = $this->usuario->crear($validated);
-    
-        return response()->json([
-            'message' => 'Usuario creado correctamente',
-            'usuario' => $usuario
-        ], 201);
+
     }
 
 
@@ -75,4 +81,20 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ], 201);
     }
+
+    public function verPerfil()
+    {
+        try {
+            $respuesta = $this->usuario->perfil();
+        
+            return response()->json($respuesta, 200);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+    }
+
+
 }

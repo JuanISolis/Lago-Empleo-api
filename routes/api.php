@@ -27,32 +27,58 @@ use App\Http\Controllers\OfertaLaboralController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\PostulanteController;
 
+// endpoints de sesion
+Route::prefix('sesion')->group(function () {
 
-Route::get('/test', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    // para iniciar sesio
+    Route::post('/', [SesionController::class, 'iniciosesion']);
 
-Route::apiResource('user', UserController::class);
-Route::post('login', [SesionController::class, 'iniciosesion']);
-Route::post('sesion/passolvido', [SesionController::class, 'passolvidada']);
-Route::apiResource('usuario', UsuarioController::class);
+    // para resetear contraseña por una temporal
+    Route::post('/resetpass', [SesionController::class, 'passolvidada']);
 
+});
 
-
-Route::apiResource('actividad', ActividadController::class);
-Route::apiResource('empresas', EmpresasController::class)->middleware('auth:sanctum');;
-
+// Crear usuario sin autenticación
+Route::post('/user', [UserController::class, 'store']);
 
 
 
-Route::apiResource('estudio', EstudioController::class);
-Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
-Route::apiResource('capacidad', CapacidadController::class);
+
 // Route::apiResource('habilidad', HabilidadController::class);
 // Route::apiResource('idioma', IdiomaController::class);
-Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
+//Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
 //Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
-Route::apiResource('oferta_laboral', OfertaLaboralController::class);
-Route::apiResource('postulacion', PostulacionController::class);
-Route::apiResource('postulante', PostulanteController::class);
+
+// endpoints con acceso restringido por token
+Route::middleware('auth:sanctum')->group(function () {
+    
+    // para cerrar sesion
+    Route::post('/logout', [SesionController::class, 'logout']);
+
+    // controla la tabla user, credenciales de sesion como correo, password o rol
+    Route::apiResource('user', UserController::class)->except(['store']);
+    Route::put('resetpassword', [UserController::class, 'actualizarPassword']);
+
+    // informacion del usuario, datos basicos
+    Route::get('/perfil', [UsuarioController::class, 'verPerfil']);
+    Route::apiResource('usuario', UsuarioController::class);
+
+    Route::apiResource('actividad', ActividadController::class);
+
+    Route::apiResource('empresas', EmpresasController::class);
+
+    Route::apiResource('postulante', PostulanteController::class);
+
+    Route::apiResource('estudio', EstudioController::class);
+
+    Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
+
+    Route::apiResource('capacidad', CapacidadController::class);
+
+    Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
+
+    Route::apiResource('oferta_laboral', OfertaLaboralController::class);
+
+    Route::apiResource('postulacion', PostulacionController::class);
+    
+});
