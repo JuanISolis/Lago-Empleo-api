@@ -25,6 +25,7 @@ class EstudioController extends Controller
     {
         $validated = $request->validated();
         $estudio = $this->estudio->crear($validated);
+        
 
         $rutaPublica = base_path('../../public/assets/pdf');
 
