@@ -2,30 +2,55 @@
 
 namespace App\Arquitectura\Clases;
 use App\Arquitectura\Interfaces\MercadoLaboral;
+use App\Models\LibreriaIdioma;
 use App\Models\Idioma;
 
-class LibreriaidiomaClase 
+class LibreriaidiomaClase
 {
-    public function listaridioma()
+    public function listar()
     {
-        return Idioma::all();
+        return LibreriaIdioma::all();
     }
 
-    public function crearidioma(array $datos)
+    public function crear($idioma)
     {
-        return Idioma::create($datos);
+        return LibreriaIdioma::firstOrCreate(['idioma' => $idioma]);
     }
 
-    public function buscar($busquedaidioma)
+    public function buscar($busqueda)
     {
-        $idioma = Libro::where('habilidad', 'like', "%{$busquedaidioma}%")
-            ->get();
-
-        if ($libros->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
-        }
-
-        return response()->json($idioma, 200);
+        return LibreriaIdioma::where('idioma', 'like', "%{$busqueda}%")->get();
     }
-
 }
+
+
+
+
+
+
+
+// class LibreriaidiomaClase 
+// {
+//     public function listaridioma()
+//     {
+//         return Idioma::all();
+//     }
+
+//     public function crearidioma(array $datos)
+//     {
+//         return Idioma::create($datos);
+//     }
+
+//     public function buscar($busquedaidioma)
+//     {
+//         $idioma = Libro::where('habilidad', 'like', "%{$busquedaidioma}%")
+//             ->get();
+
+//         if ($libros->isEmpty()) {
+//             return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
+//         }
+
+//         return response()->json($idioma, 200);
+//     }
+
+// }
