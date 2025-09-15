@@ -8,7 +8,7 @@ use App\Models\postulante;
 use App\Models\LibreriaHabilidad;
 use App\Models\LibreriaIdioma;
 
-class CapacidadesClase
+class CapacidadesClase extends PostulanteClase
 {
     // Agregar habilidad al postulante
     public function agregarHabilidad($postulante_id, $habilidad)
@@ -50,14 +50,6 @@ class CapacidadesClase
             return Idioma::where('postulante_id', $postulante_id)->with('libreriaidioma')->get();
         }
         return Idioma::with('libreriaidioma')->get();
-    }
-        // Resumen de capacidades de un postulante
-    public function resumen($postulante_id)
-    {
-        return [
-            'habilidades' => $this->listarHabilidades($postulante_id),
-            'idiomas' => $this->listarIdiomas($postulante_id),
-        ];
     }
 }
 

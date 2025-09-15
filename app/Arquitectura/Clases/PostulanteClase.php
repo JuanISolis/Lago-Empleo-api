@@ -32,10 +32,17 @@ class PostulanteClase extends UsuarioClase
 
     public function actualizar(array $datos, string $id)
     {
+        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
+        $usuarioAutenticado = auth()->user();
         $postulante = Postulante::find($id);
 
         if (!$postulante) {
             return response()->json(['error' => 'Postulante no encontrado'], 404);
+        }
+        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
+
+        if ($postulante->user_id !== $usuarioAutenticado->id) {
+        return response()->json(['error' => 'No tienes permiso para actualizar este postulante'], 403);
         }
 
         $postulante->update($datos);

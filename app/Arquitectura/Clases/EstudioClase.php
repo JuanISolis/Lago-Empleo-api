@@ -4,7 +4,7 @@ namespace App\Arquitectura\Clases;
 
 use App\Models\Estudio;
 
-class EstudioClase
+class EstudioClase extends PostulanteClase
 {
     public function obtenerTodos()
     {
@@ -24,9 +24,15 @@ class EstudioClase
 
     public function actualizar(array $datos, string $id)
     {
-        $estudio = Estudio::findOrFail($id);
-        $estudio->update($datos);
+        // linea para obtener el usuario autenticado
+        $usuarioAutenticado = auth()->user();
 
+        $estudio = Estudio::findOrFail($id);
+        // lineas para verificar si el usuario autenticado es el propietario del estudio
+        if ($estudio->user_id !== $usuarioAutenticado->id) {
+        throw new \Exception('No tienes permiso para actualizar este estudio.', 403);
+        }
+        $estudio->update($datos);
         return $estudio;
     }
 }

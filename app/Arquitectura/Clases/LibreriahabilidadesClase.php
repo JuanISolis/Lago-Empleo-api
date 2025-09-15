@@ -6,7 +6,7 @@ use App\Models\LibreriaHabilidad;
 use App\Arquitectura\Interfaces\MercadoLaboral;
 
         
-class LibreriahabilidadClase
+class LibreriahabilidadClase 
 {
     public function listar()
     {
