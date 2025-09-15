@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('postulante_id');
             $table->foreign('postulante_id')->references('id')->on('postulantes');
             $table->string ('lugar_trabajo');
+            $table->string ('cargo');
             $table->date ('fecha_inicio');
             $table->date ('fecha_fin');
             $table->timestamps();
