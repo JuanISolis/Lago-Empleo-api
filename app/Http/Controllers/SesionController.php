@@ -24,7 +24,8 @@ class SesionController extends Controller
             $loginData = $this->sesion->iniciosesion($validated);
 
             return response()->json([
-                'login' => $loginData
+                'message' => 'Inicio de sesión exitoso',
+                'data' => $loginData
             ], 200);
 
         } catch (\Exception $e) {

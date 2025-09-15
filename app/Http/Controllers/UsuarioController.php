@@ -64,7 +64,7 @@ class UsuarioController extends Controller
     public function show(Request $request)
     {
         $usuario = $request->user();
-        $perfil = Usuario::where('user_id', 5)->first();
+        $perfil = Usuario::where('user_id', $usuario->id)->first();
         
         return response()->json([
             'usuario' => $usuario,
