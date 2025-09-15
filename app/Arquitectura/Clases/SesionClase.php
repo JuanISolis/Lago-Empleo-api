@@ -36,7 +36,8 @@ class SesionClase extends UserClase
         return [
             'mensaje' => 'Inicio de sesión exitoso',
             'token' => $token,
-            'reset' => false
+            'reset' => false,
+            'rol' => $user->rol
         ];
     }
 

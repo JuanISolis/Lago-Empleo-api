@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('resetpassword', [UserController::class, 'actualizarPassword']);
 
     // informacion del usuario, datos basicos
-    Route::get('/perfil', [UsuarioController::class, 'verPerfil']);
+    Route::get('/perfil', [UsuarioController::class, 'show']);
     Route::apiResource('usuario', UsuarioController::class);
 
     Route::apiResource('actividad', ActividadController::class);
