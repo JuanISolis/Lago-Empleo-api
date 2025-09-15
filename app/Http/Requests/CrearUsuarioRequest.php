@@ -25,7 +25,6 @@ class CrearUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id|unique:usuarios,user_id',
             'ci' => 'required|integer|digits:10|unique:usuarios,ci',
             'foto_perfil' => 'nullable|file|image|max:2048',
             'nombre' => 'required|string|max:255',
@@ -40,9 +39,6 @@ class CrearUsuarioRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'El ID de usuario es obligatorio.',
-            'user_id.integer' => 'El ID de usuario debe ser un número entero.',
-            'user_id.exists' => 'El usuario seleccionado no existe.',
 
             'ci.required' => 'El campo cédula es obligatorio.',
             'ci.digits' => 'La cédula debe tener exactamente 10 dígitos.',
