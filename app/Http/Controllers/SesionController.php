@@ -63,9 +63,11 @@ class SesionController extends Controller
         }
     }
 
-    // public function destroy(string $id)
-    // {
-    //     // Implementación pendiente
-    //     return response()->json(['message' => 'Función de eliminación no implementada'], 501);
-    // }
+
+    public function destroy(string $id)
+    {
+        // Implementación pendiente
+        return response()->json(['message' => 'Función de eliminación no implementada'], 501);
+    }
 }
+
