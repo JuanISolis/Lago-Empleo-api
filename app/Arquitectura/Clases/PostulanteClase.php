@@ -16,17 +16,15 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
-        $postulante = Postulante::create($datos);
-        $token = $postulante->createToken('auth_token')->plainTextToken;
+        $usuarioAutenticado = auth()->user();
+        $datos['user_id'] = $usuarioAutenticado->id;
 
-        return [
-            'usuario' => $postulante,
-            'token' => $token
-        ];
+        return Postulante::create($datos);
     }
 
     public function show(int $id)
     {
+        
         $postulante = Postulante::find($id);
 
         if (!$postulante) {
@@ -36,22 +34,32 @@ class PostulanteClase extends UsuarioClase
         return $postulante;
     }
 
-    
+    public function actualizar(array $datos)
+    {
+        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
+        $usuarioAutenticado = auth()->user();
 
-public function actualizar(array $datos)
-{
-    $usuarioAutenticado = auth()->user();
-    $postulante = Postulante::where('user_id', $usuarioAutenticado->id)->first();
+        // if (!isset($datos['id'])) {
+        //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
+        // }    Posible solucion encontrada pero es fallida
 
-    if (!$postulante) {
-        return response()->json(['error' => 'Postulante no encontrado'], 404);
+        
+        $postulante = Postulante::find($id);
+
+        if (!$postulante) {
+            return response()->json(['error' => 'Postulante no encontrado'], 404);
+        }
+        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
+
+        if ($postulante->user_id !== $usuarioAutenticado->id) {
+        return response()->json(['error' => 'No tienes permiso para actualizar este postulante'], 403);
+        }
+
+        $postulante->update($datos);
+
+        return response()->json([
+            'message' => 'Postulante actualizado correctamente',
+            'postulante' => $postulante
+        ], 200);
     }
-
-    $postulante->update($datos);
-
-    return response()->json([
-        'message' => 'Postulante actualizado correctamente',
-        'postulante' => $postulante
-    ], 200);
-}
 }
