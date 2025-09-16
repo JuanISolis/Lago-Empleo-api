@@ -16,14 +16,17 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
-        $usuarioAutenticado = auth()->user();
-
-        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
-
-        $datos['user_id'] = $usuarioAutenticado->id;
-
+        $authUser = auth()->user();
+    
+        if (!isset($authUser->usuario)) {
+            throw new \Exception('El usuario autenticado no tiene una relación "usuario".');
+        }
+    
+        $datos['user_id'] = $authUser->usuario->id;
+    
         return Postulante::create($datos);
     }
+
 
     public function show(int $id)
     {
