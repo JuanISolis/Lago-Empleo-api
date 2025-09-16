@@ -103,7 +103,7 @@ class UsuarioController extends Controller
                 $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
             }
 
-            $perfilActualizado = $this->usuarioService->actualizar($validated);
+            $perfilActualizado = $this->usuario->actualizar($validated);
 
             return response()->json([
                 'perfil' => $perfilActualizado
