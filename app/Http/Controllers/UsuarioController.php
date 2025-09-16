@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\UsuarioClase;
 use App\Http\Requests\CrearUsuarioRequest;
+use App\Http\Requests\ActualizarUsuarioRequest;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
 use Illuminate\Routing\Controller;
@@ -88,26 +89,26 @@ class UsuarioController extends Controller
     {
         try {
             $validated = $request->validated();
-        
+
             if ($request->hasFile('foto_perfil')) {
                 $imagen = $request->file('foto_perfil');
                 $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            
+
                 $rutaPublica = public_path('assets/fotos');
                 if (!file_exists($rutaPublica)) {
                     mkdir($rutaPublica, 0755, true);
                 }
-            
+
                 $imagen->move($rutaPublica, $nombreImagen);
                 $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
             }
-        
+
             $perfilActualizado = $this->usuarioService->actualizarPerfil($validated);
-        
+
             return response()->json([
                 'perfil' => $perfilActualizado
             ], 200);
-        
+
         } catch (\Exception $e) {
             return response()->json([
                 'mensaje' => $e->getMessage()
