@@ -24,7 +24,15 @@ class Experiencia_laboralClase extends PostulanteClase
 
     public function actualizar(array $datos, string $id)
     {
+        // linea para obtener el usuario autenticado
+        $usuarioAutenticado = auth()->user();
+
         $exp = ExperienciaLaboral::findOrFail($id);
+        
+        // Validar que el usuario autenticado es el propietario de la experiencia laboral
+        if ($exp->user_id !== $usuarioAutenticado->id) {
+            throw new \Exception('No tienes permiso para actualizar esta experiencia laboral.', 403);
+        }
         $exp->update($datos);
         return $exp;
     }

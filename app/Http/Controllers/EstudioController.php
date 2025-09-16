@@ -25,6 +25,16 @@ class EstudioController extends Controller
     {
         $validated = $request->validated();
         $estudio = $this->estudio->crear($validated);
+        
+
+        $rutaPublica = base_path('../../public/assets/pdf');
+
+        if ($datos->hasFile('doc_titulo')) {
+            $archivo = $datos->file('doc_titulo');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $archivo->move($rutaPublica('assets/pdf'), $nombreArchivo);
+            $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+        }
 
         return response()->json([
             'message' => 'Estudio creado correctamente',
@@ -44,6 +54,15 @@ class EstudioController extends Controller
     public function update(CrearEstudioRequest $request, string $id)
     {
         $estudio = $this->estudio->actualizar($request->validated(), $id);
+
+        $rutaPublica = base_path('../../public/assets/pdf');
+
+        if ($datos->hasFile('doc_titulo')) {
+            $archivo = $datos->file('doc_titulo');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $archivo->move($rutaPublica('assets/pdf'), $nombreArchivo);
+            $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+        }
 
         return response()->json([
             'message' => 'Estudio actualizado correctamente',

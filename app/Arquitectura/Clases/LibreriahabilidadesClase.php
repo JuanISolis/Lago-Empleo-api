@@ -2,40 +2,66 @@
 
 namespace App\Arquitectura\Clases;   
 use App\Models\Habilidad; 
+use App\Models\LibreriaHabilidad; 
 use App\Arquitectura\Interfaces\MercadoLaboral;
 
         
-class LibreriahabilidadesClase 
+class LibreriahabilidadClase 
 {
-    public function failedValidation(Validator $validator)
+    public function listar()
     {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Validación fallida',
-            'errors' => $validator->errors()
-        ], 422));
+        return LibreriaHabilidad::all();
     }
 
-    public function listarhabilidad()
+    public function crear($habilidad)
     {
-        return Habilidad::all();
+        return LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
     }
 
-    public function crearhabilidad(array $datos)
+    public function buscar($busqueda)
     {
-        return Habilidad::create($datos);
+        return LibreriaHabilidad::where('habilidad', 'like', "%{$busqueda}%")->get();
     }
-
-    public function buscar($busquedahabilidad)
-    {
-        $habilidad = Libro::where('habilidad', 'like', "%{$busquedahabilidad}%")
-            ->get();
-
-        if ($libros->isEmpty()) {
-            return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
-        }
-
-        return response()->json($habilidad, 200);
-    }
-
-   
 }
+
+
+
+
+
+
+
+
+
+
+// class LibreriahabilidadesClase 
+// {
+//     public function failedValidation(Validator $validator)
+//     {
+//         throw new HttpResponseException(response()->json([
+//             'message' => 'Validación fallida',
+//             'errors' => $validator->errors()
+//         ], 422));
+//     }
+
+//     public function listarhabilidad()
+//     {
+//         return Habilidad::all();
+//     }
+
+//     public function crearhabilidad(array $datos)
+//     {
+//         return Habilidad::create($datos);
+//     }
+
+//     public function buscar($busquedahabilidad)
+//     {
+//         $habilidad = Libro::where('habilidad', 'like', "%{$busquedahabilidad}%")
+//             ->get();
+
+//         if ($libros->isEmpty()) {
+//             return response()->json(['message' => 'No se encontraron resultados para la búsqueda.'], 404);
+//         }
+
+//         return response()->json($habilidad, 200);
+//     }
+// }

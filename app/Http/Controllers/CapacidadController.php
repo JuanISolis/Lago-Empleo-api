@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Arquitectura\Clases\CapacidadesClase;
+use App\Arquitectura\Clases\LibreriahabilidadesClase;
+use App\Arquitectura\Clases\LibreriaidiomaClase;
 use App\Http\Requests\CrearCapacidadRequest; 
 use Illuminate\Routing\Controller;
 
