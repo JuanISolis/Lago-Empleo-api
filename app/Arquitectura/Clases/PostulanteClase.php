@@ -18,7 +18,7 @@ class PostulanteClase extends UsuarioClase
     {
         $usuarioAutenticado = auth()->user();
 
-        $usuarioAutenticado=$usuarioAutenticado->usuario->id?? null;
+        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
 
         $datos['user_id'] = $usuarioAutenticado->id;
 
@@ -42,7 +42,7 @@ class PostulanteClase extends UsuarioClase
         //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
         $usuarioAutenticado = auth()->user();
 
-        $usuarioAutenticado=$usuarioAutenticado->usuario->id?? null;
+        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
 
         // if (!isset($datos['id'])) {
         //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
