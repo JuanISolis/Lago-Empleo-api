@@ -34,10 +34,14 @@ class PostulanteClase extends UsuarioClase
         return $postulante;
     }
 
-    public function actualizar(array $datos, $id)
+    public function actualizar(array $datos)
     {
         //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
         $usuarioAutenticado = auth()->user();
+
+        // if (!isset($datos['id'])) {
+        //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
+        // }    Posible solucion encontrada pero es fallida
 
         
         $postulante = Postulante::find($id);

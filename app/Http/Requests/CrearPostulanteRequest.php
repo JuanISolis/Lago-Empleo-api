@@ -27,7 +27,7 @@ class CrearPostulanteRequest extends FormRequest
             // 'user_id' => 'required|integer|exists:usuarios,id',
             'profesion' => 'nullable|string',
             'descripcion' => 'nullable|string',
-            'discapacidad' => 'required|boolean',
+            'discapacidad' => 'nullable|boolean',
             'tipo_discapacidad' => 'nullable|string',
             'porcent_discapacidad' => 'nullable|integer',
         ];
