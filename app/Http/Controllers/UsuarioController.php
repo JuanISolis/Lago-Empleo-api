@@ -75,17 +75,17 @@ class UsuarioController extends Controller
     }
 
 
-    public function update(CrearUsuarioRequest $request, string $id)
-    {
-        $usuario = $this->usuario->actualizar($request->validated(), $id);
+    // public function update(CrearUsuarioRequest $request, string $id)
+    // {
+    //     $usuario = $this->usuario->actualizar($request->validated(), $id);
         
-        return response()->json([
-            'message' => 'Contraseña actualizada correctamente',
-            'usuario' => $usuario
-        ], 201);
-    }
+    //     return response()->json([
+    //         'message' => 'Contraseña actualizada correctamente',
+    //         'usuario' => $usuario
+    //     ], 201);
+    // }
 
-    public function actualizar(ActualizarUsuarioRequest $request)
+    public function actualizarperfil(ActualizarUsuarioRequest $request)
     {
         try {
             $validated = $request->validated();
