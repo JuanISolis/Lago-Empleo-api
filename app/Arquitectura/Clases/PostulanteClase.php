@@ -16,11 +16,17 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
-        $usuarioAutenticado = auth()->user();
-        $datos['user_id'] = $usuarioAutenticado->id;
-
+        $authUser = auth()->user();
+    
+        if (!isset($authUser->usuario)) {
+            throw new \Exception('El usuario autenticado no tiene una relación "usuario".');
+        }
+    
+        $datos['user_id'] = $authUser->usuario->id;
+    
         return Postulante::create($datos);
     }
+
 
     public function show(int $id)
     {
@@ -38,6 +44,8 @@ class PostulanteClase extends UsuarioClase
     {
         //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
         $usuarioAutenticado = auth()->user();
+
+        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
 
         // if (!isset($datos['id'])) {
         //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
