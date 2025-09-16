@@ -88,34 +88,51 @@ class UsuarioController extends Controller
     public function actualizarperfil(ActualizarUsuarioRequest $request)
     {
         try {
-            $validated = $request->validated();
-
+            // 💡 Recoger todos los campos como vienen
+            $datos = $request->all();
+        
+            \Log::info('📥 Datos recibidos en backend:', $datos);
+        
+            // Filtrar datos vacíos
+            $validated = array_filter($datos, function ($valor) {
+                return $valor !== null && $valor !== '';
+            });
+        
+            // Procesar imagen si fue enviada
             if ($request->hasFile('foto_perfil')) {
                 $imagen = $request->file('foto_perfil');
                 $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-
+            
                 $rutaPublica = public_path('assets/fotos');
                 if (!file_exists($rutaPublica)) {
                     mkdir($rutaPublica, 0755, true);
                 }
-
+            
                 $imagen->move($rutaPublica, $nombreImagen);
                 $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
             }
-
+        
+            \Log::info('📦 Datos que van a actualizarse en la BD (controlador):', $validated);
+        
+            // Enviar al servicio
             $perfilActualizado = $this->usuario->actualizar($validated);
-
+        
             return response()->json([
+                'mensaje' => 'Perfil actualizado con éxito',
                 'perfil' => $perfilActualizado
             ], 200);
-
+        
         } catch (\Exception $e) {
+            \Log::error('Error al actualizar perfil: ' . $e->getMessage());
             return response()->json([
-                'mensaje' => $e->getMessage()
+                'mensaje' => 'Error al actualizar perfil',
+                'error' => $e->getMessage()
             ], $e->getCode() ?: 400);
         }
-
     }
+
+
+
 
     public function verPerfil()
     {
