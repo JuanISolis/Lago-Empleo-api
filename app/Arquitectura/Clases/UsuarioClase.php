@@ -57,16 +57,26 @@ class UsuarioClase implements MercadoLaboral{
 
     public function actualizar(array $datos)
     {
-        $userId = auth()->id(); // Centralizado aquí
-
+        // Obtener el ID del usuario autenticado desde el token
+        $userId = auth()->id();
+    
+        // Buscar el modelo Usuario asociado a ese user_id
         $usuario = Usuario::where('user_id', $userId)->first();
-
+    
         if (!$usuario) {
             throw new \Exception('Perfil de usuario no encontrado', 404);
         }
-
+    
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
+        // Actualizar el modelo Usuario
         $usuario->update($datos);
-
+    
+        // Refrescar para obtener los datos actualizados
+        $usuario->refresh();
+    
+        \Log::info('📦 Datos actualizados:', $usuario->toArray());
+    
         return $usuario;
     }
 
