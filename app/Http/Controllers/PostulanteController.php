@@ -26,7 +26,7 @@ class PostulanteController extends Controller
         $postulante = $this->postulante->crear($request->validated());
 
         return response()->json([
-            'message' => 'Postulante creado correctamente',
+            // 'message' => 'Postulante creado correctamente',
             'postulante' => $postulante
         ], 201);
     }

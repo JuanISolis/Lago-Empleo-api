@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('usuarios');
             $table->string ('profesion')->nullable();
             $table->text('descripcion')->nullable();
-            $table->boolean ('discapacidad');
+            $table->boolean ('discapacidad')->default(false);
             $table->string ('tipo_discapacidad')->nullable();
             $table->integer ('porcent_discapacidad')->nullable();
             $table->timestamps();
