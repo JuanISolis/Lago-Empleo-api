@@ -85,7 +85,7 @@ class UsuarioController extends Controller
         ], 201);
     }
 
-    public function actualizar(ActualizarUsuarioRequest $requeste)
+    public function actualizar(ActualizarUsuarioRequest $request)
     {
         try {
             $validated = $request->validated();
