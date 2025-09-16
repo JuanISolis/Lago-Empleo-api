@@ -16,7 +16,13 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
-        return Postulante::create($datos);
+        $postulante = Postulante::create($datos);
+        $token = $postulante->createToken('auth_token')->plainTextToken;
+
+        return [
+            'usuario' => $postulante,
+            'token' => $token
+        ];
     }
 
     public function show(int $id)
@@ -30,26 +36,22 @@ class PostulanteClase extends UsuarioClase
         return $postulante;
     }
 
-    public function actualizar(array $datos, string $id)
-    {
-        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
-        $usuarioAutenticado = auth()->user();
-        $postulante = Postulante::find($id);
+    
 
-        if (!$postulante) {
-            return response()->json(['error' => 'Postulante no encontrado'], 404);
-        }
-        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
+public function actualizar(array $datos)
+{
+    $usuarioAutenticado = auth()->user();
+    $postulante = Postulante::where('user_id', $usuarioAutenticado->id)->first();
 
-        if ($postulante->user_id !== $usuarioAutenticado->id) {
-        return response()->json(['error' => 'No tienes permiso para actualizar este postulante'], 403);
-        }
-
-        $postulante->update($datos);
-
-        return response()->json([
-            'message' => 'Postulante actualizado correctamente',
-            'postulante' => $postulante
-        ], 200);
+    if (!$postulante) {
+        return response()->json(['error' => 'Postulante no encontrado'], 404);
     }
+
+    $postulante->update($datos);
+
+    return response()->json([
+        'message' => 'Postulante actualizado correctamente',
+        'postulante' => $postulante
+    ], 200);
+}
 }
