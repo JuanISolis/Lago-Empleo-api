@@ -57,25 +57,17 @@ class UsuarioClase implements MercadoLaboral{
 
     public function actualizar(array $datos)
     {
-        $usuario = User::find($id);
-        
+        $userId = auth()->id(); // Centralizado aquí
+
+        $usuario = Usuario::where('user_id', $userId)->first();
+
         if (!$usuario) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+            throw new \Exception('Perfil de usuario no encontrado', 404);
         }
-
-        $rutaPublica = base_path('../public/assets');
-
-        if ($datos->hasFile('imagen')) {
-            $imagen = $datos->file('imagen');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $imagen->move($rutaPublica . '/imagen', $nombreImagen);
-            $datos['imagen'] = 'assets/imagen/' . $nombreImagen; // esta ruta se guarda en la BD
-        }
-
 
         $usuario->update($datos);
 
-        return response()->json($usuario, 201);
+        return $usuario;
     }
 
     public function perfil()
