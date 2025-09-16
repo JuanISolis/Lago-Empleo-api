@@ -47,7 +47,17 @@ class UsuarioController extends Controller
             $respuesta = $this->usuario->crear($validated);
 
             return response()->json([
-                'perfil' => $respuesta
+                'mensaje' => 'Usuario creado exitosamente.',
+                'token' => $respuesta['token'] ?? null,
+                'usuario' => [
+                    'id' => $respuesta['usuario']->id ?? null,
+                    'email' => $respuesta['usuario']->email ?? null,
+                    'nombre' => $respuesta['usuario']->nombre ?? null,
+                    'apellido' => $respuesta['usuario']->apellido ?? null,
+                    'rol' => $respuesta['usuario']->rol ?? null,
+                    'foto_perfil' => $respuesta['usuario']->foto_perfil ?? null,
+                    // agrega aquí cualquier otro campo que tu frontend necesite
+                ]
             ], 201);
 
         } catch (\Exception $e) {

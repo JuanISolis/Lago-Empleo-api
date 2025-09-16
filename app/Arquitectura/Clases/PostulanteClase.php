@@ -16,7 +16,13 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
-        return Postulante::create($datos);
+        $postulante = Postulante::create($datos);
+        $token = $postulante->createToken('auth_token')->plainTextToken;
+
+        return [
+            'usuario' => $postulante,
+            'token' => $token
+        ];
     }
 
     public function show(int $id)
