@@ -57,16 +57,13 @@ class UsuarioClase implements MercadoLaboral{
 
     public function actualizar(array $datos)
     {
-        $userId = auth()->id(); // Centralizado aquí
-
-        $usuario = Usuario::where('user_id', $userId)->first();
+        $usuario = auth()->user(); // Usuario autenticado
 
         if (!$usuario) {
-            throw new \Exception('Perfil de usuario no encontrado', 404);
+            throw new \Exception('Usuario no autenticado.', 401);
         }
 
-        $usuario->update($datos);
-
+        $usuario->update($datos); // Actualiza solo los campos enviados
         return $usuario;
     }
 

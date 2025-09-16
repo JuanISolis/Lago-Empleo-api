@@ -32,12 +32,7 @@ class ActualizarUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ci' => [
-                'nullable',
-                'string',
-                'max:20',
-                'unique:usuarios,ci,' . ($usuario->id ?? 'NULL'), // Ignora el actual si existe
-            ],
+            'ci' => 'nullable|string|max:20|unique:usuarios,ci,' . auth()->id(),
             'foto_perfil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'nombre' => 'nullable|string|max:255',
             'apellido' => 'nullable|string|max:255',
