@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // informacion del usuario, datos basicos
     Route::get('/perfil', [UsuarioController::class, 'show']);
+    Route::get('/actualizarperfil', [UsuarioController::class, 'actualizar']);
     Route::apiResource('usuario', UsuarioController::class);
 
     Route::apiResource('actividad', ActividadController::class);
