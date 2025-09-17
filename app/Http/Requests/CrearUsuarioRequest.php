@@ -25,7 +25,8 @@ class CrearUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ci' => 'required|integer|digits:10|unique:usuarios,ci',
+            'ci' => 'required|integer|digits:10|unique:usuarios,ci,' . $this->route('usuario'),
+
             'foto_perfil' => 'nullable|file|image|max:2048',
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
