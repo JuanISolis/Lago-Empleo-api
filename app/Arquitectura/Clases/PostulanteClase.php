@@ -12,8 +12,7 @@ class PostulanteClase extends UsuarioClase
     public function obtenerTodos()
     {
         $usuario = auth()->user(); // usuario autenticado
-        return Postulante::where('user_id', $usuario->usuario->id)->get();
-
+        return Postulante::where('usuario_id', $usuario->usuario->id)->get();
     }
 
     public function crear(array $datos)
