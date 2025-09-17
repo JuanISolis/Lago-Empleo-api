@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('postulantes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('usuarios');
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->string ('profesion')->nullable();
             $table->text('descripcion')->nullable();
             $table->boolean ('discapacidad')->default(false);

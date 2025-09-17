@@ -54,4 +54,15 @@ class PostulanteController extends Controller
     {
         // Implementar si es necesario
     }
+
+    public function infopostulante()
+    {
+        // Delegamos la lógica al servicio
+        $postulante = $this->postulante->show();
+        
+
+        return response()->json([
+            'postulante' => $postulante
+        ], 200);
+    }
 }

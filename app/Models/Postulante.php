@@ -1,6 +1,12 @@
 <?php
 
 namespace App\Models;
+use App\Models\ExperienciaLaboral;
+use App\Models\Idioma;
+use App\Models\Estudio;
+use App\Models\Habilidad;
+use App\Models\Postulacion;
+use App\Models\Usuario;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,7 +14,7 @@ class Postulante extends Model
 {
     //
      protected $fillable = [
-        'user_id',
+        'usuario_id',
         'profesion',
         'descripcion',
         'discapacidad',
@@ -36,7 +42,7 @@ class Postulante extends Model
     {
         return $this->hasMany(Postulacion::class);
     }
-    public function usuario()
+    public function usuarioPostulante()
     {
         return $this->belongsTo(Usuario::class);
     }

@@ -36,6 +36,10 @@ Route::prefix('sesion')->group(function () {
     // para resetear contraseña por una temporal
     Route::post('/resetpass', [SesionController::class, 'passolvidada']);
 
+    
+
+    
+
 });
 
 // Crear usuario sin autenticación
@@ -69,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('empresas', EmpresasController::class);
 
+    Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );
     Route::apiResource('postulante', PostulanteController::class);
 
     Route::apiResource('estudio', EstudioController::class);
