@@ -55,32 +55,38 @@ class PostulanteClase extends UsuarioClase
 
     public function actualizar(array $datos)
     {
-        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
-        $usuarioAutenticado = auth()->user();
+        // Validar que venga el ID
+        if (!isset($datos['id'])) {
+            throw new \InvalidArgumentException('Falta el ID del postulante');
+        }
 
-        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
+        // Obtener el usuario autenticado
+        $authUser = auth()->user();
+        $usuario = $authUser->usuario ?? null;
 
-        // if (!isset($datos['id'])) {
-        //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
-        // }    Posible solucion encontrada pero es fallida
+        if (!$usuario) {
+            throw new \Exception('Perfil de usuario no encontrado', 404);
+        }
 
-        
-        $postulante = Postulante::find($id);
+        // Buscar el postulante por ID
+        $postulante = Postulante::find($datos['id']);
 
         if (!$postulante) {
-            throw new \Exception( 'Postulante no encontrado', 404);
+            throw new \Exception('Postulante no encontrado', 404);
         }
-        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
 
-        if ($postulante->user_id !== $usuarioAutenticado->id) {
+        // Verificar que el usuario autenticado sea el dueño del postulante
+        if ($postulante->user_id !== $usuario->id) {
             throw new \Exception('No tienes permiso para actualizar este postulante', 403);
         }
 
+        // Eliminar el ID del array de datos para no intentar actualizarlo
+        unset($datos['id']);
+
+        // Actualizar el postulante
         $postulante->update($datos);
 
-        return response()->json([
-            'message' => 'Postulante actualizado correctamente',
-            'postulante' => $postulante
-        ], 200);
+        return $postulante;
     }
+
 }
