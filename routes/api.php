@@ -3,15 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SesionController;
 use App\Http\Controllers\UsuarioController;
-
-
 
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\EmpresasController;
@@ -35,6 +29,10 @@ Route::prefix('sesion')->group(function () {
 
     // para resetear contraseña por una temporal
     Route::post('/resetpass', [SesionController::class, 'passolvidada']);
+
+    
+
+    
 
 });
 
@@ -68,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('empresas', EmpresasController::class);
 
+    Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );
     Route::apiResource('postulante', PostulanteController::class);
 
     Route::apiResource('estudio', EstudioController::class);

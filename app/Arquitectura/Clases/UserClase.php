@@ -39,7 +39,7 @@ class UserClase implements MercadoLaboral{
         }
     }
 
-    public function show(int $id)
+    public function show()
     {
 
         try {

@@ -42,7 +42,7 @@ class UsuarioClase implements MercadoLaboral{
     }
 
 
-    public function show(int $id)
+    public function show()
     {
         $usuario = Usuario::find($id);
 
