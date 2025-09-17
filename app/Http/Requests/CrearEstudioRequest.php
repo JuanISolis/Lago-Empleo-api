@@ -24,11 +24,11 @@ class CrearEstudioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'postulante_id'    => 'required|integer|exists:postulantes,id',
+            // 'postulante_id'    => 'required|integer|exists:postulantes,id',
             'titulo'           => 'required|string|max:255',
             'unidad_educativa' => 'required|string|max:255',
             'modalidad'        => 'required|string|max:255',
-            'doc_titulo'       => 'required|string|max:255',
+            'doc_titulo'       => 'required|file|mimes:pdf|max:2048',
         ];
     }
 

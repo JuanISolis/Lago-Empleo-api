@@ -16,11 +16,21 @@ class PostulanteClase extends UsuarioClase
 
     public function crear(array $datos)
     {
+        $authUser = auth()->user();
+    
+        if (!isset($authUser->usuario)) {
+            throw new \Exception('El usuario autenticado no tiene una relación "usuario".');
+        }
+    
+        $datos['user_id'] = $authUser->usuario->id;
+    
         return Postulante::create($datos);
     }
 
+
     public function show(int $id)
     {
+        
         $postulante = Postulante::find($id);
 
         if (!$postulante) {
@@ -30,12 +40,27 @@ class PostulanteClase extends UsuarioClase
         return $postulante;
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
+        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
+        $usuarioAutenticado = auth()->user();
+
+        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
+
+        // if (!isset($datos['id'])) {
+        //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
+        // }    Posible solucion encontrada pero es fallida
+
+        
         $postulante = Postulante::find($id);
 
         if (!$postulante) {
             return response()->json(['error' => 'Postulante no encontrado'], 404);
+        }
+        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
+
+        if ($postulante->user_id !== $usuarioAutenticado->id) {
+        return response()->json(['error' => 'No tienes permiso para actualizar este postulante'], 403);
         }
 
         $postulante->update($datos);
