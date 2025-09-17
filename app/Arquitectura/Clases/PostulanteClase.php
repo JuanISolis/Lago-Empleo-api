@@ -12,7 +12,7 @@ class PostulanteClase extends UsuarioClase
     public function obtenerTodos()
     {
         $usuario = auth()->user(); // usuario autenticado
-        return Postulante::where('user_id', $usuario->usuario->id)->get();
+        return Postulante::where('usuario_id', $usuario->usuario->id)->get();
     }
 
     public function crear(array $datos)
@@ -23,23 +23,36 @@ class PostulanteClase extends UsuarioClase
             throw new \Exception('El usuario autenticado no tiene una relación "usuario".');
         }
     
-        $datos['user_id'] = $authUser->usuario->id;
+        $datos['usuario_id'] = $authUser->usuario->id;
     
         return Postulante::create($datos);
     }
 
 
-    public function show(int $id)
+    public function show()
     {
-        
-        $postulante = Postulante::find($id);
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        // Pasamos por usuario -> postulante
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario', 404);
+        }
+
+        $postulante = $usuario->postulante;
 
         if (!$postulante) {
-            return response()->json(['message' => 'Postulante no encontrado'], 404);
+            throw new \Exception('No se encontraron datos de postulante para este usuario', 404);
         }
 
         return $postulante;
     }
+
 
     public function actualizar(array $datos)
     {
@@ -56,12 +69,12 @@ class PostulanteClase extends UsuarioClase
         $postulante = Postulante::find($id);
 
         if (!$postulante) {
-            return response()->json(['error' => 'Postulante no encontrado'], 404);
+            throw new \Exception( 'Postulante no encontrado', 404);
         }
         //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
 
         if ($postulante->user_id !== $usuarioAutenticado->id) {
-        return response()->json(['error' => 'No tienes permiso para actualizar este postulante'], 403);
+            throw new \Exception('No tienes permiso para actualizar este postulante', 403);
         }
 
         $postulante->update($datos);
