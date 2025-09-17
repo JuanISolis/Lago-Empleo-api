@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\PostulanteClase;
 use App\Http\Requests\CrearPostulanteRequest;
+use App\Http\Requests\ActualizarPostulanteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
@@ -65,4 +66,32 @@ class PostulanteController extends Controller
             'postulante' => $postulante
         ], 200);
     }
+
+    public function actualizarpostulante(ActualizarPostulanteRequest $request)
+    {
+        try {
+            // ✅ Obtener los datos validados desde el FormRequest
+            $validated = $request->validated();
+
+            \Log::info('📥 Datos validados recibidos en backend:', $validated);
+
+            // ✅ Enviar los datos validados al servicio
+            $perfilActualizado = $this->postulante->actualizar($validated);
+
+            return response()->json([
+                'mensaje' => 'Perfil actualizado con éxito',
+                'perfil' => $perfilActualizado
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar perfil: ' . $e->getMessage());
+
+            return response()->json([
+                'mensaje' => 'Error al actualizar perfil',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+    }
+
+
 }
