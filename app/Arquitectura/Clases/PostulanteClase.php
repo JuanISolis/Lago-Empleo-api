@@ -57,9 +57,7 @@ class PostulanteClase extends UsuarioClase
     public function actualizar(array $datos)
     {
         // Validar que venga el ID
-        if (!isset($datos['id'])) {
-            throw new \InvalidArgumentException('Falta el ID del postulante');
-        }
+       
 
         // Obtener el usuario autenticado
         $authUser = auth()->user();
