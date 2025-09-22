@@ -2,7 +2,7 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Models\InformacioEmpresa;
+use App\Models\InformacionEmpresa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,7 +12,7 @@ class EmpresasClase
     public function obtenerTodos($usuario)
     {
         
-        return InformacioEmpresa::where('usuario_id', $usuario->id )->get(); 
+        return InformacionEmpresa::where('usuario_id', $usuario->id )->get(); 
         // with('usuario') trae también información del usuario dueño
     }
 
@@ -24,17 +24,19 @@ class EmpresasClase
 
             $usuarioAutenticado = auth()->user();
 
-            if (!$usuarioAutenticado) {
-                throw new \Exception('Usuario no autenticado.', 401);
+            if (!$usuarioAutenticado || !$usuarioAutenticado->usuario) {
+                throw new \Exception('Usuario no autenticado o sin perfil.', 401);
             }
-    
+
             $datos['usuario_id'] = $usuarioAutenticado->usuario->id;
 
-            $usuario = InformacioEmpresa::create($datos);
+    
+
+            $empresa = InformacionEmpresa::create($datos);
 
             return [
                 'mensaje' => 'Perfil creado correctamente.',
-                'perfil' => $usuario
+                'empresa' => $empresa
             ];
 
         } catch (\Exception $e) {
@@ -49,7 +51,7 @@ class EmpresasClase
     // Mostrar una empresa por id
     public function show(int $id)
     {
-        $empresa = InformacioEmpresa::with('usuario')->find($id);
+        $empresa = InformacionEmpresa::with('usuario')->find($id);
 
         if (!$empresa) {
             return response()->json(['message' => 'Empresa no encontrada'], 404);
@@ -61,7 +63,7 @@ class EmpresasClase
     // Actualizar empresa
     public function actualizar(array $datos, int $id)
     {
-        $empresa = InformacioEmpresa::find($id);
+        $empresa = InformacionEmpresa::find($id);
 
         if (!$empresa) {
             return response()->json(['message' => 'Empresa no encontrada'], 404);

@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Usuario;
 
-class InformacioEmpresa extends Model
+class InformacionEmpresa extends Model
 {
-    protected $table = 'informacio_empresas';
 
     // Campos que se pueden llenar en masa
     protected $fillable = [
