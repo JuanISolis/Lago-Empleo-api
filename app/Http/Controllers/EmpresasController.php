@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Arquitectura\Clases\Empresas;
+use App\Arquitectura\Clases\EmpresasClase;
 use App\Http\Requests\ActializarEmpresaRequest;
 use App\Http\Requests\ActualizarEmpresaRequest;
 use App\Http\Requests\ActualizarEmpresasRequest;
@@ -15,7 +15,7 @@ class EmpresasController extends Controller
 {
     protected $empresas;
 
-    public function __construct(Empresas $empresas)
+    public function __construct(EmpresasClase $empresas)
     {
         $this->empresas = $empresas;
     }
@@ -30,13 +30,38 @@ class EmpresasController extends Controller
 
       public function store(CrearEmpresaRequest $request)
     {
-        $result = $this->empresas->crear($request->validated());
+        try{
 
-        return response()->json([
-            'message' => 'Empleador y empresa creados correctamente',
-            'usuario' => $result['usuario'],
-            'empresa' => $result['empresa']
-        ], 201);
+            $validated = $request->validated();
+
+            if ($request->hasFile('foto_perfil')) {
+                $imagen = $request->file('foto_perfil');
+                $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+
+                $rutaPublica = public_path('assets/fotos');
+
+                if (!file_exists($rutaPublica)) {
+                    mkdir($rutaPublica, 0755, true);
+                }
+
+                $imagen->move($rutaPublica, $nombreImagen);
+                $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
+            }
+
+            $result = $this->empresas->crear($validated);
+
+
+            return response()->json([
+                'message' => 'Empleador y empresa creados correctamente',
+                'empresa' => $result
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+
     }
 
 
