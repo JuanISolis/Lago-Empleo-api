@@ -26,11 +26,10 @@ class CrearEstudioRequest extends FormRequest
         return [
             // 'postulante_id'    => 'required|integer|exists:postulantes,id',
             'titulo'           => 'required|string|max:255',
-            'unidad_educativa' => 'required|string|max:255',
-            'modalidad'        => 'required|string|max:255',
-            // el PDF ahora es opcional
-            'doc_titulo'       => 'nullable|array',
-            'doc_titulo.*'     => 'nullable|file|mimes:pdf|max:2048',
+            'unidad_educativa' => 'string|max:255',
+            'modalidad'        => 'string|max:255',
+            'doc_titulo' => 'nullable|string|max:255',
+
         ];
     }
 
@@ -53,10 +52,9 @@ class CrearEstudioRequest extends FormRequest
             'modalidad.string'          => 'La modalidad debe ser texto.',
             'modalidad.max'             => 'La modalidad no puede tener más de 255 caracteres.',
 
-            'doc_titulo.array'          => 'El campo documentos debe ser una lista de archivos.',
-            'doc_titulo.*.file'         => 'Cada documento debe ser un archivo.',
-            'doc_titulo.*.mimes'        => 'Cada documento debe ser un archivo PDF.',
-            'doc_titulo.*.max'          => 'Cada documento no puede superar los 2MB.',
+            'doc_titulo.required'       => 'El documento del título es obligatorio.',
+            'doc_titulo.string'         => 'El documento del título debe ser texto.',
+            'doc_titulo.max'            => 'El documento del título no puede tener más de 255 caracteres.',
         ];
     }
 }
