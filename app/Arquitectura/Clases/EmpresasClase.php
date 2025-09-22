@@ -2,13 +2,11 @@
 
 namespace App\Arquitectura\Clases;
 
-use App\Arquitectura\Clases\UsuarioClase;
-
 use App\Models\InformacioEmpresa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class Empresas 
+class EmpresasClase 
 {
     // Obtener todas las empresas
     public function obtenerTodos($usuario)
@@ -21,12 +19,31 @@ class Empresas
     // Crear nueva empresa
     public function crear(array $datos)
     {
-        // Subida de imagen opcional
-        if (isset($datos['imagen_empresa'])) {
-            $datos['imagen_empresa'] = Storage::put('empresas', $datos['imagen_empresa']);
+        
+        try {
+
+            $usuarioAutenticado = auth()->user();
+
+            if (!$usuarioAutenticado) {
+                throw new \Exception('Usuario no autenticado.', 401);
+            }
+    
+            $datos['usuario_id'] = $usuarioAutenticado->usuario->id;
+
+            $usuario = InformacioEmpresa::create($datos);
+
+            return [
+                'mensaje' => 'Perfil creado correctamente.',
+                'perfil' => $usuario
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500
+            ];
         }
 
-        return InformacioEmpresa::create($datos);
     }
 
     // Mostrar una empresa por id

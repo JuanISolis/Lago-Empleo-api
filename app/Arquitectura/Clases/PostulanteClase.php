@@ -4,6 +4,10 @@
 namespace App\Arquitectura\Clases;
 
 use App\Models\Postulante;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 
 
 
@@ -56,32 +60,20 @@ class PostulanteClase extends UsuarioClase
 
     public function actualizar(array $datos)
     {
-        //Linea añadida para verificar que el usuario autenticado es el propietario del postulante
-        $usuarioAutenticado = auth()->user();
+    $authUser = Auth::user();
 
-        $usuarioAutenticado=$usuarioAutenticado->usuario->id??null;
+    // Obtener el postulante del usuario autenticado
+    $postulante = $authUser->usuario->postulante ?? null;
 
-        // if (!isset($datos['id'])) {
-        //     return response()->json(['error' => 'Falta el ID del postulante'], 400);
-        // }    Posible solucion encontrada pero es fallida
-
-        
-        $postulante = Postulante::find($id);
-
-        if (!$postulante) {
-            throw new \Exception( 'Postulante no encontrado', 404);
-        }
-        //Lineas añadidas para verificar que el usuario autenticado es el propietario del postulante
-
-        if ($postulante->user_id !== $usuarioAutenticado->id) {
-            throw new \Exception('No tienes permiso para actualizar este postulante', 403);
-        }
-
-        $postulante->update($datos);
-
-        return response()->json([
-            'message' => 'Postulante actualizado correctamente',
-            'postulante' => $postulante
-        ], 200);
+    if (!$postulante) {
+        throw new NotFoundHttpException('Perfil de postulante no encontrado');
     }
+
+
+    // Actualizar el postulante
+    $postulante->update($datos);
+
+    return $postulante;
+    }
+
 }

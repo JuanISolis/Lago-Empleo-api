@@ -85,7 +85,7 @@ class UsuarioController extends Controller
     //         'usuario' => $usuario
     //     ], 201);
     // }
-
+    
     public function actualizarperfil(ActualizarUsuarioRequest $request)
     {
         try {
