@@ -56,9 +56,6 @@ class PostulanteClase extends UsuarioClase
 
     public function actualizar(array $datos)
     {
-        // Validar que venga el ID
-       
-
         // Obtener el usuario autenticado
         $authUser = auth()->user();
         $usuario = $authUser->usuario ?? null;
@@ -67,8 +64,11 @@ class PostulanteClase extends UsuarioClase
             throw new \Exception('Perfil de usuario no encontrado', 404);
         }
 
+        // Asociar el ID del usuario autenticado
+        $datos['id'] = $usuario->id;
+
         // Buscar el postulante por ID
-        $postulante = Postulante::find($datos['id']);
+        $postulante = Postulante::findOrFail($usuario->id);
 
         if (!$postulante) {
             throw new \Exception('Postulante no encontrado', 404);
