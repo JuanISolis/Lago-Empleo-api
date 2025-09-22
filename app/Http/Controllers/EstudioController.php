@@ -23,23 +23,40 @@ class EstudioController extends Controller
 
     public function store(CrearEstudioRequest $request)
     {
-        $validated = $request->validated();
-        $estudio = $this->estudio->crear($validated);
-        
+        try {
+            $validated = $request->validated();
+            // Procesar múltiples PDFs obligatorios
+            if ($request->hasFile('doc_titulo')) {
+                foreach ($request->file('doc_titulo') as $archivo) {
+                    $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
 
-        $rutaPublica = base_path('../../public/assets/pdf');
+                    $rutaPublica = public_path('assets/pdf');
+                    if (!file_exists($rutaPublica)) {
+                        mkdir($rutaPublica, 0755, true);
+                    }
 
-        if ($datos->hasFile('doc_titulo')) {
-            $archivo = $datos->file('doc_titulo');
-            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $archivo->move($rutaPublica('assets/pdf'), $nombreArchivo);
-            $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+                    $archivo->move($rutaPublica, $nombreArchivo);
+
+                    $rutasDocumentos[] = 'assets/pdf/' . $nombreArchivo;
+                }
+            } else {
+                throw new \Exception('El archivo PDF es obligatorio.', 400);
+            }
+
+            // Guardar las rutas como JSON en la DB
+            $validated['doc_titulo'] = json_encode($rutasDocumentos);
+
+            // Usar la clase para crear el estudio
+            $respuesta = $this->estudio->crear($validated);
+
+            return response()->json($respuesta, 201);
+
+        }   
+        catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
         }
-
-        return response()->json([
-            'message' => 'Estudio creado correctamente',
-            'estudio' => $estudio
-        ], 201);
     }
 
     public function show(string $id)

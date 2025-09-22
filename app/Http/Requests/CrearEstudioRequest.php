@@ -28,6 +28,7 @@ class CrearEstudioRequest extends FormRequest
             'titulo'           => 'required|string|max:255',
             'unidad_educativa' => 'required|string|max:255',
             'modalidad'        => 'required|string|max:255',
+            'doc_titulo'       =>  'required|array',
             'doc_titulo'       => 'required|file|mimes:pdf|max:2048',
         ];
     }
