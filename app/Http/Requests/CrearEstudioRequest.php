@@ -28,7 +28,7 @@ class CrearEstudioRequest extends FormRequest
             'titulo'           => 'required|string|max:255',
             'unidad_educativa' => 'string|max:255',
             'modalidad'        => 'string|max:255',
-            'doc_titulo' => 'nullable|string|max:255',
+            'doc_titulo'       => 'nullable|string|max:255',
 
         ];
     }
