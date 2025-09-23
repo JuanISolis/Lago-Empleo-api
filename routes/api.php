@@ -28,11 +28,7 @@ Route::prefix('sesion')->group(function () {
     Route::post('/', [SesionController::class, 'iniciosesion']);
 
     // para resetear contraseña por una temporal
-    Route::post('/resetpass', [SesionController::class, 'passolvidada']);
-
-    
-
-    
+    Route::post('/resetpass', [SesionController::class, 'passolvidada']);    
 
 });
 
@@ -50,7 +46,9 @@ Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
 
 // endpoints con acceso restringido por token
 Route::middleware('auth:sanctum')->group(function () {
-    
+      
+  Route::post('/actualizarperfil', [UsuarioController::class, 'actualizarPerfil']);
+
     // para cerrar sesion
     Route::post('/logout', [SesionController::class, 'logout']);
 

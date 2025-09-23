@@ -21,46 +21,32 @@ class EstudioController extends Controller
         return response()->json($this->estudio->obtenerTodos());
     }
 
-public function store(CrearEstudioRequest $request)
-{
-    try {
+   public function store(CrearEstudioRequest $request)
+    {
         $validated = $request->validated();
-        $rutasDocumentos = [];
 
-        // Procesar PDF solo si se envía
+        // Crear el estudio con postulante_id automático
+        $estudio = $this->estudio->crear($validated);
+
+        $rutaPublica = base_path('../../public/assets/pdf');
+
+        // Manejar archivo PDF si se sube
         if ($request->hasFile('doc_titulo')) {
-            foreach ((array) $request->file('doc_titulo') as $archivo) {
-                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $archivo = $request->file('doc_titulo');
+            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+            $archivo->move($rutaPublica, $nombreArchivo);
 
-                $rutaPublica = public_path('assets/pdf');
-                if (!file_exists($rutaPublica)) {
-                    mkdir($rutaPublica, 0755, true);
-                }
-
-                $archivo->move($rutaPublica, $nombreArchivo);
-
-                $rutasDocumentos[] = 'assets/pdf/' . $nombreArchivo;
-            }
-
-            // Guardar las rutas como JSON en la DB
-            $validated['doc_titulo'] = json_encode($rutasDocumentos);
-        } else {
-            // Si no hay PDF, dejamos nulo
-            $validated['doc_titulo'] = null;
+            // Actualizar doc_titulo en la base de datos
+            $estudio->doc_titulo = 'assets/pdf/' . $nombreArchivo;
+            $estudio->save();
         }
 
-        // Usar la clase para crear el estudio
-        $respuesta = $this->estudio->crear($validated);
-
-        return response()->json($respuesta, 201);
-
-    } catch (\Exception $e) {
-        // Siempre HTTP válido
         return response()->json([
-            'mensaje' => $e->getMessage()
-        ], 500);
+            'message' => 'Estudio creado correctamente',
+            'estudio' => $estudio
+        ], 201);
     }
-}
+
 
     public function show(string $id)
     {

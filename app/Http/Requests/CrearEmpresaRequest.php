@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CrearEmpresaRequest extends FormRequest
+class CrearEmpresaRequest extends FormRequest 
 {
 
     public function failedValidation(Validator $validator)
