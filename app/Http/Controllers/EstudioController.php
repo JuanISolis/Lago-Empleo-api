@@ -21,32 +21,46 @@ class EstudioController extends Controller
         return response()->json($this->estudio->obtenerTodos());
     }
 
-   public function store(CrearEstudioRequest $request)
-    {
+public function store(CrearEstudioRequest $request)
+{
+    try {
         $validated = $request->validated();
+        $rutasDocumentos = [];
 
-        // Crear el estudio con postulante_id automático
-        $estudio = $this->estudio->crear($validated);
-
-        $rutaPublica = base_path('../../public/assets/pdf');
-
-        // Manejar archivo PDF si se sube
+        // Procesar PDF solo si se envía
         if ($request->hasFile('doc_titulo')) {
-            $archivo = $request->file('doc_titulo');
-            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $archivo->move($rutaPublica, $nombreArchivo);
+            foreach ((array) $request->file('doc_titulo') as $archivo) {
+                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
 
-            // Actualizar doc_titulo en la base de datos
-            $estudio->doc_titulo = 'assets/pdf/' . $nombreArchivo;
-            $estudio->save();
+                $rutaPublica = public_path('assets/pdf');
+                if (!file_exists($rutaPublica)) {
+                    mkdir($rutaPublica, 0755, true);
+                }
+
+                $archivo->move($rutaPublica, $nombreArchivo);
+
+                $rutasDocumentos[] = 'assets/pdf/' . $nombreArchivo;
+            }
+
+            // Guardar las rutas como JSON en la DB
+            $validated['doc_titulo'] = json_encode($rutasDocumentos);
+        } else {
+            // Si no hay PDF, dejamos nulo
+            $validated['doc_titulo'] = null;
         }
 
-        return response()->json([
-            'message' => 'Estudio creado correctamente',
-            'estudio' => $estudio
-        ], 201);
-    }
+        // Usar la clase para crear el estudio
+        $respuesta = $this->estudio->crear($validated);
 
+        return response()->json($respuesta, 201);
+
+    } catch (\Exception $e) {
+        // Siempre HTTP válido
+        return response()->json([
+            'mensaje' => $e->getMessage()
+        ], 500);
+    }
+}
 
     public function show(string $id)
     {

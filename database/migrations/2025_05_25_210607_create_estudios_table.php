@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string ('titulo');
             $table->string ('unidad_educativa');
             $table->string ('modalidad');
-            $table->string ('doc_titulo');
+            $table->string('doc_titulo')->nullable();
             $table->timestamps();
         });
     }
