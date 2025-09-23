@@ -28,11 +28,7 @@ Route::prefix('sesion')->group(function () {
     Route::post('/', [SesionController::class, 'iniciosesion']);
 
     // para resetear contraseña por una temporal
-    Route::post('/resetpass', [SesionController::class, 'passolvidada']);
-
-    
-
-    
+    Route::post('/resetpass', [SesionController::class, 'passolvidada']);    
 
 });
 
