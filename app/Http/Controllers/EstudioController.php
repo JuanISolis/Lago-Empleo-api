@@ -21,19 +21,24 @@ class EstudioController extends Controller
         return response()->json($this->estudio->obtenerTodos());
     }
 
-    public function store(CrearEstudioRequest $request)
+   public function store(CrearEstudioRequest $request)
     {
         $validated = $request->validated();
+
+        // Crear el estudio con postulante_id automático
         $estudio = $this->estudio->crear($validated);
-        
 
         $rutaPublica = base_path('../../public/assets/pdf');
 
-        if ($datos->hasFile('doc_titulo')) {
-            $archivo = $datos->file('doc_titulo');
+        // Manejar archivo PDF si se sube
+        if ($request->hasFile('doc_titulo')) {
+            $archivo = $request->file('doc_titulo');
             $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $archivo->move($rutaPublica('assets/pdf'), $nombreArchivo);
-            $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+            $archivo->move($rutaPublica, $nombreArchivo);
+
+            // Actualizar doc_titulo en la base de datos
+            $estudio->doc_titulo = 'assets/pdf/' . $nombreArchivo;
+            $estudio->save();
         }
 
         return response()->json([
@@ -41,6 +46,7 @@ class EstudioController extends Controller
             'estudio' => $estudio
         ], 201);
     }
+
 
     public function show(string $id)
     {

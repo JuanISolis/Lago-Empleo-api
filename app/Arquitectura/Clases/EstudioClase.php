@@ -13,26 +13,66 @@ class EstudioClase extends PostulanteClase
 
     public function crear(array $datos)
     {
-        
+        $authUser = auth()->user();
+
+        // Verificar que el usuario tenga un postulante
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        // Asignar el postulante_id correcto
+        $datos['postulante_id'] = $authUser->usuario->postulante->id;
+
+        // Crear el estudio
         return Estudio::create($datos);
     }
 
-    public function show(int $id)
+
+    public function show()
     {
-        return Estudio::findOrFail($id);
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario', 404);
+        }
+
+        $estudio = Estudio::where('user_id', $usuario->id)->first();
+
+        if (!$estudio) {
+            throw new \Exception('No se encontró el estudio para este usuario', 404);
+        }
+
+        return $estudio;
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
-        // linea para obtener el usuario autenticado
-        $usuarioAutenticado = auth()->user();
+        $authUser = auth()->user();
 
-        $estudio = Estudio::findOrFail($id);
-        // lineas para verificar si el usuario autenticado es el propietario del estudio
-        if ($estudio->user_id !== $usuarioAutenticado->id) {
-        throw new \Exception('No tienes permiso para actualizar este estudio.', 403);
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
         }
+
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario', 404);
+        }
+
+        $estudio = Estudio::where('user_id', $usuario->id)->first();
+
+        if (!$estudio) {
+            throw new \Exception('No se encontró el estudio para este usuario', 404);
+        }
+
         $estudio->update($datos);
+
         return $estudio;
     }
 }

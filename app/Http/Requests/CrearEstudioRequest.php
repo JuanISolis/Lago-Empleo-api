@@ -26,9 +26,10 @@ class CrearEstudioRequest extends FormRequest
         return [
             // 'postulante_id'    => 'required|integer|exists:postulantes,id',
             'titulo'           => 'required|string|max:255',
-            'unidad_educativa' => 'required|string|max:255',
-            'modalidad'        => 'required|string|max:255',
-            'doc_titulo'       => 'required|file|mimes:pdf|max:2048',
+            'unidad_educativa' => 'string|max:255',
+            'modalidad'        => 'string|max:255',
+            'doc_titulo' => 'nullable|string|max:255',
+
         ];
     }
 

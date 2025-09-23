@@ -27,13 +27,14 @@ class ActualizarEmpresasRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ruc' =>['required','integer', Rule::unique('informacio_empresas, ruc ')->ignore()],
+            'ruc' => [
+                'required',
+                'integer',
+                Rule::unique('informacion_empresas', 'ruc')->ignore($this->route('empresa')),
+            ],
             'nombre_empresa' => 'required|string|max:255',
             'descripcion' => 'required|string',
-            
         ];
-
-        
     }
 
     public function messages(): array
