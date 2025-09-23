@@ -84,23 +84,22 @@ class UsuarioClase implements MercadoLaboral{
     {
         try {
             $usuarioAutenticado = auth()->user();
-        
+
             if (!$usuarioAutenticado) {
                 throw new \Exception('Usuario no autenticado.', 401);
             }
-        
-            // Buscar el perfil asociado al usuario autenticado
-            $usuario = Usuario::where('user_id', $usuarioAutenticado->id)->first();
-        
-            if (!$usuario) {
+
+            $perfil = Usuario::where('user_id', $usuarioAutenticado->id)->first();
+
+            if (!$perfil) {
                 throw new \Exception('Perfil no encontrado.', 404);
             }
-        
+
             return [
-                'mensaje' => 'Perfil recuperado correctamente.',
-                'perfil' => $usuario
+                'usuario' => $usuarioAutenticado,
+                'perfil' => $perfil
             ];
-        
+
         } catch (\Exception $e) {
             return [
                 'mensaje' => $e->getMessage(),
