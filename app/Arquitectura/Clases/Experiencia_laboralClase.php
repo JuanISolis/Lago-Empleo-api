@@ -9,7 +9,19 @@ class Experiencia_laboralClase extends PostulanteClase
 {
     public function obtenerTodos()
     {
-        return ExperienciaLaboral::all();
+            // Obtener el usuario autenticado
+        $usuarioAutenticado = auth()->user();
+
+        // Obtener el postulante asociado al usuario autenticado
+        $postulante = $usuarioAutenticado->postulante;
+
+        // Validar que el postulante exista
+        if (!$postulante) {
+            throw new \Exception('No se encontraron datos de postulante para este usuario.', 404);
+        }
+
+        // Retornar todas las experiencias laborales del postulante
+        return $postulante->experienciasLaborales;
     }
 
     public function crear(array $datos)

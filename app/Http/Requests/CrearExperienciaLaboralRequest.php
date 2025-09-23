@@ -28,6 +28,12 @@ class CrearExperienciaLaboralRequest extends FormRequest
             'lugar_trabajo' => 'required|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+
+            function ($attribute, $value, $fail) {
+        if ($value && strtotime($value) > strtotime('+1 year')) {
+            $fail('La fecha de fin no puede ser mayor a un año desde la fecha actual.');
+        }
+    }
         ];
     }
 }
