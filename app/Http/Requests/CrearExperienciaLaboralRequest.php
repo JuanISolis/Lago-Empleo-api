@@ -21,13 +21,14 @@ class CrearExperienciaLaboralRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
-    {
-        return [
-            'postulante_id' => 'required|exists:postulantes,id',
-            'lugar_trabajo' => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
-        ];
-    }
+  public function rules(): array
+{
+    return [
+        'lugar_trabajo' => 'required|string|max:255',
+        'cargo' => 'required|string|max:255',
+        'fecha_inicio' => 'required|date',
+        'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
+    ];
+}
+
 }
