@@ -28,11 +28,17 @@ class CrearEstudioRequest extends FormRequest
             'titulo'           => 'required|string|max:255',
             'unidad_educativa' => 'string|max:255',
             'modalidad'        => 'string|max:255',
-            'doc_titulo' => 'nullable|string', // <---- esto permite null
-
+            'doc_titulo'       => 'nullable|file|mimes:pdf|max:2048', // <---- esto permite null
 
 
         ];
+        if ($request->hasFile('doc_titulo')) {
+        $file = $request->file('doc_titulo'); // Esto sí es un UploadedFile
+        $nombreArchivo = $file->getClientOriginalName();
+
+        // Guardar archivo
+        $ruta = $file->storeAs('titulos', $nombreArchivo, 'public');
+}
     }
 
     public function messages(): array
@@ -54,9 +60,9 @@ class CrearEstudioRequest extends FormRequest
             'modalidad.string'          => 'La modalidad debe ser texto.',
             'modalidad.max'             => 'La modalidad no puede tener más de 255 caracteres.',
 
-            'doc_titulo.required'       => 'El documento del título es obligatorio.',
-            'doc_titulo.string'         => 'El documento del título debe ser texto.',
-            'doc_titulo.max'            => 'El documento del título no puede tener más de 255 caracteres.',
+            'doc_titulo.file' => 'El documento debe ser un archivo válido.',
+            'doc_titulo.mimes' => 'El documento debe ser un archivo PDF.',
+            'doc_titulo.max' => 'El documento no puede superar los 2 MB.',
         ];
     }
 }

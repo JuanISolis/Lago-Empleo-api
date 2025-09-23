@@ -24,12 +24,27 @@ class EstudioController extends Controller
 public function store(CrearEstudioRequest $request)
 {
     try {
+
+        // // Registro inicial para verificar los datos validados
+        // \Log::info('Datos validados:', $request->all());
+
         $validated = $request->validated();
         $rutasDocumentos = [];
 
         // Procesar PDF solo si se envía
         if ($request->hasFile('doc_titulo')) {
+            $archivos = $request->file('doc_titulo');
+        if (!is_array($archivos)) {
+            $archivos = [$archivos]; // Convertir a arreglo si es un único archivo
+        }
+
             foreach ((array) $request->file('doc_titulo') as $archivo) {
+                if ($archivo instanceof \Illuminate\Http\UploadedFile) {
+                    \Log::info('Archivo recibido:', ['nombre' => $archivo->getClientOriginalName()]);
+                } else {
+                    \Log::warning('Elemento no es una instancia de UploadedFile:', ['elemento' => $archivo]);
+                    continue; // Saltar este elemento
+                }
                 $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
 
                 $rutaPublica = public_path('assets/pdf');
@@ -38,12 +53,11 @@ public function store(CrearEstudioRequest $request)
                 }
 
                 $archivo->move($rutaPublica, $nombreArchivo);
-
                 $rutasDocumentos[] = 'assets/pdf/' . $nombreArchivo;
             }
 
             // Guardar las rutas como JSON en la DB
-            $validated['doc_titulo'] = json_encode($rutasDocumentos);
+            // $validated['doc_titulo'] = json_encode($rutasDocumentos);
         } else {
             // Si no hay PDF, dejamos nulo
             $validated['doc_titulo'] = null;
@@ -56,6 +70,8 @@ public function store(CrearEstudioRequest $request)
 
     } catch (\Exception $e) {
         // Siempre HTTP válido
+        // linea agregada para debug 73
+        // \Log::error('Error al crear el estudio:', ['error' => $e->getMessage()]);
         return response()->json([
             'mensaje' => $e->getMessage()
         ], 500);
