@@ -39,7 +39,7 @@ class EstudioClase extends PostulanteClase
     }
 
 
-    public function show()
+    
 
     public function show()
     {
