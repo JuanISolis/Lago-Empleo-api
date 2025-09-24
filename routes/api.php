@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('actividad', ActividadController::class);
 
+    Route::put('/actualizarempresa', [EmpresasController::class, 'actualizarempresa']);
     Route::apiResource('empresas', EmpresasController::class);
 
     Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );

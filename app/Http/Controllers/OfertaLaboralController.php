@@ -28,16 +28,20 @@ class OfertaLaboralController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'empresa' => 'required|string|max:255',
-            'salario' => 'nullable|numeric',
-            // Agrega aquí los campos que tenga tu modelo
-        ]);
+        $validated = $request->validated();
 
-        $oferta = OfertaLaboral::create($validated);
-        return response()->json($oferta, 201);
+        try {
+            $userData = $this->user->crear($validated);
+
+            return response()->json([
+                'usuario' => $userData
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     /**
