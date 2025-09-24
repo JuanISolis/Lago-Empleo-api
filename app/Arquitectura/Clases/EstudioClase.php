@@ -6,127 +6,37 @@ use App\Models\Estudio;
 
 class EstudioClase extends PostulanteClase
 {
-    public function obtenerTodos()
+    // Obtener estudios de un usuario específico
+    public function obtenerPorUsuario($user_id)
     {
-        return Estudio::all();
+        return Estudio::where('postulante_id', $user_id)->get();
     }
 
+    // Crear un estudio
     public function crear(array $datos)
     {
-        $authUser = auth()->user();
-
-        // Verificar que el usuario tenga un postulante
-        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
-            throw new \Exception('El usuario no tiene un perfil de postulante.');
-        }
-
-        // Asignar el postulante_id correcto
-        $datos['postulante_id'] = $authUser->usuario->postulante->id;
-
-        // Crear el estudio
-        $authUser = auth()->user();
-
-        // Verificar que el usuario tenga un postulante
-        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
-            throw new \Exception('El usuario no tiene un perfil de postulante.');
-        }
-
-        // Asignar el postulante_id correcto
-        $datos['postulante_id'] = $authUser->usuario->postulante->id;
-
-        // Crear el estudio
         return Estudio::create($datos);
     }
 
-
-    
-
-    public function show()
+    // Mostrar un estudio de un usuario (opcional)
+    public function showByUser($user_id)
     {
-        $authUser = auth()->user();
-
-        if (!$authUser) {
-            throw new \Exception('Usuario no autenticado', 401);
-        }
-
-        $usuario = $authUser->usuario;
-
-        if (!$usuario) {
-            throw new \Exception('No se encontró el perfil de usuario', 404);
-        }
-
-        $estudio = Estudio::where('user_id', $usuario->id)->first();
-
-        if (!$estudio) {
-            throw new \Exception('No se encontró el estudio para este usuario', 404);
-        }
-
-        return $estudio;
+        return Estudio::where('postulante_id', $user_id)->first();
     }
 
+    // Actualizar un estudio
     public function actualizar(array $datos)
     {
-        $authUser = auth()->user();
-
-        if (!$authUser) {
-            throw new \Exception('Usuario no autenticado', 401);
+        if (!isset($datos['id'])) {
+            throw new \Exception('ID del estudio no proporcionado', 400);
         }
 
-        $usuario = $authUser->usuario;
-
-        if (!$usuario) {
-            throw new \Exception('No se encontró el perfil de usuario', 404);
-        }
-
-        $estudio = Estudio::where('user_id', $usuario->id)->first();
-
+        $estudio = Estudio::find($datos['id']);
         if (!$estudio) {
-            throw new \Exception('No se encontró el estudio para este usuario', 404);
-        $authUser = auth()->user();
-
-        if (!$authUser) {
-            throw new \Exception('Usuario no autenticado', 401);
+            throw new \Exception('Estudio no encontrado', 404);
         }
-
-        $usuario = $authUser->usuario;
-
-        if (!$usuario) {
-            throw new \Exception('No se encontró el perfil de usuario', 404);
-        }
-
-        $estudio = Estudio::where('user_id', $usuario->id)->first();
-
-        if (!$estudio) {
-            throw new \Exception('No se encontró el estudio para este usuario', 404);
-        }
-
-        return $estudio;
-    }
-
-    public function actualizar(array $datos)
-    {
-        $authUser = auth()->user();
-
-        if (!$authUser) {
-            throw new \Exception('Usuario no autenticado', 401);
-        }
-
-        $usuario = $authUser->usuario;
-
-        if (!$usuario) {
-            throw new \Exception('No se encontró el perfil de usuario', 404);
-        }
-
-        $estudio = Estudio::where('user_id', $usuario->id)->first();
-
-        if (!$estudio) {
-            throw new \Exception('No se encontró el estudio para este usuario', 404);
-        }
-
 
         $estudio->update($datos);
-
-
         return $estudio;
     }
 }

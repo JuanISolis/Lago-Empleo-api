@@ -9,6 +9,7 @@ class ExperienciaLaboral extends Model
     protected $fillable = [
         'postulante_id',
         'lugar_trabajo',
+        'cargo',
         'fecha_inicio',
         'fecha_fin',
     ];
