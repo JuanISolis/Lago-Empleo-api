@@ -9,32 +9,30 @@ class Experiencia_laboralClase extends PostulanteClase
 {
     public function obtenerTodos()
     {
-            // Obtener el usuario autenticado
-        $usuarioAutenticado = auth()->user();
-
-        // Obtener el postulante asociado al usuario autenticado
-        $postulante = $usuarioAutenticado->postulante;
-
-        // Validar que el postulante exista
-        if (!$postulante) {
-            throw new \Exception('No se encontraron datos de postulante para este usuario.', 404);
-        }
-
-        // Retornar todas las experiencias laborales del postulante
-        return $postulante->experienciasLaborales;
+        return Estudio::all();
     }
 
     public function crear(array $datos)
     {
+        $authUser = auth()->user();
+
+        // Verificar que el usuario tenga un postulante
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        // Asignar el postulante_id correcto
+        $datos['postulante_id'] = $authUser->usuario->postulante->id;
+        
         return ExperienciaLaboral::create($datos);
     }
 
-    public function show(int $id)
+    public function show()
     {
         return ExperienciaLaboral::findOrFail($id);
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
         // linea para obtener el usuario autenticado
         $usuarioAutenticado = auth()->user();
