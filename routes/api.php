@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('estudio', EstudioController::class);
 
+    Route::put('actualizarexperiencialaboral', [ExperienciaLaboralController::class, 'update']);
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
 
     Route::apiResource('capacidad', CapacidadController::class);
