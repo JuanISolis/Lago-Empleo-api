@@ -2,20 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ExperienciaLaboral extends Model
 {
+    use HasFactory;
+
+    protected $table = 'experiencias_laborales';
+
     protected $fillable = [
-        'postulante_id',
+        'user_id',
         'lugar_trabajo',
         'cargo',
         'fecha_inicio',
         'fecha_fin',
     ];
 
-    public function postulante()
+    // Relación con usuario
+    public function user()
     {
-        return $this->belongsTo(Postulante::class);
+        return $this->belongsTo(User::class);
     }
 }
