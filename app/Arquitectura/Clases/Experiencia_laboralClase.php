@@ -9,7 +9,7 @@ class Experiencia_laboralClase extends PostulanteClase
 {
     public function obtenerTodos()
     {
-        return Estudio::all();
+        return Experiencialaboral ::all();
     }
 
     public function crear(array $datos)
