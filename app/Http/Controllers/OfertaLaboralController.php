@@ -8,9 +8,7 @@ use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
         $ofertas = OfertaLaboral::all();
