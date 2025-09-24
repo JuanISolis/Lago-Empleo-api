@@ -41,7 +41,6 @@ class UserClase implements MercadoLaboral{
 
     public function show()
     {
-
         try {
             $user = User::find($id);
         
