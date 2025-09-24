@@ -94,4 +94,31 @@ class EstudioController extends Controller
             ], 500);
         }
     }
+
+// Eliminar estudio
+public function destroy($id)
+{
+    try {
+        $authUser = auth()->user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+
+        $estudio = $this->estudio->actualizar(['id' => $id]); // Verificamos si existe
+        if ($estudio->postulante_id !== $authUser->usuario->id) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        $estudio->delete();
+
+        return response()->json(['message' => 'Estudio eliminado correctamente'], 200);
+
+    } catch (\Exception $e) {
+        \Log::error('Error al eliminar estudio:', ['error' => $e->getMessage()]);
+        return response()->json(['message' => 'Error al eliminar estudio', 'error' => $e->getMessage()], 500);
+    }
+}
+
+
+
 }
