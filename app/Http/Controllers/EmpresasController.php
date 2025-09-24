@@ -73,5 +73,51 @@ class EmpresasController extends Controller
         return $this->empresas->actualizar($request->validated(), $id);
     }
 
+    public function actualizarempresa(ActualizarEmpresaRequest $request)
+    {
+        try {
+            // 💡 Recoger todos los campos como vienen
+            $datos = $request->all();
+        
+            \Log::info('📥 Datos recibidos en backend:', $datos);
+        
+            // Filtrar datos vacíos
+            $validated = array_filter($datos, function ($valor) {
+                return $valor !== null && $valor !== '';
+            });
+        
+            // Procesar imagen si fue enviada
+            if ($request->hasFile('imagen_empresa')) {
+                $imagen = $request->file('imagen_empresa');
+                $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            
+                $rutaPublica = public_path('assets/fotos');
+                if (!file_exists($rutaPublica)) {
+                    mkdir($rutaPublica, 0755, true);
+                }
+            
+                $imagen->move($rutaPublica, $nombreImagen);
+                $validated['imagen_empresa'] = 'assets/fotos/' . $nombreImagen;
+            }
+        
+            \Log::info('📦 Datos que van a actualizarse en la BD (controlador):', $validated);
+        
+            // Enviar al servicio
+            $ActualizarEmpresa = $this->empresas->actualizar($validated);
+        
+            return response()->json([
+                'mensaje' => 'Empresa actualizado con éxito',
+                'Empresa' => $ActualizarEmpresa
+            ], 200);
+        
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar la empresa: ' . $e->getMessage());
+            return response()->json([
+                'mensaje' => 'Error al actualizar la empresa',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+    }
+
    
 }

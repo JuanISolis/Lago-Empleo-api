@@ -26,8 +26,8 @@ return new class extends Migration
             $table->boolean('estado');
             $table->timestamps();
 
-            $table->unsignedBigInteger('imformacion_empresa_id');
-            $table->foreign('imformacion_empresa_id')->references('id')->on('informacion_empresas');
+            $table->unsignedBigInteger('informacion_empresa_id');
+            $table->foreign('informacion_empresa_id')->references('id')->on('informacion_empresas');
         });
 
        

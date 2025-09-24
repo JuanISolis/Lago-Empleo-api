@@ -61,23 +61,32 @@ class EmpresasClase
     }
 
     // Actualizar empresa
-    public function actualizar(array $datos, int $id)
+   public function actualizar(array $datos)
     {
-        $empresa = InformacionEmpresa::find($id);
+        $authUser = auth()->user();
+
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('Usuario asociado no encontrado.', 404);
+        }
+
+        $empresa = $usuario->informacionEmpresa;
 
         if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
+            throw new \Exception('Empresa no encontrada.', 404);
         }
 
-        // Subida de imagen opcional
-        if (isset($datos['imagen_empresa'])) {
-            $datos['imagen_empresa'] = Storage::put('empresas', $datos['imagen_empresa']);
-        }
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
 
         $empresa->update($datos);
 
+        \Log::info('📦 Datos actualizados:', $empresa->toArray());
+
         return $empresa;
     }
+
 
     
 }

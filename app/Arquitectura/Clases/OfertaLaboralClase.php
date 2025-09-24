@@ -19,7 +19,34 @@ class OfertaLaboralClase extends Empleador
     // Crear nueva oferta laboral
     public function crear(array $datos)
     {
-        return OfertaLaboral::create($datos);
+        
+        try {
+
+            $authUser = auth()->user();
+
+            $usuario = $authUser->usuario;
+
+            if (!$usuario) {
+                throw new \Exception('Usuario asociado no encontrado.', 404);
+            }
+
+            $empresa = $usuario->informacionEmpresa;
+
+            $datos['informacion_empresa_id'] = $empresa->id;
+
+            return OfertaLaboral::create($datos);
+
+            return [
+                'mensaje' => 'Perfil creado correctamente.',
+                'empresa' => $empresa
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500
+            ];
+        }
     }
 
     // Mostrar una oferta laboral por id
