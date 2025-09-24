@@ -6,22 +6,25 @@ use App\Models\Estudio;
 
 class EstudioClase extends PostulanteClase
 {
-    public function obtenerTodos()
+    // Obtener estudios de un usuario específico
+    public function obtenerPorUsuario($user_id)
     {
-        return Estudio::all();
+        return Estudio::where('postulante_id', $user_id)->get();
     }
 
+    // Crear un estudio
     public function crear(array $datos)
     {
         return Estudio::create($datos);
     }
 
+    // Mostrar un estudio de un usuario (opcional)
     public function showByUser($user_id)
     {
         return Estudio::where('postulante_id', $user_id)->first();
     }
 
-    // ⚠️ Cambié la firma para que coincida con PostulanteClase
+    // Actualizar un estudio
     public function actualizar(array $datos)
     {
         if (!isset($datos['id'])) {

@@ -15,11 +15,19 @@ class EstudioController extends Controller
         $this->estudio = $estudio;
     }
 
+    // Obtener estudios del usuario autenticado
     public function index()
     {
-        return response()->json($this->estudio->obtenerTodos());
+        $authUser = auth()->user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+
+        $estudios = $this->estudio->obtenerPorUsuario($authUser->usuario->id);
+        return response()->json($estudios);
     }
 
+    // Crear estudio
     public function store(CrearEstudioRequest $request)
     {
         try {
@@ -57,11 +65,12 @@ class EstudioController extends Controller
         }
     }
 
+    // Actualizar estudio
     public function update(CrearEstudioRequest $request, $id)
     {
         try {
             $validated = $request->validated();
-            $validated['id'] = $id; // ⚠️ Necesario para EstudioClase::actualizar
+            $validated['id'] = $id;
 
             if ($request->hasFile('doc_titulo')) {
                 $file = $request->file('doc_titulo');
