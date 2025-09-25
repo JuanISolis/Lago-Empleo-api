@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-
 class SesionClase extends UserClase 
 {
     public function iniciosesion($datos)
@@ -49,7 +48,6 @@ class SesionClase extends UserClase
             'mensaje' => 'Sesión cerrada correctamente.'
         ], 200);
     }
-
 
     public function passolvidada($datos)
     {
