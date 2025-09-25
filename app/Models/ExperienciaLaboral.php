@@ -9,19 +9,18 @@ class ExperienciaLaboral extends Model
 {
     use HasFactory;
 
-    protected $table = 'experiencias_laborales';
+    protected $table = 'experiencia_laborals'; // igual que migración
 
     protected $fillable = [
-        'user_id',
+        'postulante_id',
         'lugar_trabajo',
         'cargo',
         'fecha_inicio',
         'fecha_fin',
     ];
 
-    // Relación con usuario
-    public function user()
+    public function postulante()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Postulante::class);
     }
 }
