@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Arquitectura\Clases\Experiencia_laboralClase;
 use App\Http\Requests\CrearExperienciaLaboralRequest;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 
 class ExperienciaLaboralController extends Controller
 {
@@ -16,22 +15,18 @@ class ExperienciaLaboralController extends Controller
         $this->experiencia = $experiencia;
     }
 
-    public function index()
+    // 📌 Listar todas las experiencias del usuario autenticado
+    public function index(Request $request)
     {
-        try {
-        // Delegar la lógica a la clase
-        $experienciasLaborales = $this->experiencia->obtenerTodos();
+        $user = $request->user();
+        $experiencias = $this->experiencia->obtenerPorUsuario($user->id);
 
-        // Retornar las experiencias laborales en la respuesta
-        return response()->json($experienciasLaborales, 200);
-        } catch (\Exception $e) {
-            // Manejar errores y retornar una respuesta adecuada
-            return response()->json([
-                'message' => $e->getMessage()
-            ], $e->getCode() ?: 400);
-        }
+        return response()->json([
+            'data' => $experiencias
+        ], 200);
     }
 
+    // 📌 Crear nueva experiencia laboral
     public function store(CrearExperienciaLaboralRequest $request)
     {
         $validated = $request->validated();
@@ -39,36 +34,43 @@ class ExperienciaLaboralController extends Controller
 
         return response()->json([
             'message' => 'Experiencia laboral creada correctamente',
-            'experiencia' => $exp
+            'data'    => $exp
         ], 201);
     }
 
-    public function show(string $id)
+    // 📌 Mostrar detalle de una experiencia
+    public function show(string $id, Request $request)
     {
-        $exp = $this->experiencia->show($id);
+        $exp = $this->experiencia->showById($id);
+
+        if ($exp->postulante_id !== $request->user()->usuario->postulante->id) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
 
         return response()->json([
-            'experiencia' => $exp
-        ]);
+            'data' => $exp
+        ], 200);
     }
 
-    public function update(CrearExperienciaLaboralRequest $request, string $id)
+    // 📌 Actualizar una experiencia laboral
+    public function update(CrearExperienciaLaboralRequest $request, $id)
     {
-        $exp = $this->experiencia->actualizar($request->validated(), $id);
+        $validated = $request->validated();
+        $exp = $this->experiencia->actualizarExperiencia($id, $validated);
 
         return response()->json([
-            'message' => 'Experiencia laboral actualizada correctamente',
-            'experiencia' => $exp
-        ]);
+            'message' => 'Experiencia laboral actualizada con éxito',
+            'data'    => $exp
+        ], 200);
     }
 
-    public function destroy(string $id)
+    // 📌 Eliminar una experiencia laboral
+    public function destroy(string $id, Request $request)
     {
-        $exp = $this->experiencia->show($id);
-        $exp->delete();
+        $this->experiencia->eliminar($id);
 
         return response()->json([
             'message' => 'Experiencia laboral eliminada correctamente'
-        ]);
+        ], 200);
     }
 }
