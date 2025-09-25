@@ -6,13 +6,18 @@ use App\Models\ExperienciaLaboral;
 
 class Experiencia_laboralClase extends PostulanteClase 
 {
-    public function obtenerPorUsuario($userId)
-    {
-        return ExperienciaLaboral::whereHas('user', function ($q) use ($userId) {
-            $q->where('id', $userId);
-        })->get();
+ public function obtenerPorUsuario($userId)
+{
+    $authUser = auth()->user();
+
+    if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+        return collect(); // devuelve vacío si no tiene perfil
     }
 
+    $postulanteId = $authUser->usuario->postulante->id;
+
+    return ExperienciaLaboral::where('postulante_id', $postulanteId)->get();
+}
     public function crear(array $datos)
     {
         $authUser = auth()->user();
