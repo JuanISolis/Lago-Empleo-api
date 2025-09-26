@@ -64,6 +64,22 @@ class OfertaLaboralController extends Controller
         return response()->json($oferta);
     }
 
+    public function mostrarOfertasempleador(Request $request, OfertaLaboralClase $servicio)
+    {
+        try {
+            $ofertas = $servicio->show(); // Llama al método desde el servicio, no desde el request
+        
+            return response()->json([
+                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
+                'ofertas' => $ofertas
+            ], 200);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
