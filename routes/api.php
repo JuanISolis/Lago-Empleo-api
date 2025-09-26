@@ -44,7 +44,7 @@ Route::get('/verempresas', [EmpresasController::class, 'index']);
 
 // Route::apiResource('habilidad', HabilidadController::class);
 // Route::apiResource('idioma', IdiomaController::class);
-Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
+// Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
 //Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
 //Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
 
