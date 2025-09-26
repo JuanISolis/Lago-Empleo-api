@@ -73,31 +73,41 @@ class EmpresasClase
     }
 
     // Actualizar empresa
-   public function actualizar(array $datos)
+    public function actualizar(array $datos)
     {
         $authUser = auth()->user();
-
+    
         $usuario = $authUser->usuario;
-
+    
         if (!$usuario) {
             throw new \Exception('Usuario asociado no encontrado.', 404);
         }
-
-        $empresa = $usuario->informacionEmpresa;
-
-        if (!$empresa) {
-            throw new \Exception('Empresa no encontrada.', 404);
+    
+        $empresaId = $datos['empresa_id'] ?? null;
+    
+        if (!$empresaId) {
+            throw new \Exception('ID de empresa no especificado.', 400);
         }
-
+    
+        // Buscar la empresa que pertenece al usuario
+        $empresa = $usuario->informacionEmpresa()->where('id', $empresaId)->first();
+    
+        if (!$empresa) {
+            throw new \Exception('Empresa no encontrada o no pertenece al usuario.', 404);
+        }
+    
         \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
     
-
+        // Quitar el campo empresa_id para evitar que intente actualizarlo
+        unset($datos['empresa_id']);
+    
         $empresa->update($datos);
-
+    
         \Log::info('📦 Datos actualizados:', $empresa->toArray());
-
+    
         return $empresa;
     }
+
 
 
     
