@@ -35,7 +35,13 @@ class ActualizarEmpresaRequest extends FormRequest
     {
         
         return [
-            'ruc' => 'sometimes|string|unique:informacion_empresas,ruc',
+            // 'ruc' => 'sometimes|string|unique:informacion_empresas,ruc',
+            
+            'ruc' => [
+                'required',
+                'integer',
+                Rule::unique('informacion_empresas', 'ruc')->ignore($this->route('empresa')),
+            ],
             'nombre_empresa' => 'sometimes|string|max:255',
             'descripcion' => 'sometimes|string',
             'imagen_empresa' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\EmpresasClase;
 use App\Models\InformacionEmpresa;
-use App\Http\Requests\ActualizarEmpresasRequest;
+use App\Http\Requests\ActualizarEmpresaRequest;
 use App\Http\Requests\CrearEmpresaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
