@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
 
 class ActualizarEmpresaRequest extends FormRequest
 {
@@ -33,26 +34,25 @@ class ActualizarEmpresaRequest extends FormRequest
      */
     public function rules(): array
     {
-        
         return [
-            // 'ruc' => 'sometimes|string|unique:informacion_empresas,ruc',
-            
+            'empresa_id' => 'required|exists:informacion_empresas,id',
             'ruc' => [
-                'required',
+                'sometimes',
                 'integer',
-                Rule::unique('informacion_empresas', 'ruc')->ignore($this->route('empresa')),
+                Rule::unique('informacion_empresas', 'ruc')->ignore($this->empresa_id),
             ],
             'nombre_empresa' => 'sometimes|string|max:255',
             'descripcion' => 'sometimes|string',
             'imagen_empresa' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
-            
         ];
-
     }
+
 
     public function messages(): array
     {
         return [
+            'empresa_id.required' => 'El id de la empresa es obligatorio.',
+            'empresa_id.exists' => 'El id de la empresa no esxiste.',
             'ruc.unique' => 'El RUC ya está registrado.',
             'usuario_id.exists' => 'El usuario no existe.',
             'imagen_empresa.image' => 'La foto de perfil debe ser una imagen válida.',
