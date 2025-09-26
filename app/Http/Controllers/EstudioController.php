@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\EstudioClase;
 use App\Http\Requests\CrearEstudioRequest;
+use App\Models\Postulante;
 use Illuminate\Routing\Controller;
 
 class EstudioController extends Controller
@@ -23,7 +24,13 @@ class EstudioController extends Controller
             return response()->json(['message' => 'Usuario no autenticado'], 401);
         }
 
-        $estudios = $this->estudio->obtenerPorUsuario($authUser->usuario->id);
+        // ✅ Buscar el postulante asociado al usuario
+        $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+        if (!$postulante) {
+            return response()->json(['message' => 'No existe un postulante asociado'], 404);
+        }
+
+        $estudios = $this->estudio->obtenerPorUsuario($postulante->id);
         return response()->json($estudios);
     }
 
@@ -38,7 +45,13 @@ class EstudioController extends Controller
                 throw new \Exception('Usuario no autenticado', 401);
             }
 
-            $validated['postulante_id'] = $authUser->usuario->id;
+            // ✅ Buscar postulante relacionado al usuario
+            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            if (!$postulante) {
+                throw new \Exception('No existe un postulante asociado a este usuario', 400);
+            }
+
+            $validated['postulante_id'] = $postulante->id;
 
             if ($request->hasFile('doc_titulo')) {
                 $file = $request->file('doc_titulo');
@@ -95,29 +108,64 @@ class EstudioController extends Controller
         }
     }
 
-// Eliminar estudio
-public function destroy($id)
-{
-    try {
-        $authUser = auth()->user();
-        if (!$authUser) {
-            return response()->json(['message' => 'Usuario no autenticado'], 401);
+    // Eliminar estudio
+    public function destroy($id)
+    {
+        try {
+            $authUser = auth()->user();
+            if (!$authUser) {
+                return response()->json(['message' => 'Usuario no autenticado'], 401);
+            }
+
+            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            if (!$postulante) {
+                return response()->json(['message' => 'No existe un postulante asociado'], 404);
+            }
+
+            $estudio = $this->estudio->buscar($id); // ✅ corregido
+            if (!$estudio) {
+                return response()->json(['message' => 'Estudio no encontrado'], 404);
+            }
+
+            if ($estudio->postulante_id !== $postulante->id) {
+                return response()->json(['message' => 'No autorizado'], 403);
+            }
+
+            $estudio->delete();
+
+            return response()->json(['message' => 'Estudio eliminado correctamente'], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al eliminar estudio:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al eliminar estudio',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $estudio = $this->estudio->actualizar(['id' => $id]); // Verificamos si existe
-        if ($estudio->postulante_id !== $authUser->usuario->id) {
-            return response()->json(['message' => 'No autorizado'], 403);
-        }
-
-        $estudio->delete();
-
-        return response()->json(['message' => 'Estudio eliminado correctamente'], 200);
-
-    } catch (\Exception $e) {
-        \Log::error('Error al eliminar estudio:', ['error' => $e->getMessage()]);
-        return response()->json(['message' => 'Error al eliminar estudio', 'error' => $e->getMessage()], 500);
     }
+
+public function descargar($id)
+{
+    $estudio = \App\Models\Estudio::findOrFail($id);
+
+    if (!$estudio->doc_titulo) {
+        return response()->json(['message' => 'No hay certificado disponible'], 404);
+    }
+
+    $rutaArchivo = public_path(str_replace('storage/', 'assets/', $estudio->doc_titulo));
+
+    if (!file_exists($rutaArchivo)) {
+        return response()->json(['message' => 'Archivo no encontrado'], 404);
+    }
+
+    // 📌 Descargar con el nombre original del archivo
+    $nombreDescarga = basename($rutaArchivo);
+
+    return response()->download($rutaArchivo, $nombreDescarga, [
+        'Content-Type' => 'application/pdf',
+    ]);
 }
+
 
 
 

@@ -70,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('postulante', PostulanteController::class);
 
     Route::apiResource('estudio', EstudioController::class);
-
+    Route::get('/estudio/{id}/descargar', [EstudioController::class, 'descargar']);
     
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
 
@@ -81,5 +81,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('oferta_laboral', OfertaLaboralController::class);
 
     Route::apiResource('postulacion', PostulacionController::class);
+    
     
 });
