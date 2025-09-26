@@ -49,35 +49,66 @@ class EmpresasClase
     }
 
     // Mostrar una empresa por id
-    public function show(int $id)
+    public function show()
     {
-        $empresa = InformacionEmpresa::with('usuario')->find($id);
+        $authUser = auth()->user();
 
-        if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
         }
 
-        return $empresa;
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario.', 404);
+        }
+
+        $empresas = $usuario->informacionEmpresa;
+
+        if ($empresas->isEmpty()) {
+            throw new \Exception('No se encontraron empresas asociadas a este usuario.', 404);
+        }
+
+        return $empresas;
     }
 
     // Actualizar empresa
-    public function actualizar(array $datos, int $id)
+    public function actualizar(array $datos)
     {
-        $empresa = InformacionEmpresa::find($id);
-
+        $authUser = auth()->user();
+    
+        $usuario = $authUser->usuario;
+    
+        if (!$usuario) {
+            throw new \Exception('Usuario asociado no encontrado.', 404);
+        }
+    
+        $empresaId = $datos['empresa_id'] ?? null;
+    
+        if (!$empresaId) {
+            throw new \Exception('ID de empresa no especificado.', 400);
+        }
+    
+        // Buscar la empresa que pertenece al usuario
+        $empresa = $usuario->informacionEmpresa()->where('id', $empresaId)->first();
+    
         if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
+            throw new \Exception('Empresa no encontrada o no pertenece al usuario.', 404);
         }
-
-        // Subida de imagen opcional
-        if (isset($datos['imagen_empresa'])) {
-            $datos['imagen_empresa'] = Storage::put('empresas', $datos['imagen_empresa']);
-        }
-
+    
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
+        // Quitar el campo empresa_id para evitar que intente actualizarlo
+        unset($datos['empresa_id']);
+    
         $empresa->update($datos);
-
+    
+        \Log::info('📦 Datos actualizados:', $empresa->toArray());
+    
         return $empresa;
     }
+
+
 
     
 }

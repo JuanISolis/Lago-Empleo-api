@@ -36,6 +36,10 @@ Route::prefix('sesion')->group(function () {
 Route::post('/user', [UserController::class, 'store']);
 
 
+Route::get('/verofertaslaborales', [OfertaLaboralController::class, 'index']);
+Route::get('/verempresas', [EmpresasController::class, 'index']);
+
+
 
 
 // Route::apiResource('habilidad', HabilidadController::class);
@@ -63,10 +67,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('actividad', ActividadController::class);
 
-    Route::apiResource('empresas', EmpresasController::class);
+    Route::put('/actualizarempresa', [EmpresasController::class, 'actualizarempresa']);
+    Route::get('/VermiEmpresa', [EmpresasController::class, 'mostrarEmpresa']);
+    Route::apiResource('empresas', EmpresasController::class)->except(['index']);
 
     Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );
+
     Route::put('/actualizarpostulante', [PostulanteController::class, 'actualizarpostulante']);
+
     Route::apiResource('postulante', PostulanteController::class);
 
     Route::apiResource('estudio', EstudioController::class);
@@ -76,9 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('capacidad', CapacidadController::class);
 
-    Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-
-    Route::apiResource('oferta_laboral', OfertaLaboralController::class);
+    Route::apiResource('oferta_laboral', OfertaLaboralController::class)->except(['index']);
 
     Route::apiResource('postulacion', PostulacionController::class);
     

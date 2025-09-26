@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\OfertaLaboralClase;
 use Illuminate\Http\Request;
 use App\Models\OfertaLaboral;
+use App\Http\Requests\CrearOfertaLaboralRequest;
 use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $ofertas;
+
+    public function __construct(OfertaLaboralClase $ofertas) {
+        $this->ofertas = $ofertas;
+    }
+
+   
     public function index()
     {
         $ofertas = OfertaLaboral::all();
@@ -28,18 +34,22 @@ class OfertaLaboralController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CrearOfertaLaboralRequest $request)
     {
-        $validated = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'empresa' => 'required|string|max:255',
-            'salario' => 'nullable|numeric',
-            // Agrega aquí los campos que tenga tu modelo
-        ]);
+        $validated = $request->validated();
 
-        $oferta = OfertaLaboral::create($validated);
-        return response()->json($oferta, 201);
+        try {
+            $userData = $this->ofertas->crear($validated);
+
+            return response()->json([
+                'usuario' => $userData
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     /**
@@ -54,6 +64,23 @@ class OfertaLaboralController extends Controller
         return response()->json($oferta);
     }
 
+    public function mostrarOfertasempleador(Request $request)
+    {
+        try {
+            $ofertas = $this->ofertas->show($request);
+            // $ofertas = $servicio->show(); 
+        
+            return response()->json([
+                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
+                'ofertas' => $ofertas
+            ], 200);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -73,10 +100,10 @@ class OfertaLaboralController extends Controller
         }
 
         $validated = $request->validate([
-            'titulo' => 'sometimes|required|string|max:255',
+            'titulo_ofertalaboral' => 'sometimes|required|string|max:255',
             'descripcion' => 'sometimes|required|string',
             'empresa' => 'sometimes|required|string|max:255',
-            'salario' => 'nullable|numeric',
+            'pago' => 'nullable|numeric',
             // Agrega aquí los campos que tenga tu modelo
         ]);
 
