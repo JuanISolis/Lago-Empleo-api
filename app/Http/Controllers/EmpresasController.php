@@ -121,5 +121,22 @@ class EmpresasController extends Controller
         }
     }
 
+    public function mostrarEmpresa(Request $request)
+    {
+        try {
+            $empresas = $this->empresas->show($request);
+            // $ofertas = $servicio->show(); 
+        
+            return response()->json([
+                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
+                'ofertas' => $empresas
+            ], 200);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+        }
+    }
    
 }
