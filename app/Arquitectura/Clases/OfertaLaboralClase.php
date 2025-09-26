@@ -68,10 +68,37 @@ class OfertaLaboralClase
 
 
     // Mostrar una oferta laboral por id
-    public function show(int $id)
+    public function show()
     {
-        return OfertaLaboral::with('usuario')->findOrFail($id);
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario.', 404);
+        }
+
+        $empresas = $usuario->informacionEmpresa;
+
+        if ($empresas->isEmpty()) {
+            throw new \Exception('No se encontraron empresas asociadas a este usuario.', 404);
+        }
+
+        $ofertasLaborales = $empresas->flatMap(function ($empresa) {
+            return $empresa->ofertaLaboral;
+        });
+
+        if ($ofertasLaborales->isEmpty()) {
+            throw new \Exception('No se encontraron ofertas laborales publicadas.', 404);
+        }
+
+        return $ofertasLaborales;
     }
+
 
     // Actualizar oferta laboral
     public function actualizar(array $datos, string $id)
