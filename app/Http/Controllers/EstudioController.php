@@ -24,7 +24,6 @@ class EstudioController extends Controller
             return response()->json(['message' => 'Usuario no autenticado'], 401);
         }
 
-        // ✅ Buscar el postulante asociado al usuario
         $postulante = Postulante::where('usuario_id', $authUser->id)->first();
         if (!$postulante) {
             return response()->json(['message' => 'No existe un postulante asociado'], 404);
@@ -45,7 +44,6 @@ class EstudioController extends Controller
                 throw new \Exception('Usuario no autenticado', 401);
             }
 
-            // ✅ Buscar postulante relacionado al usuario
             $postulante = Postulante::where('usuario_id', $authUser->id)->first();
             if (!$postulante) {
                 throw new \Exception('No existe un postulante asociado a este usuario', 400);
@@ -122,7 +120,7 @@ class EstudioController extends Controller
                 return response()->json(['message' => 'No existe un postulante asociado'], 404);
             }
 
-            $estudio = $this->estudio->buscar($id); // ✅ corregido
+            $estudio = $this->estudio->buscar($id);
             if (!$estudio) {
                 return response()->json(['message' => 'Estudio no encontrado'], 404);
             }
@@ -144,29 +142,25 @@ class EstudioController extends Controller
         }
     }
 
-public function descargar($id)
-{
-    $estudio = \App\Models\Estudio::findOrFail($id);
+    // Descargar PDF
+    public function descargar($id)
+    {
+        $estudio = \App\Models\Estudio::findOrFail($id);
 
-    if (!$estudio->doc_titulo) {
-        return response()->json(['message' => 'No hay certificado disponible'], 404);
+        if (!$estudio->doc_titulo) {
+            return response()->json(['message' => 'No hay certificado disponible'], 404);
+        }
+
+        $rutaArchivo = public_path($estudio->doc_titulo);
+
+        if (!file_exists($rutaArchivo)) {
+            return response()->json(['message' => 'Archivo no encontrado'], 404);
+        }
+
+        $nombreDescarga = basename($rutaArchivo);
+
+        return response()->download($rutaArchivo, $nombreDescarga, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
-
-    $rutaArchivo = public_path(str_replace('storage/', 'assets/', $estudio->doc_titulo));
-
-    if (!file_exists($rutaArchivo)) {
-        return response()->json(['message' => 'Archivo no encontrado'], 404);
-    }
-
-    // 📌 Descargar con el nombre original del archivo
-    $nombreDescarga = basename($rutaArchivo);
-
-    return response()->download($rutaArchivo, $nombreDescarga, [
-        'Content-Type' => 'application/pdf',
-    ]);
-}
-
-
-
-
 }
