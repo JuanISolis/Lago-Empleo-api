@@ -83,10 +83,10 @@ class OfertaLaboralController extends Controller
         }
 
         $validated = $request->validate([
-            'titulo' => 'sometimes|required|string|max:255',
+            'titulo_ofertalaboral' => 'sometimes|required|string|max:255',
             'descripcion' => 'sometimes|required|string',
             'empresa' => 'sometimes|required|string|max:255',
-            'salario' => 'nullable|numeric',
+            'pago' => 'nullable|numeric',
             // Agrega aquí los campos que tenga tu modelo
         ]);
 
