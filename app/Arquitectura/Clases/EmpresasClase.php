@@ -49,15 +49,27 @@ class EmpresasClase
     }
 
     // Mostrar una empresa por id
-    public function show(int $id)
+    public function show()
     {
-        $empresa = InformacionEmpresa::with('usuario')->find($id);
+        $authUser = auth()->user();
 
-        if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
         }
 
-        return $empresa;
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario.', 404);
+        }
+
+        $empresas = $usuario->informacionEmpresa;
+
+        if ($empresas->isEmpty()) {
+            throw new \Exception('No se encontraron empresas asociadas a este usuario.', 404);
+        }
+
+        return $empresas;
     }
 
     // Actualizar empresa

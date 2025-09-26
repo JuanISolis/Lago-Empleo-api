@@ -64,10 +64,11 @@ class OfertaLaboralController extends Controller
         return response()->json($oferta);
     }
 
-    public function mostrarOfertasempleador(Request $request, OfertaLaboralClase $servicio)
+    public function mostrarOfertasempleador(Request $request)
     {
         try {
-            $ofertas = $servicio->show(); // Llama al método desde el servicio, no desde el request
+            $ofertas = $this->ofertas->show($request);
+            // $ofertas = $servicio->show(); 
         
             return response()->json([
                 'mensaje' => 'Ofertas laborales recuperadas correctamente.',
