@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\OfertaLaboralClase;
 use Illuminate\Http\Request;
 use App\Models\OfertaLaboral;
+use App\Http\Requests\CrearOfertaLaboralRequest;
 use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
 {
+    protected $ofertas;
+
+    public function __construct(OfertaLaboralClase $ofertas) {
+        $this->ofertas = $ofertas;
+    }
+
    
     public function index()
     {
@@ -26,12 +34,12 @@ class OfertaLaboralController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CrearOfertaLaboralRequest $request)
     {
         $validated = $request->validated();
 
         try {
-            $userData = $this->user->crear($validated);
+            $userData = $this->ofertas->crear($validated);
 
             return response()->json([
                 'usuario' => $userData
