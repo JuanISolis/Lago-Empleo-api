@@ -34,8 +34,6 @@ class ActualizarOfertaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // ⚠️ Obligatorios para encontrar la oferta
-            'empresa_id' => 'required|integer|exists:informacion_empresas,id',
             'ofertalaboral_id' => 'required|integer|exists:oferta_laborals,id',
 
             // ✅ Campos opcionales para actualizar
@@ -56,10 +54,6 @@ class ActualizarOfertaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // Mensajes para IDs obligatorios
-            'empresa_id.required' => 'El ID de la empresa es obligatorio.',
-            'empresa_id.integer' => 'El ID de la empresa debe ser un número entero.',
-            'empresa_id.exists' => 'La empresa especificada no existe.',
 
             'ofertalaboral_id.required' => 'El ID de la oferta laboral es obligatorio.',
             'ofertalaboral_id.integer' => 'El ID de la oferta laboral debe ser un número entero.',
