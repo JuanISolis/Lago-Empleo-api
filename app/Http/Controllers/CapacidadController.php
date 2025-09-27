@@ -17,23 +17,61 @@ class CapacidadController extends Controller
 
     public function __construct()
     {
-        // Puedes pasar arrays vacíos porque el constructor de CapacidadesClase los ignora y carga todos
-        $this->capacidades = new CapacidadesClase([], []);
+        $this->capacidades = new CapacidadesClase();
     }
 
-    public function index()
+    public function agregarHabilidad(Request $request)
     {
-        // Devuelve todas las habilidades e idiomas
-        return response()->json($this->capacidades->obtenerTodos());
+        $habilidad = $this->capacidades->agregarHabilidad($request->input('habilidad'));
+        return response()->json($habilidad, 201);
     }
 
-    public function store(CrearCapacidadRequest $request)
+    public function listarHabilidades()
     {
-        try {
-            $capacidad = $this->capacidades->crear($request->all());
-            return response()->json($capacidad, 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
-        }
+        $habilidades = $this->capacidades->listarHabilidades();
+        return response()->json($habilidades, 200);
     }
+
+    public function agregarIdioma(Request $request)
+    {
+        $idioma = $this->capacidades->agregarIdioma(
+            $request->input('idioma'),
+            $request->input('nivel')
+        );
+        return response()->json($idioma, 201);
+    }
+
+    public function listarIdiomas()
+    {
+        $idiomas = $this->capacidades->listarIdiomas();
+        return response()->json($idiomas, 200);
+    }
+
+    public function actualizarHabilidad(Request $request, $habilidadId)
+    {
+        $habilidad = $this->capacidades->actualizarHabilidad($habilidadId, $request->input('habilidad'));
+        return response()->json($habilidad, 200);
+    }
+
+    public function eliminarHabilidad($habilidadId)
+    {
+        $resultado = $this->capacidades->eliminarHabilidad($habilidadId);
+        return response()->json($resultado, 200);
+    }
+
+    // public function index()
+    // {
+    //     // Devuelve todas las habilidades e idiomas
+    //     return response()->json($this->capacidades->obtenerTodos());
+    // }
+
+    // public function store(CrearCapacidadRequest $request)
+    // {
+    //     try {
+    //         $capacidad = $this->capacidades->crear($request->all());
+    //         return response()->json($capacidad, 201);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 400);
+    //     }
+    // }
 }

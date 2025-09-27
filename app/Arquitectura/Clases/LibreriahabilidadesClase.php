@@ -8,19 +8,34 @@ use App\Arquitectura\Interfaces\MercadoLaboral;
         
 class LibreriahabilidadClase 
 {
-    public function listar()
+    public function insertarHabilidad(string $habilidad)
     {
-        return LibreriaHabilidad::all();
+        try {
+            // Busca o crea la habilidad en la librería
+            return LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
+        } catch (\Exception $e) {
+            throw new \Exception('Error al insertar la habilidad: ' . $e->getMessage());
+        }
     }
 
-    public function crear($habilidad)
+    public function listarHabilidades()
     {
-        return LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
+        try {
+            // Devuelve todas las habilidades de la librería
+            return LibreriaHabilidad::all();
+        } catch (\Exception $e) {
+            throw new \Exception('Error al listar las habilidades: ' . $e->getMessage());
+        }
     }
 
-    public function buscar($busqueda)
+    public function buscarHabilidad(string $busqueda)
     {
-        return LibreriaHabilidad::where('habilidad', 'like', "%{$busqueda}%")->get();
+        try {
+            // Busca habilidades que coincidan con el término de búsqueda
+            return LibreriaHabilidad::where('habilidad', 'like', "%{$busqueda}%")->get();
+        } catch (\Exception $e) {
+            throw new \Exception('Error al buscar habilidades: ' . $e->getMessage());
+        }
     }
 }
 
