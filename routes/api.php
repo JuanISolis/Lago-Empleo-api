@@ -28,11 +28,7 @@ Route::prefix('sesion')->group(function () {
     Route::post('/', [SesionController::class, 'iniciosesion']);
 
     // para resetear contraseña por una temporal
-    Route::post('/resetpass', [SesionController::class, 'passolvidada']);
-
-    
-
-    
+    Route::post('/resetpass', [SesionController::class, 'passolvidada']);    
 
 });
 
@@ -40,17 +36,23 @@ Route::prefix('sesion')->group(function () {
 Route::post('/user', [UserController::class, 'store']);
 
 
+Route::get('/verofertaslaborales', [OfertaLaboralController::class, 'index']);
+Route::get('/verempresas', [EmpresasController::class, 'index']);
+
+
 
 
 // Route::apiResource('habilidad', HabilidadController::class);
 // Route::apiResource('idioma', IdiomaController::class);
-Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
+// Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
 //Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
 //Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
 
 // endpoints con acceso restringido por token
 Route::middleware('auth:sanctum')->group(function () {
-    
+      
+  Route::post('/actualizarperfil', [UsuarioController::class, 'actualizarPerfil']);
+
     // para cerrar sesion
     Route::post('/logout', [SesionController::class, 'logout']);
 
@@ -65,22 +67,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('actividad', ActividadController::class);
 
-    Route::apiResource('empresas', EmpresasController::class);
+    Route::put('/actualizarempresa', [EmpresasController::class, 'actualizarempresa']);
+    Route::get('/VermiEmpresa', [EmpresasController::class, 'mostrarEmpresa']);
+    Route::apiResource('empresas', EmpresasController::class)->except(['index']);
 
     Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );
     Route::put('/actualizarpostulante', [PostulanteController::class, 'actualizarpostulante']);
     Route::apiResource('postulante', PostulanteController::class);
-
+    
     Route::apiResource('estudio', EstudioController::class);
 
     Route::put('actualizarexperiencialaboral', [ExperienciaLaboralController::class, 'update']);
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
-
+    
     Route::apiResource('capacidad', CapacidadController::class);
-
+    
     Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-
-    Route::apiResource('oferta_laboral', OfertaLaboralController::class);
+    
+    Route::put('/actualizarofertalaboral', [OfertaLaboralController::class, 'actualizaroferta']);
+    Route::apiResource('oferta_laboral', OfertaLaboralController::class)->except(['index']);
+    Route::get('/ofertalaboralempleador', [OfertaLaboralController::class, 'mostrarOfertasempleador']);
 
     Route::apiResource('postulacion', PostulacionController::class);
     

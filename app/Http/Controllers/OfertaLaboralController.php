@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Arquitectura\Clases\OfertaLaboralClase;
 use Illuminate\Http\Request;
 use App\Models\OfertaLaboral;
+use App\Http\Requests\CrearOfertaLaboralRequest;
+use App\Http\Requests\ActualizarOfertaRequest;
 use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $ofertas;
+
+    public function __construct(OfertaLaboralClase $ofertas) {
+        $this->ofertas = $ofertas;
+    }
+
+   
     public function index()
     {
         $ofertas = OfertaLaboral::all();
@@ -28,18 +35,22 @@ class OfertaLaboralController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CrearOfertaLaboralRequest $request)
     {
-        $validated = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'empresa' => 'required|string|max:255',
-            'salario' => 'nullable|numeric',
-            // Agrega aquí los campos que tenga tu modelo
-        ]);
+        $validated = $request->validated();
 
-        $oferta = OfertaLaboral::create($validated);
-        return response()->json($oferta, 201);
+        try {
+            $userData = $this->ofertas->crear($validated);
+
+            return response()->json([
+                'usuario' => $userData
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     /**
@@ -54,6 +65,23 @@ class OfertaLaboralController extends Controller
         return response()->json($oferta);
     }
 
+    public function mostrarOfertasempleador(Request $request)
+    {
+        try {
+            $ofertas = $this->ofertas->show($request);
+            // $ofertas = $servicio->show(); 
+        
+            return response()->json([
+                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
+                'ofertas' => $ofertas
+            ], 200);
+        
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 500);
+        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -95,5 +123,36 @@ class OfertaLaboralController extends Controller
         }
         $oferta->delete();
         return response()->json(['message' => 'Oferta eliminada correctamente']);
+    }
+
+    public function actualizaroferta(ActualizarOfertaRequest $request)
+    {
+        try {
+            $datos = $request->all();
+        
+            \Log::info('📥 Datos recibidos en backend:', $datos);
+        
+            // Filtrar datos vacíos
+            $validated = array_filter($datos, function ($valor) {
+                return $valor !== null && $valor !== '';
+            });
+        
+            \Log::info('📦 Datos que van a actualizarse en la BD (controlador):', $validated);
+        
+            // Enviar al servicio
+            $ActualizarOferta = $this->ofertas->actualizar($validated);
+        
+            return response()->json([
+                'mensaje' => 'Empresa actualizado con éxito',
+                'Empresa' => $ActualizarOferta
+            ], 200);
+        
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar la empresa: ' . $e->getMessage());
+            return response()->json([
+                'mensaje' => 'Error al actualizar la empresa',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 }
