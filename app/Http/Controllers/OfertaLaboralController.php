@@ -6,6 +6,7 @@ use App\Arquitectura\Clases\OfertaLaboralClase;
 use Illuminate\Http\Request;
 use App\Models\OfertaLaboral;
 use App\Http\Requests\CrearOfertaLaboralRequest;
+use App\Http\Requests\ActualizarOfertaRequest;
 use Illuminate\Routing\Controller;
 
 class OfertaLaboralController extends Controller
@@ -122,5 +123,36 @@ class OfertaLaboralController extends Controller
         }
         $oferta->delete();
         return response()->json(['message' => 'Oferta eliminada correctamente']);
+    }
+
+    public function actualizaroferta(ActualizarOfertaRequest $request)
+    {
+        try {
+            $datos = $request->all();
+        
+            \Log::info('📥 Datos recibidos en backend:', $datos);
+        
+            // Filtrar datos vacíos
+            $validated = array_filter($datos, function ($valor) {
+                return $valor !== null && $valor !== '';
+            });
+        
+            \Log::info('📦 Datos que van a actualizarse en la BD (controlador):', $validated);
+        
+            // Enviar al servicio
+            $ActualizarOferta = $this->ofertas->actualizar($validated);
+        
+            return response()->json([
+                'mensaje' => 'Empresa actualizado con éxito',
+                'Empresa' => $ActualizarOferta
+            ], 200);
+        
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar la empresa: ' . $e->getMessage());
+            return response()->json([
+                'mensaje' => 'Error al actualizar la empresa',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 }

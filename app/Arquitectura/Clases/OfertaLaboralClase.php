@@ -101,10 +101,37 @@ class OfertaLaboralClase
 
 
     // Actualizar oferta laboral
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
-        $oferta = OfertaLaboral::findOrFail($id);
-        $oferta->update($datos);
-        return $oferta;
+        $authUser = auth()->user();
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('Usuario asociado no encontrado.', 404);
+        }
+    
+        $ofertaLaboralId = $datos['ofertalaboral_id'] ?? null;
+
+        if (!$ofertaLaboralId) {
+            throw new \Exception('ID de oferta laboral no especificado.', 400);
+        }
+
+        $ofertaLaboral = $empresa->ofertasLaborales()->where('id', $ofertaLaboralId)->first();
+
+        if (!$ofertaLaboral) {
+            throw new \Exception('Oferta laboral no encontrada o no pertenece a la empresa.', 404);
+        }
+
+        // Limpiar campos para evitar problemas
+        unset($datos['ofertalaboral_id']);
+
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+
+        $ofertaLaboral->update($datos);
+
+        \Log::info('📦 Datos actualizados:', $ofertaLaboral->toArray());
+
+        return $ofertaLaboral;
     }
+
 }
