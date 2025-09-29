@@ -84,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
     
+    Route::put('/actualizarofertalaboral', [OfertaLaboralController::class, 'actualizaroferta']);
     Route::apiResource('oferta_laboral', OfertaLaboralController::class)->except(['index']);
     Route::get('/ofertalaboralempleador', [OfertaLaboralController::class, 'mostrarOfertasempleador']);
 
