@@ -15,6 +15,7 @@ class ExperienciaLaboral extends Model
         'postulante_id',
         'lugar_trabajo',
         'cargo',
+        'descripcion',
         'fecha_inicio',
         'fecha_fin',
         'descripcion', // <-- agregado

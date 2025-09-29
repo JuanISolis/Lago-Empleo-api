@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('postulante_id');
             $table->foreign('postulante_id')->references('id')->on('postulantes');
-            $table->string('lugar_trabajo');
-            $table->string('cargo');
-            $table->date('fecha_inicio');
-            $table->date('fecha_fin')->nullable();
-            $table->text('descripcion')->nullable(); // <-- agregado
+            $table->string ('lugar_trabajo');
+            $table->string ('cargo');
+            $table->string ('descripcion');
+            $table->date ('fecha_inicio');
+            $table->date ('fecha_fin');
             $table->timestamps();
         });
     }

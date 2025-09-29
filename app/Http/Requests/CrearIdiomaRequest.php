@@ -25,7 +25,7 @@ class CrearIdiomaRequest extends FormRequest
 	{
 		return [
 
-			'idioma' => 'required|string|max:255', 'regex:/^[\pL\s\-]+$/u' 
+			'idioma' => 'required|string|max:255|unique:libreria_idiomas,idioma', 'regex:/^[\pL\s\-]+$/u' 
 		];
 	}
 
