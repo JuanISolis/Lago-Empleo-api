@@ -41,14 +41,31 @@ class Experiencia_laboralClase extends PostulanteClase
         }
 
         // Obtener el postulante_id desde el usuario autenticado
-        $postulanteId = $authUser->usuario->postulante->id;
+        $postulante = $authUser->usuario()->postulante();
 
-        // Buscar la experiencia laboral asociada al postulante
-        $exp = ExperienciaLaboral::where('postulante_id', $postulanteId)->firstOrFail();
+        $expid = $datos['experiencia_id'];
+    
+        if (!$expid) {
+            throw new \Exception('ID de esperiencia no especificado.', 400);
+        }
+    
+        // Buscar la empresa que pertenece al usuario
+        $experiencia = $postulante->experiencialaboral()->where('id', $expid)->first();
+    
+        if (!$experiencia) {
+            throw new \Exception('Empresa no encontrada o no pertenece al usuario.', 404);
+        }
+    
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
+        // Quitar el campo empresa_id para evitar que intente actualizarlo
+        unset($datos['experiencia_id']);
+    
+        $experiencia->update($datos);
+    
+        \Log::info('📦 Datos actualizados:', $experiencia->toArray());
+    
 
-        // Actualizar los datos de la experiencia laboral
-        $exp->update($datos);
-
-        return $exp;
+        return $experiencia;
     }
 }

@@ -34,10 +34,7 @@ class CapacidadController extends Controller
 
     public function agregarIdioma(Request $request)
     {
-        $idioma = $this->capacidades->agregarIdioma(
-            $request->input('idioma'),
-            $request->input('nivel')
-        );
+        $idioma = $this->capacidades->agregarIdioma($request);
         return response()->json($idioma, 201);
     }
 

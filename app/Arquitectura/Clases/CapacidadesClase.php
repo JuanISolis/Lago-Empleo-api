@@ -11,25 +11,33 @@ use App\Models\LibreriaIdioma;
 class CapacidadesClase extends PostulanteClase
 {
     // Agregar habilidad al postulante
-    public function agregarHabilidad($habilidad)
+   public function agregarHabilidad(string $habilidadNombre)
     {
         $authUser = auth()->user();
-
+    
         if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
             throw new \Exception('El usuario no tiene un perfil de postulante.');
         }
-
+    
         $postulanteId = $authUser->usuario->postulante->id;
-
-        // Busca o crea la habilidad en la librería
-        $libreria = LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
-
-        // Asocia la habilidad al postulante
-        return Habilidad::create([
-            'libreria_habilidades_id' => $libreria->id,
-            'postulante_id' => $postulanteId,
-        ]);
+    
+        try {
+            // 1. Busca o crea la habilidad en la librería
+            $libreriaHabilidad = LibreriaHabilidad::firstOrCreate([
+                'habilidad' => $habilidadNombre
+            ]);
+        
+            // 2. Inserta en la tabla habilidades la relación
+            return Habilidad::create([
+                'postulante_id' => $postulanteId,
+                'libreria_habilidades_id' => $libreriaHabilidad->id,
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la habilidad: ' . $e->getMessage());
+        }
     }
+
     // Listar habilidades de un postulante
     public function listarHabilidades()
     {
@@ -44,7 +52,7 @@ class CapacidadesClase extends PostulanteClase
         return Habilidad::where('postulante_id', $postulanteId)->with('libreria_habilidad')->get();
     }
     // Agregar idioma al postulante
-    public function agregarIdioma($idioma, $nivel)
+    public function agregarIdioma($datos)
     {
         $authUser = auth()->user();
 
