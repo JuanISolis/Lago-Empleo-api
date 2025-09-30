@@ -87,7 +87,7 @@ class UserController extends Controller
             $respuesta = $this->user->actualizar($validated);
 
             return response()->json([
-                'actualizacion' => $respuesta
+                'data' => $respuesta
             ], 200);
 
         } catch (\Exception $e) {
