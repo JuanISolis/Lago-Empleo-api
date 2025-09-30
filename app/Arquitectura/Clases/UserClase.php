@@ -86,7 +86,8 @@ class UserClase implements MercadoLaboral{
 
         return [
             'mensaje' => 'Contraseña actualizada correctamente',
-            'recuperacion' => false
+            'recuperacion' => false,
+            'reset' => "ok"
         ];
 
 

@@ -7,6 +7,7 @@ use App\Arquitectura\Clases\SesionClase;
 use App\Http\Requests\InicioSesionRequest;
 use App\Http\Requests\PassOlvidoRequest;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Log;
 
 class SesionController extends Controller
 {
@@ -48,6 +49,11 @@ class SesionController extends Controller
 
     public function passolvidada(PassOlvidoRequest $request)
     {
+        
+        $datos = $request->all();
+    
+        Log::info('📥 Datos recibidos en backend:', $datos);
+
         $validated = $request->validated();
 
         try {
