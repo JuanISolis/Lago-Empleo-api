@@ -101,37 +101,52 @@ class OfertaLaboralClase
 
 
     // Actualizar oferta laboral
-    public function actualizar(array $datos)
-    {
-        $authUser = auth()->user();
-        $usuario = $authUser->usuario;
+   public function actualizar(array $datos)
+{
+    // 1️⃣ Obtener usuario autenticado
+    $authUser = auth()->user();
+    $usuario = $authUser->usuario ?? null;
 
-        if (!$usuario) {
-            throw new \Exception('Usuario asociado no encontrado.', 404);
-        }
-    
-        $ofertaLaboralId = $datos['ofertalaboral_id'] ?? null;
-
-        if (!$ofertaLaboralId) {
-            throw new \Exception('ID de oferta laboral no especificado.', 400);
-        }
-
-        $ofertaLaboral = $empresa->ofertasLaborales()->where('id', $ofertaLaboralId)->first();
-
-        if (!$ofertaLaboral) {
-            throw new \Exception('Oferta laboral no encontrada o no pertenece a la empresa.', 404);
-        }
-
-        // Limpiar campos para evitar problemas
-        unset($datos['ofertalaboral_id']);
-
-        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
-
-        $ofertaLaboral->update($datos);
-
-        \Log::info('📦 Datos actualizados:', $ofertaLaboral->toArray());
-
-        return $ofertaLaboral;
+    if (!$usuario) {
+        throw new \Exception('Usuario asociado no encontrado.', 404);
     }
+
+    // 2️⃣ Obtener empresa asociada al usuario
+    $empresaId = $datos['informacion_empresa_id'] ?? null; // opcional si quieres actualizar empresa
+    $empresa = null;
+
+    if ($empresaId) {
+        $empresa = $usuario->informacionEmpresa()->where('id', $empresaId)->first();
+        if (!$empresa) {
+            throw new \Exception('No tienes permiso para actualizar ofertas en esta empresa.', 403);
+        }
+    } else {
+        // si solo hay una empresa asociada al usuario, tomamos la primera
+        $empresa = $usuario->informacionEmpresa()->first();
+        if (!$empresa) {
+            throw new \Exception('No se encontró empresa asociada al usuario.', 404);
+        }
+    }
+
+    // 3️⃣ Obtener la oferta laboral dentro de la empresa
+    $ofertaLaboralId = $datos['ofertalaboral_id'] ?? null;
+    if (!$ofertaLaboralId) {
+        throw new \Exception('ID de oferta laboral no especificado.', 400);
+    }
+
+    $ofertaLaboral = $empresa->ofertaLaboral()->where('id', $ofertaLaboralId)->first();
+    if (!$ofertaLaboral) {
+        throw new \Exception('Oferta laboral no encontrada o no pertenece a la empresa.', 404);
+    }
+
+    // 4️⃣ Limpiar datos que no se deben actualizar
+    unset($datos['ofertalaboral_id']);
+    unset($datos['informacion_empresa_id']); // si no quieres permitir cambiar empresa
+
+    // 5️⃣ Actualizar
+    $ofertaLaboral->update($datos);
+
+    return $ofertaLaboral;
+}
 
 }
