@@ -31,17 +31,24 @@ class CapacidadController extends Controller
         $habilidades = $this->capacidades->listarHabilidades();
         return response()->json($habilidades, 200);
     }
+    
 
     public function agregarIdioma(Request $request)
     {
-        $idioma = $this->capacidades->agregarIdioma($request);
-        return response()->json($idioma, 201);
+        $datos = $request->only(['idioma', 'nivel']);
+        return $this->capacidades->agregarIdioma($datos, 201);
     }
 
     public function listarIdiomas()
     {
-        $idiomas = $this->capacidades->listarIdiomas();
-        return response()->json($idiomas, 200);
+        try {
+            $idiomas = $this->capacidades->listarIdiomas();
+            return response()->json($idiomas);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function actualizarHabilidad(Request $request, $habilidadId)

@@ -52,25 +52,33 @@ class CapacidadesClase extends PostulanteClase
         return Habilidad::where('postulante_id', $postulanteId)->with('libreria_habilidad')->get();
     }
     // Agregar idioma al postulante
-    public function agregarIdioma($datos)
+    public function agregarIdioma(array $datos)
     {
+        
         $authUser = auth()->user();
-
+    
         if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
             throw new \Exception('El usuario no tiene un perfil de postulante.');
         }
-
+    
         $postulanteId = $authUser->usuario->postulante->id;
-
-        // Busca o crea el idioma en la librería
-        $libreria = LibreriaIdioma::firstOrCreate(['idioma' => $idioma]);
-
-        // Asocia el idioma al postulante
-        return Idioma::create([
-            'libreria_idiomas_id' => $libreria->id,
-            'postulante_id' => $postulanteId,
-            'nivel' => $nivel,
-        ]);
+    
+        try {
+            // 1. Busca o crea la idioma en la librería
+            $libreriaIdioma = LibreriaIdioma::firstOrCreate([
+                'idioma' => $datos['idioma'] 
+            ]);
+        
+            // 2. Inserta en la tabla idioma la relación
+            return Idioma::create([
+                'libreria_idiomas_id' => $libreriaIdioma->id,
+                'postulante_id' => $postulanteId,
+                'nivel' => $datos['nivel'],
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la idioma: ' . $e->getMessage());
+        }
     }
     // Listar idiomas de un postulante
     public function listarIdiomas()
