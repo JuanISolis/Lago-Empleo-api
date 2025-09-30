@@ -7,19 +7,34 @@ use App\Models\Idioma;
 
 class LibreriaidiomaClase
 {
-    public function listar()
+    public function insertarIdioma(string $idioma)
     {
-        return LibreriaIdioma::all();
+        try {
+            // Busca o crea el idioma en la librería
+            return LibreriaIdioma::firstOrCreate(['idioma' => $idioma]);
+        } catch (\Exception $e) {
+            throw new \Exception('Error al insertar el idioma: ' . $e->getMessage());
+        }
     }
 
-    public function crear($idioma)
+    public function listarIdiomas()
     {
-        return LibreriaIdioma::firstOrCreate(['idioma' => $idioma]);
+        try {
+            // Devuelve todos los idiomas de la librería
+            return LibreriaIdioma::all();
+        } catch (\Exception $e) {
+            throw new \Exception('Error al listar los idiomas: ' . $e->getMessage());
+        }
     }
 
-    public function buscar($busqueda)
+    public function buscarIdioma(string $busqueda)
     {
-        return LibreriaIdioma::where('idioma', 'like', "%{$busqueda}%")->get();
+        try {
+            // Busca idiomas que coincidan con el término de búsqueda
+            return LibreriaIdioma::where('idioma', 'like', "%{$busqueda}%")->get();
+        } catch (\Exception $e) {
+            throw new \Exception('Error al buscar idiomas: ' . $e->getMessage());
+        }
     }
 }
 

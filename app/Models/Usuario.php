@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Postulante;
+use App\Models\InformacionEmpresa;
 
 class Usuario extends Model
 {
@@ -30,5 +31,10 @@ class Usuario extends Model
     public function postulante()
     {
         return $this->hasOne(Postulante::class);
+    }
+
+    public function informacionEmpresa()
+    {
+        return $this->hasMany(InformacionEmpresa::class);
     }
 }

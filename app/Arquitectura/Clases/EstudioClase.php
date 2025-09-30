@@ -39,4 +39,10 @@ class EstudioClase extends PostulanteClase
         $estudio->update($datos);
         return $estudio;
     }
+
+    // Buscar un estudio por ID
+    public function buscar($id)
+    {
+        return Estudio::find($id);
+    }
 }

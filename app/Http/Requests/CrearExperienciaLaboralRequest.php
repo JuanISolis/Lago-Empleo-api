@@ -26,8 +26,10 @@ class CrearExperienciaLaboralRequest extends FormRequest
         return [
             'lugar_trabajo' => 'required|string|max:255',
             'cargo'         => 'required|string|max:255',
+            'descripcion'   => 'required|string',
             'fecha_inicio'  => 'required|date',
             'fecha_fin'     => 'nullable|date|after_or_equal:fecha_inicio',
+            'descripcion'   => 'nullable|string|max:1000', // <-- agregado
         ];
     }
 }
