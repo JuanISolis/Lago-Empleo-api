@@ -28,8 +28,14 @@ class  CapacidadController extends Controller
 
     public function listarHabilidades()
     {
-        $habilidades = $this->capacidades->listarHabilidades();
-        return response()->json($habilidades, 200);
+        try {
+            $habilidades = $this->capacidades->listarHabilidades();
+            return response()->json($habilidades);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
     
 

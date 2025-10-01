@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('postulacions', function (Blueprint $table) {
             $table->id();
             $table->date('fecha_postulacion');
-            $table->boolean('estado');
+            $table->boolean('estado')->default(false);
 
             
             $table->unsignedBigInteger('ofertalab_id');
