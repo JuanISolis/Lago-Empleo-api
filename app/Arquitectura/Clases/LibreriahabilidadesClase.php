@@ -1,43 +1,43 @@
-<?php
+<!-- <?php
 
-namespace App\Arquitectura\Clases;   
-use App\Models\Habilidad; 
-use App\Models\LibreriaHabilidad; 
-use App\Arquitectura\Interfaces\MercadoLaboral;
+// namespace App\Arquitectura\Clases;   
+// use App\Models\Habilidad; 
+// use App\Models\LibreriaHabilidad; 
+// use App\Arquitectura\Interfaces\MercadoLaboral; -->
 
         
-class LibreriahabilidadClase 
-{
-    public function insertarHabilidad(string $habilidad)
-    {
-        try {
-            // Busca o crea la habilidad en la librería
-            return LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
-        } catch (\Exception $e) {
-            throw new \Exception('Error al insertar la habilidad: ' . $e->getMessage());
-        }
-    }
+// class LibreriahabilidadClase 
+// {
+//     public function insertarHabilidad(string $habilidad)
+//     {
+//         try {
+//             // Busca o crea la habilidad en la librería
+//             return LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
+//         } catch (\Exception $e) {
+//             throw new \Exception('Error al insertar la habilidad: ' . $e->getMessage());
+//         }
+//     }
 
-    public function listarHabilidades()
-    {
-        try {
-            // Devuelve todas las habilidades de la librería
-            return LibreriaHabilidad::all();
-        } catch (\Exception $e) {
-            throw new \Exception('Error al listar las habilidades: ' . $e->getMessage());
-        }
-    }
+//     public function listarHabilidades()
+//     {
+//         try {
+//             // Devuelve todas las habilidades de la librería
+//             return LibreriaHabilidad::all();
+//         } catch (\Exception $e) {
+//             throw new \Exception('Error al listar las habilidades: ' . $e->getMessage());
+//         }
+//     }
 
-    public function buscarHabilidad(string $busqueda)
-    {
-        try {
-            // Busca habilidades que coincidan con el término de búsqueda
-            return LibreriaHabilidad::where('habilidad', 'like', "%{$busqueda}%")->get();
-        } catch (\Exception $e) {
-            throw new \Exception('Error al buscar habilidades: ' . $e->getMessage());
-        }
-    }
-}
+//     public function buscarHabilidad(string $busqueda)
+//     {
+//         try {
+//             // Busca habilidades que coincidan con el término de búsqueda
+//             return LibreriaHabilidad::where('habilidad', 'like', "%{$busqueda}%")->get();
+//         } catch (\Exception $e) {
+//             throw new \Exception('Error al buscar habilidades: ' . $e->getMessage());
+//         }
+//     }
+// }
 
 
 

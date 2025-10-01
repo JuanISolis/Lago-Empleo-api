@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Idioma extends Model
 {
-     protected $fillable = [
-        'id_postulante',
-        'id_libreria_idiomas',
+    protected $table = 'idiomas';
+
+    protected $fillable = [
+        'libreria_idiomas_id',
+        'postulante_id',
         'nivel',
     ];
 
@@ -16,9 +18,9 @@ class Idioma extends Model
     {
         return $this->belongsTo(Postulante::class);
     }
-    public function libreriaidioma()
+    public function libreria_idioma()
     {
-        return $this->belongsTo(LibreriaIdioma::class);
+        return $this->belongsTo(LibreriaIdioma::class, 'libreria_idiomas_id');
     }
 }
 
