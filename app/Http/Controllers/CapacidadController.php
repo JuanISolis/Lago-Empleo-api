@@ -11,7 +11,7 @@ use App\Http\Requests\CrearCapacidadRequest;
 use Illuminate\Routing\Controller;
 
 
-class CapacidadController extends Controller
+class  CapacidadController extends Controller
 {
     protected $capacidades;
 
