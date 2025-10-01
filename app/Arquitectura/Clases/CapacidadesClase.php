@@ -11,45 +11,135 @@ use App\Models\LibreriaIdioma;
 class CapacidadesClase extends PostulanteClase
 {
     // Agregar habilidad al postulante
-    public function agregarHabilidad($postulante_id, $habilidad)
+   public function agregarHabilidad(string $habilidadNombre)
     {
-        // Busca o crea la habilidad en la librería
-        $libreria = LibreriaHabilidad::firstOrCreate(['habilidad' => $habilidad]);
-        // Asocia la habilidad al postulante
-        return Habilidad::create([
-            'libreria_habilidades_id' => $libreria->id,
-            'postulante_id' => $postulante_id,
-        ]);
+        $authUser = auth()->user();
+    
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+    
+        $postulanteId = $authUser->usuario->postulante->id;
+    
+        try {
+            // 1. Busca o crea la habilidad en la librería
+            $libreriaHabilidad = LibreriaHabilidad::firstOrCreate([
+                'habilidad' => $habilidadNombre
+            ]);
+        
+            // 2. Inserta en la tabla habilidades la relación
+            return Habilidad::create([
+                'postulante_id' => $postulanteId,
+                'libreria_habilidades_id' => $libreriaHabilidad->id,
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la habilidad: ' . $e->getMessage());
+        }
     }
 
     // Listar habilidades de un postulante
-    public function listarHabilidades($postulante_id = null)
+    public function listarHabilidades()
     {
-        if ($postulante_id) {
-            return Habilidad::where('postulante_id', $postulante_id)->with('libreria_habilidads')->get();
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
         }
-        return Habilidad::with('libreria_habilidads')->get();
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        return Habilidad::where('postulante_id', $postulanteId)->with('libreria_habilidad')->get();
     }
     // Agregar idioma al postulante
-    public function agregarIdioma($postulante_id, $idioma, $nivel)
+    public function agregarIdioma(array $datos)
     {
-        // Busca o crea el idioma en la librería
-        $libreria = LibreriaIdioma::firstOrCreate(['idioma' => $idioma]);
-        // Asocia el idioma al postulante
-        return Idioma::create([
-            'libreria_idiomas_id' => $libreria->id,
-            'postulante_id' => $postulante_id,
-            'nivel' => $nivel,
-        ]);
+        
+        $authUser = auth()->user();
+    
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+    
+        $postulanteId = $authUser->usuario->postulante->id;
+    
+        try {
+            // 1. Busca o crea la idioma en la librería
+            $libreriaIdioma = LibreriaIdioma::firstOrCreate([
+                'idioma' => $datos['idioma'] 
+            ]);
+        
+            // 2. Inserta en la tabla idioma la relación
+            return Idioma::create([
+                'libreria_idiomas_id' => $libreriaIdioma->id,
+                'postulante_id' => $postulanteId,
+                'nivel' => $datos['nivel'],
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la idioma: ' . $e->getMessage());
+        }
+    }
+    // Listar idiomas de un postulante
+    public function listarIdiomas()
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        return Idioma::where('postulante_id', $postulanteId)->with('libreria_idioma')->get();
     }
 
-    // Listar idiomas de un postulante
-    public function listarIdiomas($postulante_id = null)
+    // Actualizar una habilidad del postulante
+    public function actualizarHabilidad($habilidadId, $nuevaHabilidad)
     {
-        if ($postulante_id) {
-            return Idioma::where('postulante_id', $postulante_id)->with('libreriaidioma')->get();
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
         }
-        return Idioma::with('libreriaidioma')->get();
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        // Buscar la habilidad asociada al postulante
+        $habilidad = Habilidad::where('id', $habilidadId)
+            ->where('postulante_id', $postulanteId)
+            ->firstOrFail();
+
+        // Actualizar la habilidad en la librería
+        $libreria = LibreriaHabilidad::firstOrCreate(['habilidad' => $nuevaHabilidad]);
+
+        // Actualizar la referencia en la habilidad del postulante
+        $habilidad->libreria_habilidades_id = $libreria->id;
+        $habilidad->save();
+
+        return $habilidad;
+    }
+
+    // Eliminar una habilidad del postulante
+    public function eliminarHabilidad($habilidadId)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        // Buscar la habilidad asociada al postulante
+        $habilidad = Habilidad::where('id', $habilidadId)
+            ->where('postulante_id', $postulanteId)
+            ->firstOrFail();
+
+        // Eliminar la habilidad
+        $habilidad->delete();
+
+        return ['message' => 'Habilidad eliminada correctamente'];
     }
 }
 

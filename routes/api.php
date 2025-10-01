@@ -76,10 +76,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('postulante', PostulanteController::class);
     
     Route::apiResource('estudio', EstudioController::class);
-    
+
+    Route::put('actualizarexperiencialaboral', [ExperienciaLaboralController::class, 'update']);
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
     
-    Route::apiResource('capacidad', CapacidadController::class);
+    // Route::apiResource('capacidad', CapacidadController::class);
+    
+    Route::post('/capacidad/habilidad', [CapacidadController::class, 'agregarHabilidad']);
+    Route::get('/capacidad/habilidad', [CapacidadController::class, 'listarHabilidades']);
+    Route::put('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'actualizarHabilidad']);
+    Route::delete('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'eliminarHabilidad']);
+
+    // Rutas personalizadas para idiomas
+    Route::post('/capacidad/idioma', [CapacidadController::class, 'agregarIdioma']);
+    Route::get('/capacidad/idioma', [CapacidadController::class, 'listarIdiomas']);
+    Route::put('/capacidad/idioma/{idiomaId}', [CapacidadController::class, 'actualizarIdioma']);
+    Route::delete('/capacidad/idioma/{idiomaId}', [CapacidadController::class, 'eliminarIdioma']);
     
     Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
     

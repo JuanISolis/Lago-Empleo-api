@@ -18,7 +18,18 @@ class ExperienciaLaboralController extends Controller
 
     public function index()
     {
-        return response()->json($this->experiencia->obtenerTodos());
+        try {
+        // Delegar la lógica a la clase
+        $experienciasLaborales = $this->experiencia->obtenerTodos();
+
+        // Retornar las experiencias laborales en la respuesta
+        return response()->json($experienciasLaborales, 200);
+        } catch (\Exception $e) {
+            // Manejar errores y retornar una respuesta adecuada
+            return response()->json([
+                'message' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     public function store(CrearExperienciaLaboralRequest $request)
@@ -41,14 +52,30 @@ class ExperienciaLaboralController extends Controller
         ]);
     }
 
-    public function update(CrearExperienciaLaboralRequest $request, string $id)
+    public function update(CrearExperienciaLaboralRequest $request)
     {
-        $exp = $this->experiencia->actualizar($request->validated(), $id);
+        try {
+        // ✅ Obtener los datos validados desde el FormRequest
+        $validated = $request->validated();
+
+        \Log::info('📥 Datos validados recibidos en backend:', $validated);
+
+        // ✅ Delegar la lógica de actualización al servicio
+        $experienciaActualizada = $this->experiencia->actualizar($validated);
 
         return response()->json([
-            'message' => 'Experiencia laboral actualizada correctamente',
-            'experiencia' => $exp
-        ]);
+            'mensaje' => 'Experiencia laboral actualizada con éxito',
+            'experiencia' => $experienciaActualizada
+        ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar experiencia laboral: ' . $e->getMessage());
+
+            return response()->json([
+                'mensaje' => 'Error al actualizar experiencia laboral',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
     }
 
     public function destroy(string $id)

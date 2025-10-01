@@ -24,7 +24,7 @@ class CrearHabilidadRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'habilidad' => 'required|string|max:255', 'regex:/^[\pL\s\-]+$/u' // Solo letras, espacios y guiones
+			'habilidad' => 'required|string|max:255|unique:libreria_habilidad,habilidad', 'regex:/^[\pL\s\-]+$/u' // Solo letras, espacios y guiones
 		];
 	}
     public function messages() : array

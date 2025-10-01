@@ -9,31 +9,63 @@ class Experiencia_laboralClase extends PostulanteClase
 {
     public function obtenerTodos()
     {
-        return ExperienciaLaboral::all();
+        return Experiencialaboral ::all();
     }
 
     public function crear(array $datos)
     {
+        $authUser = auth()->user();
+
+        // Verificar que el usuario tenga un postulante
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        // Asignar el postulante_id correcto
+        $datos['postulante_id'] = $authUser->usuario->postulante->id;
+        
         return ExperienciaLaboral::create($datos);
     }
 
-    public function show(int $id)
+    public function show()
     {
         return ExperienciaLaboral::findOrFail($id);
     }
 
-    public function actualizar(array $datos, string $id)
+    public function actualizar(array $datos)
     {
-        // linea para obtener el usuario autenticado
-        $usuarioAutenticado = auth()->user();
+         $authUser = auth()->user();
 
-        $exp = ExperienciaLaboral::findOrFail($id);
-        
-        // Validar que el usuario autenticado es el propietario de la experiencia laboral
-        if ($exp->user_id !== $usuarioAutenticado->id) {
-            throw new \Exception('No tienes permiso para actualizar esta experiencia laboral.', 403);
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
         }
-        $exp->update($datos);
-        return $exp;
+
+        // Obtener el postulante_id desde el usuario autenticado
+        $postulante = $authUser->usuario()->postulante();
+
+        $expid = $datos['experiencia_id'];
+    
+        if (!$expid) {
+            throw new \Exception('ID de esperiencia no especificado.', 400);
+        }
+    
+        // Buscar la empresa que pertenece al usuario
+        $experiencia = $postulante->experiencialaboral()->where('id', $expid)->first();
+    
+        if (!$experiencia) {
+            throw new \Exception('Empresa no encontrada o no pertenece al usuario.', 404);
+        }
+    
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
+        // Quitar el campo empresa_id para evitar que intente actualizarlo
+        unset($datos['experiencia_id']);
+    
+        $experiencia->update($datos);
+    
+        \Log::info('📦 Datos actualizados:', $experiencia->toArray());
+    
+
+        return $experiencia;
     }
 }
