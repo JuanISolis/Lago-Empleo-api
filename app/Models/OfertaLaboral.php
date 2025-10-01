@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\InformacionEmpresa;
+use App\Models\Postulacion;
 
 
 class OfertaLaboral extends Model
@@ -26,7 +27,12 @@ class OfertaLaboral extends Model
 
     public function informacionEmpresas()
     {
-        return $this->belongsTo(InformacionEmpresa::class); //belongsTo indica que esta empresa pertenece a un usuario.
-        // return $this->belongsTo(InformacionEmpresa::class, 'informacion_empresa_id'); //belongsTo indica que esta empresa pertenece a un usuario.
+        return $this->belongsTo(InformacionEmpresa::class); 
     }
+    
+    public function Postulacion()
+    {
+        return $this->hasMany(Postulacion::class); 
+    }
+
 }

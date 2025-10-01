@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Postulante extends Model
 {
-    //
-     protected $fillable = [
+    
+    protected $fillable = [
         'usuario_id',
         'profesion',
         'descripcion',

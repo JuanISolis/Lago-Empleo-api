@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Postulacion;
+use Illuminate\Routing\Controller;
+// use App\Models\Postulacion;
+use App\Arquitectura\Clases\PostulacionClase;
+use App\Http\Requests\CrearPostulacionRequest;
+use App\Http\Requests\ActualizarUsuarioRequest;
 
 class PostulacionController
 {
+    protected $postulacion;
+
+    public function __construct(PostulacionClase $postulacion) {
+        $this->postulacion = $postulacion;
+    }
+    
+    
     /**
      * Display a listing of the resource.
      */
@@ -26,9 +37,24 @@ class PostulacionController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CrearPostulacionRequest $request)
     {
-        //
+        try {
+            $validated = $request->validated();
+
+            // Crear el perfil asociado al usuario autenticado
+            $respuesta = $this->postulacion->crear($validated);
+
+            return response()->json([
+                'data' => $respuesta
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+
     }
 
     /**

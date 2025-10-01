@@ -9,13 +9,14 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CrearCapacidadRequest extends FormRequest
 {
-     public function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(response()->json([
             'message' => 'Validación fallida',
             'errors' => $validator->errors()
         ], 422));
     }
+    
     public function rules()
     {
         return [
