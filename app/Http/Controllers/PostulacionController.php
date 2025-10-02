@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use App\Arquitectura\Clases\PostulacionClase;
 use App\Http\Requests\CrearPostulacionRequest;
 use App\Http\Requests\ActualizarPostulacionRequest;
+use App\Http\Requests\MostrarPostulacionesRequest;
 
 class PostulacionController
 {
@@ -60,6 +61,7 @@ class PostulacionController
     public function aceptarpostulacion(ActualizarPostulacionRequest $request)
     {
         try {
+            $validated = $request->validated();
         
             // Enviar al servicio
             $ActualizarPostulacion = $this->postulacion->actualizar($validated);
@@ -76,6 +78,29 @@ class PostulacionController
             ], $e->getCode() ?: 400);
         }
     }
+
+    public function mostrarpostulaciones(MostrarPostulacionesRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            $postulaciones = $this->postulacion->show($validated);
+
+            return response()->json([
+                'data' => $postulaciones
+            ], 200);
+
+        }catch (\Exception $e) {
+            $code = (int) $e->getCode();
+            if ($code < 100 || $code >= 600) {
+                $code = 500;
+            }
+            return response()->json([
+                'mensaje' => $e->getMessage()
+            ], $code);
+        }
+    }
+
 
     /**
      * Display the specified resource.

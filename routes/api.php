@@ -101,5 +101,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('postulacion', PostulacionController::class);
     Route::put('/aceptarpostulacion', [PostulacionController::class, 'aceptarpostulacion']);
+    Route::get('/verpostulaciones', [PostulacionController::class, 'mostrarpostulaciones']);
     
 });

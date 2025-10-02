@@ -69,4 +69,52 @@ class PostulacionClase {
         return $postulacion;
     }
 
+    public function show(array $datos)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        $usuario = $authUser->usuario;
+
+        if (!$usuario) {
+            throw new \Exception('No se encontró el perfil de usuario.', 404);
+        }
+
+        $empresaId = $datos['empresa_id'];
+        $ofertaLaboralId = $datos['ofertalaboral_id'];
+
+        // 🔍 Acceder a la colección de empresas del usuario (asumimos hasMany)
+        $empresa = $usuario->informacionEmpresa
+            ->where('id', $empresaId)
+            ->first();
+
+        if (!$empresa) {
+            throw new \Exception('Empresa no encontrada o no pertenece al usuario.', 404);
+        }
+
+        // 🔍 Acceder a la colección de ofertas laborales
+        $ofertaLaboral = $empresa->ofertaLaboral
+            ->where('id', $ofertaLaboralId)
+            ->first();
+
+        if (!$ofertaLaboral) {
+            throw new \Exception('Oferta laboral no encontrada en esta empresa.', 404);
+        }
+
+        // 🔍 Acceder a las postulaciones de la oferta laboral
+        $postulaciones = Postulacion::where('ofertalab_id', $ofertaLaboral->id)->get();
+
+        if (!$postulaciones || $postulaciones->isEmpty()) {
+            throw new \Exception('No se encontraron postulaciones para esta oferta laboral.', 404);
+        }
+
+        return $postulaciones;
+    }
+
+
+
+
 }
