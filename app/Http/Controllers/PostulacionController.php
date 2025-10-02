@@ -7,7 +7,7 @@ use Illuminate\Routing\Controller;
 // use App\Models\Postulacion;
 use App\Arquitectura\Clases\PostulacionClase;
 use App\Http\Requests\CrearPostulacionRequest;
-use App\Http\Requests\ActualizarUsuarioRequest;
+use App\Http\Requests\ActualizarPostulacionRequest;
 
 class PostulacionController
 {
@@ -57,7 +57,7 @@ class PostulacionController
 
     }
 
-    public function actualizarpostulacion(ActualizarEmpresaRequest $request)
+    public function aceptarpostulacion(ActualizarPostulacionRequest $request)
     {
         try {
         
