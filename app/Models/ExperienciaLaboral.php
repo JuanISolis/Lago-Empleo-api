@@ -18,6 +18,7 @@ class ExperienciaLaboral extends Model
         'descripcion',
         'fecha_inicio',
         'fecha_fin',
+        'descripcion', // <-- agregado
     ];
 
     public function postulante()

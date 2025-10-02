@@ -34,8 +34,8 @@ class EmpresasController extends Controller
 
             $validated = $request->validated();
 
-            if ($request->hasFile('foto_perfil')) {
-                $imagen = $request->file('foto_perfil');
+            if ($request->hasFile('imagen_empresa')) {
+                $imagen = $request->file('imagen_empresa');
                 $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
 
                 $rutaPublica = public_path('assets/fotos');
@@ -45,7 +45,7 @@ class EmpresasController extends Controller
                 }
 
                 $imagen->move($rutaPublica, $nombreImagen);
-                $validated['foto_perfil'] = 'assets/fotos/' . $nombreImagen;
+                $validated['imagen_empresa'] = 'assets/fotos/' . $nombreImagen;
             }
 
             $result = $this->empresas->crear($validated);
@@ -128,8 +128,7 @@ class EmpresasController extends Controller
             // $ofertas = $servicio->show(); 
         
             return response()->json([
-                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
-                'ofertas' => $empresas
+                'data' => $empresas
             ], 200);
         
         } catch (\Exception $e) {

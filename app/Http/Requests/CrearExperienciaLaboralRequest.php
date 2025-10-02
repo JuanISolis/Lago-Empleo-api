@@ -29,6 +29,7 @@ class CrearExperienciaLaboralRequest extends FormRequest
             'descripcion'   => 'required|string',
             'fecha_inicio'  => 'required|date',
             'fecha_fin'     => 'nullable|date|after_or_equal:fecha_inicio',
+            'descripcion'   => 'nullable|string|max:1000', // <-- agregado
         ];
     }
 }

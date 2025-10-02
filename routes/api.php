@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('postulante', PostulanteController::class);
     
     Route::apiResource('estudio', EstudioController::class);
-
+    Route::get('/estudio/{id}/descargar', [EstudioController::class, 'descargar']);
     
     Route::apiResource('experiencia_laboral', ExperienciaLaboralController::class);
     
@@ -100,5 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ofertalaboralempleador', [OfertaLaboralController::class, 'mostrarOfertasempleador']);
 
     Route::apiResource('postulacion', PostulacionController::class);
+    Route::put('/aceptarpostulacion', [PostulacionController::class, 'aceptarpostulacion']);
+    Route::get('/verpostulaciones', [PostulacionController::class, 'mostrarpostulaciones']);
+    
     
 });

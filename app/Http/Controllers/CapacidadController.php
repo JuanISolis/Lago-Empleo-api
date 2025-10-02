@@ -12,7 +12,7 @@ use App\Http\Requests\ActualizarHabilidadRequest;
 use Illuminate\Routing\Controller;
 
 
-class CapacidadController extends Controller
+class  CapacidadController extends Controller
 {
     protected $capacidades;
 
