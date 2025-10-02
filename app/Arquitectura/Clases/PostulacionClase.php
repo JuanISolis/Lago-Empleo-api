@@ -17,12 +17,12 @@ class PostulacionClase {
             }
 
             
-            $datos['postulante_id'] = $usuarioAutenticado->id;
+            $datos['postulante_id'] = $usuarioAutenticado->usuario->postulante->id;
 
             $postulacion = Postulacion::create($datos);
 
             return [
-                'postulacion' => $usuario
+                'postulacion' => $postulacion
             ];
 
         } catch (\Exception $e) {
