@@ -8,6 +8,7 @@ use App\Models\OfertaLaboral;
 use App\Http\Requests\CrearOfertaLaboralRequest;
 use App\Http\Requests\ActualizarOfertaRequest;
 use Illuminate\Routing\Controller;
+use Carbon\Carbon;
 
 class OfertaLaboralController extends Controller
 {
@@ -55,13 +56,24 @@ class OfertaLaboralController extends Controller
 
     /**
      * Display the specified resource.
-     */
+    */
+
     public function show(string $id)
     {
         $oferta = OfertaLaboral::find($id);
+
         if (!$oferta) {
             return response()->json(['error' => 'Oferta no encontrada'], 404);
         }
+
+        // Verificar si la fecha de inicio ya pasó o es hoy
+        $fechaInicio = Carbon::parse($oferta->fecha_inicio);
+        $hoy = Carbon::today();
+
+        if ($fechaInicio->lte($hoy)) {
+            return response()->json(['error' => 'La oferta ya no está disponible'], 404);
+        }
+
         return response()->json($oferta);
     }
 

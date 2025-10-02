@@ -19,8 +19,9 @@ class Postulacion extends Model
 
     public function OfertaLaboral()
     {
-        return $this->belongsTo(OfertaLaboral::class);
+        return $this->belongsTo(OfertaLaboral::class, 'ofertalab_id');
     }
+
     
 
     public function Postulante()
