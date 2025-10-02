@@ -34,4 +34,39 @@ class PostulacionClase {
 
     }
 
+    public function actualizar(array $datos)
+    {
+        $authUser = auth()->user();
+    
+        $usuario = $authUser->usuario;
+    
+        if (!$usuario) {
+            throw new \Exception('Usuario asociado no encontrado.', 404);
+        }
+    
+        $postulacionId = $datos['postulacion_id'] ?? null;
+    
+        if (!$postulacionId) {
+            throw new \Exception('ID de postulacion no especificado.', 400);
+        }
+    
+        // Buscar la empresa que pertenece al usuario
+        $postulacion = $usuario->postulante->postulacion()->where('id', $postulacionId)->first();
+    
+        if (!$postulacion) {
+            throw new \Exception('Postulacion no encontrada o no pertenece al usuario.', 404);
+        }
+    
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
+    
+        // Quitar el campo empresa_id para evitar que intente actualizarlo
+        unset($datos['postulacion_id']);
+    
+        $postulacion->update($datos);
+    
+        \Log::info('📦 Datos actualizados:', $empresa->toArray());
+    
+        return $postulacion;
+    }
+
 }

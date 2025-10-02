@@ -57,6 +57,26 @@ class PostulacionController
 
     }
 
+    public function actualizarpostulacion(ActualizarEmpresaRequest $request)
+    {
+        try {
+        
+            // Enviar al servicio
+            $ActualizarPostulacion = $this->postulacion->actualizar($validated);
+        
+            return response()->json([
+                'data' => $ActualizarPostulacion
+            ], 200);
+        
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar la empresa: ' . $e->getMessage());
+            return response()->json([
+                'mensaje' => 'Error al actualizar la empresa',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
