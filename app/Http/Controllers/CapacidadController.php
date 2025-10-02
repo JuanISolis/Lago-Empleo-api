@@ -57,10 +57,29 @@ class CapacidadController extends Controller
         }
     }
 
-    public function actualizarHabilidad(Request $request, $habilidadId)
+    public function actualizarHabilidad(ActualizarHabilidadRequest $request, $habilidadId)
     {
-        $habilidad = $this->capacidades->actualizarHabilidad($habilidadId, $request->input('habilidad'));
-        return response()->json($habilidad, 200);
+        try {
+        $datos = $request->validated();
+
+        \Log::info('📥 Datos recibidos para actualizar habilidad:', $datos);
+
+        $habilidadActualizada = $this->capacidades->actualizarHabilidad($datos, $habilidadId);
+
+        // Eliminar el campo habilidad_id después de la actualización
+        unset($habilidadActualizada['habilidad_id']);
+
+        return response()->json([
+            'mensaje' => 'Habilidad actualizada con éxito',
+            'habilidad' => $habilidadActualizada
+        ], 200);
+    } catch (\Exception $e) {
+        \Log::error('Error al actualizar la habilidad: ' . $e->getMessage());
+        return response()->json([
+            'mensaje' => 'Error al actualizar la habilidad',
+            'error' => $e->getMessage()
+        ], $e->getCode() ?: 400);
+    }
     }
 
     public function eliminarHabilidad($habilidadId)
