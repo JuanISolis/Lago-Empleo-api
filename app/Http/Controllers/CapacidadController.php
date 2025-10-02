@@ -8,6 +8,7 @@ use App\Arquitectura\Clases\CapacidadesClase;
 use App\Arquitectura\Clases\LibreriahabilidadesClase;
 use App\Arquitectura\Clases\LibreriaidiomaClase;
 use App\Http\Requests\CrearCapacidadRequest; 
+use App\Http\Requests\ActualizarHabilidadRequest;
 use Illuminate\Routing\Controller;
 
 
@@ -67,7 +68,7 @@ class CapacidadController extends Controller
         $habilidadActualizada = $this->capacidades->actualizarHabilidad($datos, $habilidadId);
 
         // Eliminar el campo habilidad_id después de la actualización
-        unset($habilidadActualizada['habilidad_id']);
+        unset($habilidadActualizada['libreria_habilidades_id']);
 
         return response()->json([
             'mensaje' => 'Habilidad actualizada con éxito',

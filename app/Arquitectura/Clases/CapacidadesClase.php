@@ -121,7 +121,7 @@ class CapacidadesClase extends PostulanteClase
         $habilidad->update($datos);
 
         // Eliminar el campo habilidad_id después de la actualización
-        unset($datos['habilidad_id']);
+        unset($datos['libreria_habilidades_id']);
 
         \Log::info('📦 Datos actualizados (habilidad):', $habilidad->toArray());
 
