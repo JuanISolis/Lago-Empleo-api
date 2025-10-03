@@ -5,27 +5,22 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
     /**
-     * A list of exception types with their corresponding custom log levels.
-     *
-     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+     * Niveles de log por excepción
      */
     protected $levels = [];
 
     /**
-     * A list of the exception types that are not reported.
-     *
-     * @var array<int, class-string<\Throwable>>
+     * Excepciones que no se reportan
      */
     protected $dontReport = [];
 
     /**
-     * A list of the inputs that are never flashed to the session on validation exceptions.
-     *
-     * @var array<int, string>
+     * Inputs que nunca se muestran en validación
      */
     protected $dontFlash = [
         'current_password',
@@ -34,7 +29,7 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Registrar callbacks de reportes
      */
     public function register(): void
     {
@@ -44,16 +39,25 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Render an exception into an HTTP response.
+     * Renderizar excepción a respuesta HTTP
      */
     public function render($request, Throwable $exception)
     {
-        // Devuelve errores de validación como JSON
+        // Errores de validación como JSON
         if ($exception instanceof ValidationException) {
             return response()->json([
                 'message' => 'Error de validación',
                 'errors' => $exception->errors(),
             ], 422);
+        }
+
+        // Errores de autenticación para API
+        if ($exception instanceof AuthenticationException) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'No autenticado',
+                ], 401);
+            }
         }
 
         return parent::render($request, $exception);
