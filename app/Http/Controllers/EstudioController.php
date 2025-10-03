@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Arquitectura\Clases\EstudioClase;
 use App\Http\Requests\CrearEstudioRequest;
-use Illuminate\Http\Request;
+use App\Models\Postulante;
 use Illuminate\Routing\Controller;
 
 class EstudioController extends Controller
@@ -16,93 +16,176 @@ class EstudioController extends Controller
         $this->estudio = $estudio;
     }
 
+    // Obtener estudios del usuario autenticado
     public function index()
     {
-        return response()->json($this->estudio->obtenerTodos());
-    }
-
-public function store(CrearEstudioRequest $request)
-{
-    try {
-
-        // // Registro inicial para verificar los datos validados
-        // \Log::info('Datos validados:', $request->all());
-
-        $validated = $request->validated();
-        $rutasDocumentos = [];
-
-        // Procesar PDF solo si se envía
-        if ($request->hasFile('doc_titulo')) {
-            $archivos = $request->file('doc_titulo');
-        if (!is_array($archivos)) {
-            $archivos = [$archivos]; // Convertir a arreglo si es un único archivo
+        $authUser = auth()->user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
         }
 
-            foreach ((array) $request->file('doc_titulo') as $archivo) {
-                if ($archivo instanceof \Illuminate\Http\UploadedFile) {
-                    \Log::info('Archivo recibido:', ['nombre' => $archivo->getClientOriginalName()]);
-                } else {
-                    \Log::warning('Elemento no es una instancia de UploadedFile:', ['elemento' => $archivo]);
-                    continue; // Saltar este elemento
-                }
-                $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
+        $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+        if (!$postulante) {
+            return response()->json(['message' => 'No existe un postulante asociado'], 404);
+        }
 
-                $rutaPublica = public_path('assets/pdf');
-                if (!file_exists($rutaPublica)) {
-                    mkdir($rutaPublica, 0755, true);
-                }
+        $estudios = $this->estudio->obtenerPorUsuario($postulante->id);
+        return response()->json($estudios);
+    }
 
-                $archivo->move($rutaPublica, $nombreArchivo);
-                $rutasDocumentos[] = 'assets/pdf/' . $nombreArchivo;
+    // Crear estudio
+    public function store(CrearEstudioRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            $authUser = auth()->user();
+            if (!$authUser) {
+                throw new \Exception('Usuario no autenticado', 401);
             }
 
-            // Guardar las rutas como JSON en la DB
-            // $validated['doc_titulo'] = json_encode($rutasDocumentos);
-        } else {
-            // Si no hay PDF, dejamos nulo
-            $validated['doc_titulo'] = null;
+            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            if (!$postulante) {
+                throw new \Exception('No existe un postulante asociado a este usuario', 400);
+            }
+
+            $validated['postulante_id'] = $postulante->id;
+
+            if ($request->hasFile('doc_titulo')) {
+                $file = $request->file('doc_titulo');
+                $nombreArchivo = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/pdf'), $nombreArchivo);
+                $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+            } else {
+                $validated['doc_titulo'] = null;
+            }
+
+            $estudio = $this->estudio->crear($validated);
+
+            return response()->json([
+                'message' => 'Estudio creado correctamente',
+                'estudio' => $estudio
+            ], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al crear estudio:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al crear estudio',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Actualizar estudio
+    public function update(CrearEstudioRequest $request, $id)
+    {
+        try {
+            $validated = $request->validated();
+            $validated['id'] = $id;
+
+            if ($request->hasFile('doc_titulo')) {
+                $file = $request->file('doc_titulo');
+                $nombreArchivo = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/pdf'), $nombreArchivo);
+                $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
+            }
+
+            $estudio = $this->estudio->actualizar($validated);
+
+            return response()->json([
+                'message' => 'Estudio actualizado correctamente',
+                'estudio' => $estudio
+            ], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar estudio:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al actualizar estudio',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Eliminar estudio
+    public function destroy($id)
+    {
+        try {
+            $authUser = auth()->user();
+            if (!$authUser) {
+                return response()->json(['message' => 'Usuario no autenticado'], 401);
+            }
+
+            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            if (!$postulante) {
+                return response()->json(['message' => 'No existe un postulante asociado'], 404);
+            }
+
+            $estudio = $this->estudio->buscar($id);
+            if (!$estudio) {
+                return response()->json(['message' => 'Estudio no encontrado'], 404);
+            }
+
+            if ($estudio->postulante_id !== $postulante->id) {
+                return response()->json(['message' => 'No autorizado'], 403);
+            }
+
+            $estudio->delete();
+
+            return response()->json(['message' => 'Estudio eliminado correctamente'], 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Error al eliminar estudio:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'message' => 'Error al eliminar estudio',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Descargar PDF
+    public function descargar($id)
+    {
+        $estudio = \App\Models\Estudio::findOrFail($id);
+
+        if (!$estudio->doc_titulo) {
+            return response()->json(['message' => 'No hay certificado disponible'], 404);
         }
 
-        // Usar la clase para crear el estudio
-        $respuesta = $this->estudio->crear($validated);
+        $rutaArchivo = public_path($estudio->doc_titulo);
 
-        return response()->json($respuesta, 201);
+        if (!file_exists($rutaArchivo)) {
+            return response()->json(['message' => 'Archivo no encontrado'], 404);
+        }
 
-    } catch (\Exception $e) {
-        // Siempre HTTP válido
-        // linea agregada para debug 73
-        // \Log::error('Error al crear el estudio:', ['error' => $e->getMessage()]);
-        return response()->json([
-            'mensaje' => $e->getMessage()
-        ], 500);
+        $nombreDescarga = basename($rutaArchivo);
+
+        return response()->download($rutaArchivo, $nombreDescarga, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
+    // Mostrar un solo estudio
+public function show($id)
+{
+    $authUser = auth()->user();
+    if (!$authUser) {
+        return response()->json(['message' => 'Usuario no autenticado'], 401);
+    }
+
+    $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+    if (!$postulante) {
+        return response()->json(['message' => 'No existe un postulante asociado'], 404);
+    }
+
+    $estudio = $this->estudio->buscar($id);
+    if (!$estudio) {
+        return response()->json(['message' => 'Estudio no encontrado'], 404);
+    }
+
+    if ($estudio->postulante_id !== $postulante->id) {
+        return response()->json(['message' => 'No autorizado'], 403);
+    }
+
+    return response()->json($estudio, 200);
 }
 
-    public function show(string $id)
-    {
-        $estudio = $this->estudio->show($id);
-
-        return response()->json([
-            'estudio' => $estudio
-        ], 200);
-    }
-
-    public function update(CrearEstudioRequest $request, string $id)
-    {
-        $estudio = $this->estudio->actualizar($request->validated(), $id);
-
-        $rutaPublica = base_path('../../public/assets/pdf');
-
-        if ($datos->hasFile('doc_titulo')) {
-            $archivo = $datos->file('doc_titulo');
-            $nombreArchivo = time() . '_' . $archivo->getClientOriginalName();
-            $archivo->move($rutaPublica('assets/pdf'), $nombreArchivo);
-            $validated['doc_titulo'] = 'assets/pdf/' . $nombreArchivo;
-        }
-
-        return response()->json([
-            'message' => 'Estudio actualizado correctamente',
-            'estudio' => $estudio
-        ], 200);
-    }
 }

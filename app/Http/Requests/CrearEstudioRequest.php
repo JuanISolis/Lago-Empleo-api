@@ -41,24 +41,21 @@ class CrearEstudioRequest extends FormRequest
 }
     }
 
-    public function messages(): array
-    {
-        return [
-            'postulante_id.required'    => 'El postulante es obligatorio.',
-            'postulante_id.integer'     => 'El postulante debe ser un número entero.',
-            'postulante_id.exists'      => 'El postulante seleccionado no existe.',
+public function messages(): array
+{
+    return [
+        'titulo.required'           => 'El título es obligatorio.',
+        'titulo.string'             => 'El título debe ser texto.',
+        'titulo.max'                => 'El título no puede tener más de 255 caracteres.',
 
-            'titulo.required'           => 'El título es obligatorio.',
-            'titulo.string'             => 'El título debe ser texto.',
-            'titulo.max'                => 'El título no puede tener más de 255 caracteres.',
+        'unidad_educativa.string'   => 'La unidad educativa debe ser texto.',
+        'unidad_educativa.max'      => 'La unidad educativa no puede tener más de 255 caracteres.',
 
-            'unidad_educativa.required' => 'La unidad educativa es obligatoria.',
-            'unidad_educativa.string'   => 'La unidad educativa debe ser texto.',
-            'unidad_educativa.max'      => 'La unidad educativa no puede tener más de 255 caracteres.',
+        'cargo.string'              => 'El cargo debe ser texto.', // 👈 nuevo mensaje
+        'cargo.max'                 => 'El cargo no puede tener más de 255 caracteres.',
 
-            'modalidad.required'        => 'La modalidad es obligatoria.',
-            'modalidad.string'          => 'La modalidad debe ser texto.',
-            'modalidad.max'             => 'La modalidad no puede tener más de 255 caracteres.',
+        'modalidad.string'          => 'La modalidad debe ser texto.',
+        'modalidad.max'             => 'La modalidad no puede tener más de 255 caracteres.',
 
             'doc_titulo.file' => 'El documento debe ser un archivo válido.',
             'doc_titulo.mimes' => 'El documento debe ser un archivo PDF.',

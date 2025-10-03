@@ -32,7 +32,7 @@ class PostulanteClase extends UsuarioClase
     }
 
 
-    public function show()
+     public function show()
     {
         $authUser = auth()->user();
 
