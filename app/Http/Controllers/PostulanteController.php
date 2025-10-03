@@ -8,6 +8,7 @@ use App\Http\Requests\CrearPostulanteRequest;
 use App\Http\Requests\ActualizarPostulanteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use App\Models\Postulante;
 
 class PostulanteController extends Controller
 {
@@ -34,12 +35,13 @@ class PostulanteController extends Controller
 
     public function show(string $id)
     {
-        $postulante = $this->postulante->show($id);
-
+        $postulante = Postulante::with('usuario.user')->findOrFail($id);
+    
         return response()->json([
             'postulante' => $postulante
         ], 200);
     }
+
 
     public function update(CrearPostulanteRequest $request, string $id)
     {
