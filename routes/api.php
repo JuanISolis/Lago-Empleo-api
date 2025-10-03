@@ -50,8 +50,13 @@ Route::get('/verempresas', [EmpresasController::class, 'index']);
 
 // endpoints con acceso restringido por token
 Route::middleware('auth:sanctum')->group(function () {
+  // ruta para actualizar la contraseña del usuario logueado
+
+    Route::put('/actualizarpassword', [SesionController::class, 'actualizar']);
+
       
   Route::post('/actualizarperfil', [UsuarioController::class, 'actualizarPerfil']);
+  
 
     // para cerrar sesion
     Route::post('/logout', [SesionController::class, 'logout']);
