@@ -11,7 +11,7 @@ use App\Http\Requests\CrearCapacidadRequest;
 use Illuminate\Routing\Controller;
 
 
-class CapacidadController extends Controller
+class  CapacidadController extends Controller
 {
     protected $capacidades;
 
@@ -28,8 +28,14 @@ class CapacidadController extends Controller
 
     public function listarHabilidades()
     {
-        $habilidades = $this->capacidades->listarHabilidades();
-        return response()->json($habilidades, 200);
+        try {
+            $habilidades = $this->capacidades->listarHabilidades();
+            return response()->json($habilidades);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
     
 

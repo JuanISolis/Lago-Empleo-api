@@ -128,8 +128,7 @@ class EmpresasController extends Controller
             // $ofertas = $servicio->show(); 
         
             return response()->json([
-                'mensaje' => 'Ofertas laborales recuperadas correctamente.',
-                'ofertas' => $empresas
+                'data' => $empresas
             ], 200);
         
         } catch (\Exception $e) {

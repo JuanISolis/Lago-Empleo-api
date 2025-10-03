@@ -60,7 +60,7 @@ class SesionController extends Controller
             $resetPassword = $this->sesion->passolvidada($validated);
 
             return response()->json([
-                'login' => $resetPassword
+                'data' => true
             ], 200);
 
         } catch (\Exception $e) {

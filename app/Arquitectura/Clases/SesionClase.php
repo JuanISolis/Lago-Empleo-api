@@ -5,6 +5,9 @@ namespace App\Arquitectura\Clases;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail;
+
 
 class SesionClase extends UserClase 
 {
@@ -65,14 +68,14 @@ class SesionClase extends UserClase
         $hashpass = bcrypt($resetPassword);
 
         $user->update([
-            'password'=> $hashpass,
+            'password' => $hashpass,
             'recuperacion' => true,
         ]);
 
-        return [
-            'mensaje' => 'Contraseña reseteada, por favor vuelva a intentar iniciar sesion',
-            'contraseña' => $resetPassword,
-        ];
+        // Enviar correo con la contraseña temporal
+        Mail::to($user->email)->send(new ResetPasswordMail($resetPassword));
 
+        return true;
     }
+
 }
