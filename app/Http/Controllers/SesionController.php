@@ -77,29 +77,5 @@ class SesionController extends Controller
         return response()->json(['message' => 'Función de eliminación no implementada'], 501);
     }
 
-
-   public function actualizar(Request $request)
-{
-    try {
-        $request->validate([
-            'password' => 'required|string|min:6|confirmed', // confirmed requiere password_confirmation
-        ]);
-
-        $user = $request->user(); // usuario autenticado
-        $user->password = bcrypt($request->password);
-        $user->recuperacion = false; // si usas el campo recuperación
-        $user->save();
-
-        return response()->json([
-            'message' => 'Contraseña actualizada correctamente'
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => $e->getMessage()
-        ], $e->getCode() ?: 500);
-    }
-}
-
-
 }
 
