@@ -77,5 +77,25 @@ class SesionClase extends UserClase
 
         return true;
     }
+public function actualizarpassword($request)
+{
+    $user = auth()->user(); // usuario autenticado con token
+
+    if (!$user) {
+        throw new \Exception('Usuario no autenticado', 401);
+    }
+
+    $user->password = bcrypt($request->password);
+    $user->recuperacion = false; // ya no necesita reset
+    $user->save();
+
+    return response()->json([
+        'message' => 'Contraseña actualizada correctamente'
+    ], 200);
+}
+
+
+
+
 
 }
