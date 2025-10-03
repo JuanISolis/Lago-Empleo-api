@@ -95,7 +95,7 @@ class CapacidadesClase extends PostulanteClase
     }
 
     // Actualizar una habilidad del postulante
-    public function actualizarHabilidad($habilidadId, $nuevaHabilidad)
+    public function actualizarHabilidad(array $datos)
     {
             $authUser = auth()->user();
 
@@ -103,13 +103,13 @@ class CapacidadesClase extends PostulanteClase
             throw new \Exception('Usuario no autenticado', 401);
         }
 
-        $usuario = $authUser->usuario;
+        $postulante = $authUser->usuario->postulante;
 
-        if (!$usuario) {
-            throw new \Exception('No se encontró el perfil de usuario.', 404);
+        if (!$postulante) {
+            throw new \Exception('No se encontró el perfil de postulante.', 404);
         }
 
-        $habilidad = $usuario->habilidades()->where('id', $habilidadId)->first();
+        $habilidad = $postulante->habilidades()->where('id', $habilidad)->first();
 
         if (!$habilidad) {
             throw new \Exception('Habilidad no encontrada o no pertenece al usuario.', 404);
@@ -117,11 +117,14 @@ class CapacidadesClase extends PostulanteClase
 
         \Log::info('📦 Datos que van a actualizarse en la BD (servicio - habilidad):', $datos);
 
+
+        // Eliminar el campo habilidad_id después de la actualización
+        unset($datos['id']);
+        
         // Actualizar la habilidad
         $habilidad->update($datos);
 
-        // Eliminar el campo habilidad_id después de la actualización
-        unset($datos['libreria_habilidades_id']);
+        
 
         \Log::info('📦 Datos actualizados (habilidad):', $habilidad->toArray());
 
