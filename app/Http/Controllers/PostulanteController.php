@@ -34,12 +34,13 @@ class PostulanteController extends Controller
 
     public function show(string $id)
     {
-        $postulante = $this->postulante->show($id);
-
+        $postulante = Postulante::with('usuario.user')->findOrFail($id);
+    
         return response()->json([
             'postulante' => $postulante
         ], 200);
     }
+
 
     public function update(CrearPostulanteRequest $request, string $id)
     {
