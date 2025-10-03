@@ -70,5 +70,6 @@ class SesionController extends Controller
         // Implementación pendiente
         return response()->json(['message' => 'Función de eliminación no implementada'], 501);
     }
+
 }
 

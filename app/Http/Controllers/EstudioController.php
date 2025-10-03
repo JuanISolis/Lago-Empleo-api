@@ -163,4 +163,29 @@ class EstudioController extends Controller
             'Content-Type' => 'application/pdf',
         ]);
     }
+    // Mostrar un solo estudio
+public function show($id)
+{
+    $authUser = auth()->user();
+    if (!$authUser) {
+        return response()->json(['message' => 'Usuario no autenticado'], 401);
+    }
+
+    $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+    if (!$postulante) {
+        return response()->json(['message' => 'No existe un postulante asociado'], 404);
+    }
+
+    $estudio = $this->estudio->buscar($id);
+    if (!$estudio) {
+        return response()->json(['message' => 'Estudio no encontrado'], 404);
+    }
+
+    if ($estudio->postulante_id !== $postulante->id) {
+        return response()->json(['message' => 'No autorizado'], 403);
+    }
+
+    return response()->json($estudio, 200);
+}
+
 }
