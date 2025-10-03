@@ -8,6 +8,7 @@ use App\Http\Requests\CrearPostulanteRequest;
 use App\Http\Requests\ActualizarPostulanteRequest;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use App\Models\Postulante;
 
 class PostulanteController extends Controller
 {
