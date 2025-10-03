@@ -103,13 +103,13 @@ class CapacidadesClase extends PostulanteClase
             throw new \Exception('Usuario no autenticado', 401);
         }
 
-        $usuario = $authUser->usuario->postulante->id;
+        $postulante = $authUser->usuario->postulante;
 
         if (!$postulante) {
             throw new \Exception('No se encontró el perfil de postulante.', 404);
         }
 
-        $habilidad = $usuario->habilidades()->where('id', $habilidadId)->first();
+        $habilidad = $postulante->habilidades()->where('id', $habilidad)->first();
 
         if (!$habilidad) {
             throw new \Exception('Habilidad no encontrada o no pertenece al usuario.', 404);
