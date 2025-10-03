@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // controla la tabla user, credenciales de sesion como correo, password o rol
     Route::apiResource('user', UserController::class)->except(['store']);
-    Route::put('actualizarpassword', [UserController::class, 'actualizarPassword']);
+    Route::put('resetpassword', [UserController::class, 'actualizarPassword']);
 
     // informacion del usuario, datos basicos
     Route::get('/perfil', [UsuarioController::class, 'show']);
