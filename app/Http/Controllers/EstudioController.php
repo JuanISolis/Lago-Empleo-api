@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Arquitectura\Clases\EstudioClase;
 use App\Http\Requests\CrearEstudioRequest;
 use App\Models\Postulante;
+use App\Models\Usuario;
 use Illuminate\Routing\Controller;
 
 class EstudioController extends Controller
@@ -24,7 +25,12 @@ class EstudioController extends Controller
             return response()->json(['message' => 'Usuario no autenticado'], 401);
         }
 
-        $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+        $usuario = Usuario::where('user_id', $authUser->id)->first();
+        if (!$usuario) {
+            return response()->json(['message' => 'No existe un perfil de usuario asociado'], 404);
+        }
+
+        $postulante = Postulante::where('usuario_id', $usuario->id)->first();
         if (!$postulante) {
             return response()->json(['message' => 'No existe un postulante asociado'], 404);
         }
@@ -38,13 +44,17 @@ class EstudioController extends Controller
     {
         try {
             $validated = $request->validated();
-
             $authUser = auth()->user();
             if (!$authUser) {
                 throw new \Exception('Usuario no autenticado', 401);
             }
 
-            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            $usuario = Usuario::where('user_id', $authUser->id)->first();
+            if (!$usuario) {
+                throw new \Exception('No existe un perfil de usuario asociado', 404);
+            }
+
+            $postulante = Postulante::where('usuario_id', $usuario->id)->first();
             if (!$postulante) {
                 throw new \Exception('No existe un postulante asociado a este usuario', 400);
             }
@@ -115,7 +125,12 @@ class EstudioController extends Controller
                 return response()->json(['message' => 'Usuario no autenticado'], 401);
             }
 
-            $postulante = Postulante::where('usuario_id', $authUser->id)->first();
+            $usuario = Usuario::where('user_id', $authUser->id)->first();
+            if (!$usuario) {
+                return response()->json(['message' => 'No existe un perfil de usuario asociado'], 404);
+            }
+
+            $postulante = Postulante::where('usuario_id', $usuario->id)->first();
             if (!$postulante) {
                 return response()->json(['message' => 'No existe un postulante asociado'], 404);
             }
@@ -163,29 +178,34 @@ class EstudioController extends Controller
             'Content-Type' => 'application/pdf',
         ]);
     }
+
     // Mostrar un solo estudio
-public function show($id)
-{
-    $authUser = auth()->user();
-    if (!$authUser) {
-        return response()->json(['message' => 'Usuario no autenticado'], 401);
+    public function show($id)
+    {
+        $authUser = auth()->user();
+        if (!$authUser) {
+            return response()->json(['message' => 'Usuario no autenticado'], 401);
+        }
+
+        $usuario = Usuario::where('user_id', $authUser->id)->first();
+        if (!$usuario) {
+            return response()->json(['message' => 'No existe un perfil de usuario asociado'], 404);
+        }
+
+        $postulante = Postulante::where('usuario_id', $usuario->id)->first();
+        if (!$postulante) {
+            return response()->json(['message' => 'No existe un postulante asociado'], 404);
+        }
+
+        $estudio = $this->estudio->buscar($id);
+        if (!$estudio) {
+            return response()->json(['message' => 'Estudio no encontrado'], 404);
+        }
+
+        if ($estudio->postulante_id !== $postulante->id) {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+
+        return response()->json($estudio, 200);
     }
-
-    $postulante = Postulante::where('usuario_id', $authUser->id)->first();
-    if (!$postulante) {
-        return response()->json(['message' => 'No existe un postulante asociado'], 404);
-    }
-
-    $estudio = $this->estudio->buscar($id);
-    if (!$estudio) {
-        return response()->json(['message' => 'Estudio no encontrado'], 404);
-    }
-
-    if ($estudio->postulante_id !== $postulante->id) {
-        return response()->json(['message' => 'No autorizado'], 403);
-    }
-
-    return response()->json($estudio, 200);
-}
-
 }
