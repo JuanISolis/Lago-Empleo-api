@@ -109,7 +109,9 @@ class CapacidadesClase extends PostulanteClase
             throw new \Exception('No se encontró el perfil de postulante.', 404);
         }
 
-        $habilidad = $postulante->habilidades()->where('id', $habilidad)->first();
+        $habilidadentrante = $datos['id'];
+
+        $habilidad = $postulante->habilidades()->where('id', $habilidadentrante)->first();
 
         if (!$habilidad) {
             throw new \Exception('Habilidad no encontrada o no pertenece al usuario.', 404);

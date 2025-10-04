@@ -34,11 +34,11 @@ class ActualizarHabilidadRequest extends FormRequest
     {
         return [
             'libreria_habilidades_id' => 'required|exists:habilidads,id',
-            'habilidads' => [
-                'sometimes',
-                'string',
+            'id' => [
+                'required',
+                'int',
                 'max:255',
-                Rule::unique('habilidads', 'habilidads')->ignore($this->habilidad_id),
+                Rule::unique('habilidads', 'id')->ignore($this->habilidad_id),
             ],
         ];
     }
@@ -46,11 +46,12 @@ class ActualizarHabilidadRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'habilidad_id.required' => 'El id de la habilidad es obligatorio.',
-            'habilidad_id.exists' => 'El id de la habilidad no existe.',
-            'habilidad.string' => 'La habilidad debe ser una cadena de texto.',
-            'habilidad.max' => 'La habilidad no puede superar los 255 caracteres.',
-            'habilidad.unique' => 'La habilidad ya está registrada.',
+            'libreria_habilidades_id.required' => 'El id de la habilidad es obligatorio.',
+            'libreria_habilidades_id.exists' => 'El id de la habilidad no existe.',
+            'id.required' => 'La habilidad debe ser requerida.',
+            'id.int' => 'La habilidad debe ser una cadena de texto.',
+            'id.max' => 'La habilidad no puede superar los 255 caracteres.',
+            'id.unique' => 'La habilidad ya está registrada.',
         ];
     }
 }
