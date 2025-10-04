@@ -20,6 +20,7 @@ use App\Http\Controllers\LibreriaIdiomaController;
 use App\Http\Controllers\OfertaLaboralController;
 use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\PostulanteController;
+use App\Http\Controllers\DatosPostulanteController;
 
 // endpoints de sesion
 Route::prefix('sesion')->group(function () {
@@ -75,6 +76,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/infopostulante',[PostulanteController::class,'infopostulante'] );
     Route::put('/actualizarpostulante', [PostulanteController::class, 'actualizarpostulante']);
     Route::apiResource('postulante', PostulanteController::class);
+
+    Route::get('/datospostulante/{id}', [DatosPostulanteController::class, 'show']);
     
     Route::apiResource('estudio', EstudioController::class);
     Route::get('/estudio/{id}/descargar', [EstudioController::class, 'descargar']);
@@ -85,7 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/capacidad/habilidad', [CapacidadController::class, 'agregarHabilidad']);
     Route::get('/capacidad/habilidad', [CapacidadController::class, 'listarHabilidades']);
-    Route::put('/capacidad/habilidad', [CapacidadController::class, 'actualizarHabilidad']);
+  Route::put('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'actualizarHabilidad']);
     Route::delete('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'eliminarHabilidad']);
 
     // Rutas personalizadas para idiomas
