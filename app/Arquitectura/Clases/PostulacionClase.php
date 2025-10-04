@@ -37,37 +37,42 @@ class PostulacionClase {
     public function actualizar(array $datos)
     {
         $authUser = auth()->user();
-    
+
+        if (!$authUser) {
+            throw new \Exception('Usuario autenticado no encontrado.', 401);
+        }
+
         $usuario = $authUser->usuario;
-    
+
         if (!$usuario) {
             throw new \Exception('Usuario asociado no encontrado.', 404);
         }
-    
+
         $postulacionId = $datos['postulacion_id'] ?? null;
-    
+
         if (!$postulacionId) {
-            throw new \Exception('ID de postulacion no especificado.', 400);
+            throw new \Exception('ID de postulación no especificado.', 400);
         }
-    
-        // Buscar la empresa que pertenece al usuario
-        $postulacion = $usuario->postulante->postulacion()->where('id', $postulacionId)->first();
-    
+
+        // Buscar la postulación del postulante autenticado
+        $postulacion = Postulacion::where('id', $postulacionId)->first();
+
         if (!$postulacion) {
-            throw new \Exception('Postulacion no encontrada o no pertenece al usuario.', 404);
+            throw new \Exception('Postulación no encontrada o no pertenece al usuario.', 404);
         }
-    
+
         \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
-    
-        // Quitar el campo empresa_id para evitar que intente actualizarlo
+
+        // Quitar el campo postulacion_id para evitar que intente actualizarlo
         unset($datos['postulacion_id']);
-    
+
         $postulacion->update($datos);
-    
-        \Log::info('📦 Datos actualizados:', $empresa->toArray());
-    
+
+        \Log::info('📦 Datos actualizados:', $postulacion->toArray());
+
         return $postulacion;
     }
+
 
     public function show(array $datos)
     {
