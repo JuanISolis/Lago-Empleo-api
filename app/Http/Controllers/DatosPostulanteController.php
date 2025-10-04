@@ -17,7 +17,7 @@ class DatosPostulanteController extends Controller
     public function show(string $id)
     {
 
-        $postulante = Postulante::with('habilidad','idioma','estudio','experiencialaboral')->findOrFail($id);
+        $postulante = Postulante::with('habilidad.libreria_habilidad','idioma.libreria_idioma','estudio','experiencialaboral')->findOrFail($id);
         
         return response()->json([
             'postulante' => $postulante

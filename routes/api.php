@@ -102,6 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/actualizarofertalaboral', [OfertaLaboralController::class, 'actualizaroferta']);
     Route::apiResource('oferta_laboral', OfertaLaboralController::class)->except(['index']);
     Route::get('/ofertalaboralempleador', [OfertaLaboralController::class, 'mostrarOfertasempleador']);
+    Route::get('/buscar-ofertas', [OfertaLaboralController::class, 'buscarOfertas']);
 
     Route::apiResource('postulacion', PostulacionController::class);
     Route::put('/aceptarpostulacion', [PostulacionController::class, 'aceptarpostulacion']);
