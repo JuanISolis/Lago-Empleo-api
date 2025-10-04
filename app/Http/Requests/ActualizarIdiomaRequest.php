@@ -11,7 +11,7 @@ class ActualizarIdiomaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class ActualizarIdiomaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'idioma' => ['sometimes', 'string', 'max:255'],
+            'nivel' => ['sometimes', 'string', 'max:255', 'in:Básico,Intermedio,Avanzado,Nativo'],
+            'libreria_idiomas_id' => ['sometimes', 'integer', 'exists:libreria_idiomas,id'],
         ];
     }
 }
