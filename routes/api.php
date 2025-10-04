@@ -88,7 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/capacidad/habilidad', [CapacidadController::class, 'agregarHabilidad']);
     Route::get('/capacidad/habilidad', [CapacidadController::class, 'listarHabilidades']);
-    Route::put('/capacidad/habilidad', [CapacidadController::class, 'actualizarHabilidad']);
+  Route::put('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'actualizarHabilidad']);
     Route::delete('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'eliminarHabilidad']);
 
     // Rutas personalizadas para idiomas
@@ -102,6 +102,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/actualizarofertalaboral', [OfertaLaboralController::class, 'actualizaroferta']);
     Route::apiResource('oferta_laboral', OfertaLaboralController::class)->except(['index']);
     Route::get('/ofertalaboralempleador', [OfertaLaboralController::class, 'mostrarOfertasempleador']);
+    Route::get('/buscar-ofertas', [OfertaLaboralController::class, 'buscarOfertas']);
 
     Route::apiResource('postulacion', PostulacionController::class);
     Route::put('/aceptarpostulacion', [PostulacionController::class, 'aceptarpostulacion']);

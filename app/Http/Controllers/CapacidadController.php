@@ -9,6 +9,7 @@ use App\Arquitectura\Clases\LibreriahabilidadesClase;
 use App\Arquitectura\Clases\LibreriaidiomaClase;
 use App\Http\Requests\CrearCapacidadRequest; 
 use App\Http\Requests\ActualizarHabilidadRequest;
+use App\Http\Requests\ActualizarIdiomaRequest;
 use Illuminate\Routing\Controller;
 
 
@@ -43,7 +44,8 @@ class  CapacidadController extends Controller
     public function agregarIdioma(Request $request)
     {
         $datos = $request->only(['idioma', 'nivel']);
-        return $this->capacidades->agregarIdioma($datos, 201);
+        $idioma = $this->capacidades->agregarIdioma($datos);
+        return response()->json($idioma, 201);
     }
 
     public function listarIdiomas()
@@ -86,6 +88,29 @@ class  CapacidadController extends Controller
     public function eliminarHabilidad($habilidadId)
     {
         $resultado = $this->capacidades->eliminarHabilidad($habilidadId);
+        return response()->json($resultado, 200);
+    }
+
+    public function actualizarIdioma(ActualizarIdiomaRequest $request, $idiomaId)
+    {
+        try {
+            $datos = $request->validated();
+            $idiomaActualizado = $this->capacidades->actualizarIdioma($datos, $idiomaId);
+            return response()->json([
+                'mensaje' => 'Idioma actualizado con éxito',
+                'idioma' => $idiomaActualizado
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'mensaje' => 'Error al actualizar idioma',
+                'error' => $e->getMessage()
+            ], $e->getCode() ?: 400);
+        }
+    }
+
+    public function eliminarIdioma($idiomaId)
+    {
+        $resultado = $this->capacidades->eliminarIdioma($idiomaId);
         return response()->json($resultado, 200);
     }
 
