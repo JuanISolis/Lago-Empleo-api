@@ -22,6 +22,7 @@ use App\Http\Controllers\PostulacionController;
 use App\Http\Controllers\PostulanteController;
 use App\Http\Controllers\DatosPostulanteController;
 
+
 // endpoints de sesion
 Route::prefix('sesion')->group(function () {
 
@@ -68,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('usuario', UsuarioController::class);
 
     Route::apiResource('actividad', ActividadController::class);
+    Route::get('/notificaciones', [ActividadController::class, 'notificaciones']);
 
     Route::put('/actualizarempresa', [EmpresasController::class, 'actualizarempresa']);
     Route::get('/VermiEmpresa', [EmpresasController::class, 'mostrarEmpresa']);
