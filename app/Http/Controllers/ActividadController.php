@@ -4,62 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Actividad;
+use Illuminate\Support\Facades\Auth;
+
 
 class ActividadController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function notificaciones(Request $request)
     {
-        //
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'No autenticado'], 401);
+        }
+
+        // Trae TODAS las notificaciones ordenadas por fecha
+        $notificaciones = $user->notifications()->latest()->get();
+
+        // Mapea las notificaciones para devolver solo la info útil
+        $formateadas = $notificaciones->map(function ($noti) {
+            return [
+                'id' => $noti->id,
+                'tipo' => $noti->data['tipo'] ?? null,
+                'descripcion' => $noti->data['descripcion'] ?? null,
+                'rol' => $noti->data['rol'] ?? null,
+                'oferta_id' => $noti->data['oferta_id'] ?? null,
+                'read_at' => $noti->read_at,
+                'created_at' => $noti->created_at->format('Y-m-d H:i:s'),
+            ];
+        });
+
+        return response()->json([
+            'notificaciones' => $formateadas,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }//
 }
