@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Actividad;
 use App\Models\User;
 use App\Notifications\ActividadNotification;
+use Illuminate\Support\Facades\Auth;
 
 class ActividadObserver
 {

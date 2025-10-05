@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Actividad;
+use Illuminate\Support\Facades\Auth;
 
 
 class ActividadController
@@ -12,13 +13,13 @@ class ActividadController
     public function notificaciones(Request $request)
     {
         $user = Auth::user();
-    
+
         if (!$user) {
             return response()->json(['message' => 'No autenticado'], 401);
         }
-    
+
         $notificaciones = $user->notifications()->latest()->get();
-    
+
         return response()->json($notificaciones);
     }
 
