@@ -15,6 +15,8 @@ class ActividadObserver
 
     public function created(Actividad $actividad)
     {
+        \Log::info('🎯 Observer Actividad creado disparado', ['actividad' => $actividad]);
+        \Log::info('Observer Actividad creado disparado', ['actividad' => $actividad->toArray()]);
         switch ($actividad->tipo) {
 
             case 'oferta_publicada':
@@ -42,6 +44,13 @@ class ActividadObserver
                 break;
 
             case 'postulante_aceptado':
+
+                $postulante = User::find($actividad->user_id);
+                if ($postulante) {
+                    $postulante->notify(new ActividadNotification($actividad));
+                }
+                break;
+            case 'postulante_rechazado':
 
                 $postulante = User::find($actividad->user_id);
                 if ($postulante) {

@@ -3,12 +3,13 @@
 namespace App\Arquitectura\Clases;
 
 use App\Models\Postulacion;
+use App\Models\Actividad;
+use App\Models\User;
 
 class PostulacionClase {
     
     public function crear(array $datos)
     {
-        
         try {
             $usuarioAutenticado = auth()->user();
 
@@ -16,10 +17,36 @@ class PostulacionClase {
                 throw new \Exception('Usuario no autenticado.', 401);
             }
 
-            
-            $datos['postulante_id'] = $usuarioAutenticado->usuario->postulante->id;
+            $postulante = $usuarioAutenticado->usuario->postulante;
+            $datos['postulante_id'] = $postulante->id;
+
+            \Log::info('📦 Datos que van a crearse en la BD (servicio):', $datos);
 
             $postulacion = Postulacion::create($datos);
+
+            \Log::info('📦 Datos creados:', $postulacion->toArray());
+
+            // ✅ Crear actividad para notificar al empleador
+            $oferta = $postulacion->OfertaLaboral;
+            $empresa = $oferta?->informacionEmpresa;
+            $usuarioEmpresa = $empresa?->usuario;
+            $empleador = $usuarioEmpresa?->user;
+
+
+            // \Log::info('Empleador (dump): ' . print_r($empleador, true));
+
+
+            if ($empleador) {
+                $actividad = Actividad::create([
+                    'tipo' => 'postulacion_realizada',
+                    'descripcion' => 'Una Persona se ha postulado a tu oferta: ' . $oferta->titulo_ofertalaboral,
+                    'rol' => 'empleador',
+                    'user_id' => $empleador->id,
+                ]);
+
+                \Log::info('Actividad creada', $actividad->toArray());
+
+            }
 
             return [
                 'postulacion' => $postulacion
@@ -31,7 +58,6 @@ class PostulacionClase {
                 'codigo' => $e->getCode() ?: 500
             ];
         }
-
     }
 
     public function actualizar(array $datos)
@@ -54,7 +80,6 @@ class PostulacionClase {
             throw new \Exception('ID de postulación no especificado.', 400);
         }
 
-        // Buscar la postulación del postulante autenticado
         $postulacion = Postulacion::where('id', $postulacionId)->first();
 
         if (!$postulacion) {
@@ -63,12 +88,30 @@ class PostulacionClase {
 
         \Log::info('📦 Datos que van a actualizarse en la BD (servicio):', $datos);
 
-        // Quitar el campo postulacion_id para evitar que intente actualizarlo
         unset($datos['postulacion_id']);
 
         $postulacion->update($datos);
 
         \Log::info('📦 Datos actualizados:', $postulacion->toArray());
+
+        // ✅ Crear actividad según aceptación o rechazo
+        $postulanteUser = $postulacion->Postulante->usuario->user ?? null;
+
+        if ($postulanteUser) {
+            $estado = $postulacion->estado; // Booleano true o false
+            $tipo = $estado ? 'postulante_aceptado' : 'postulante_rechazado';
+            $descripcion = $estado
+                ? 'Fuiste aceptado en la oferta: ' . $postulacion->ofertalaboral->titulo_ofertalaboral
+                : 'Tu postulación fue rechazada en la oferta: ' . $postulacion->ofertalaboral->titulo_ofertalaboral;
+
+            Actividad::create([
+                'tipo' => $tipo,
+                'descripcion' => $descripcion,
+                'rol' => 'postulante',
+                'user_id' => $postulanteUser->id,
+            ]);
+
+        }
 
         return $postulacion;
     }
