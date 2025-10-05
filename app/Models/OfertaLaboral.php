@@ -25,7 +25,7 @@ class OfertaLaboral extends Model
         'informacion_empresa_id'
     ];
 
-    public function informacionEmpresas()
+    public function informacionEmpresa()
     {
         return $this->belongsTo(InformacionEmpresa::class); 
     }
