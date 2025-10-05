@@ -28,7 +28,6 @@ class CrearEmpresaRequest extends FormRequest
         return [
             'ruc' => 'required|string|unique:informacion_empresas,ruc',
             'nombre_empresa' => 'required|string|max:255|unique:informacion_empresas,nombre_empresa',
-
             'descripcion' => 'required|string',
             'imagen_empresa' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             
