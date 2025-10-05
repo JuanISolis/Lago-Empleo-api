@@ -114,6 +114,41 @@ class PostulacionClase {
         return $postulaciones;
     }
 
+    public function actualizarEstadoPostulaciones()
+{
+    try {
+        // Obtener la fecha actual
+        $fechaActual = now();
+
+        // Buscar todas las postulaciones donde la fecha coincide con la actual y el estado está vacío
+        $postulaciones = Postulacion::whereDate('fecha', $fechaActual)
+            ->whereNull('estado')
+            ->get();
+
+        if ($postulaciones->isEmpty()) {
+            return [
+                'mensaje' => 'No hay postulaciones que cumplan con los criterios.',
+                'codigo' => 200
+            ];
+        }
+
+        // Actualizar el estado de las postulaciones encontradas a falso
+        foreach ($postulaciones as $postulacion) {
+            $postulacion->update(['estado' => false]);
+        }
+
+        return [
+            'mensaje' => 'Postulaciones actualizadas correctamente.',
+            'cantidad' => $postulaciones->count()
+        ];
+    } catch (\Exception $e) {
+        return [
+            'mensaje' => $e->getMessage(),
+            'codigo' => $e->getCode() ?: 500
+        ];
+    }
+}
+
 
 
 
