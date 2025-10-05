@@ -18,26 +18,7 @@ class PostulacionController
         $this->postulacion = $postulacion;
     }
     
-    
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(CrearPostulacionRequest $request)
     {
         try {
@@ -101,6 +82,7 @@ class PostulacionController
         }
     }
 
+<<<<<<< HEAD
 
     /**
      * Display the specified resource.
@@ -134,3 +116,6 @@ class PostulacionController
         //
     }
 }
+=======
+}
+>>>>>>> e202a0ebadc41d5c1eca823befa74e4d83077ac0

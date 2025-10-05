@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SesionController;
 use App\Http\Controllers\UsuarioController;
-
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\EmpresasController;
 use App\Http\Controllers\EstudioController;
 use App\Http\Controllers\ExperienciaLaboralController;
 use App\Http\Controllers\CapacidadController;
-// use App\Http\Controllers\HabilidadController;
-// use App\Http\Controllers\IdiomaController;
 use App\Http\Controllers\InformacioEmpresaController;
 use App\Http\Controllers\LibreriaHabilidadController;
 use App\Http\Controllers\LibreriaIdiomaController;
@@ -41,14 +38,6 @@ Route::post('/user', [UserController::class, 'store']);
 Route::get('/verofertaslaborales', [OfertaLaboralController::class, 'index']);
 Route::get('/verempresas', [EmpresasController::class, 'index']);
 
-
-
-
-// Route::apiResource('habilidad', HabilidadController::class);
-// Route::apiResource('idioma', IdiomaController::class);
-// Route::apiResource('informacion_empresa', InformacioEmpresaController::class);
-//Route::apiResource('libreria_habilidad', LibreriaHabilidadController::class);
-//Route::apiResource('libreria_idioma', LibreriaIdiomaController::class);
 
 // endpoints con acceso restringido por token
 Route::middleware('auth:sanctum')->group(function () {

@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-    Actividad::observe(ActividadObserver::class);
+        \Log::info('✅ AppServiceProvider boot ejecutado');
+        Actividad::observe(ActividadObserver::class);
     }
 }
