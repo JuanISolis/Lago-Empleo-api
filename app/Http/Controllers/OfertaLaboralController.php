@@ -167,4 +167,27 @@ class OfertaLaboralController extends Controller
             ], $e->getCode() ?: 400);
         }
     }
+
+    public function buscarOfertas(Request $request)
+    {
+        $query = OfertaLaboral::query();
+
+        // Filtrar por descripción utilizando el campo 'titulo_ofertalaboral'
+        if ($request->filled('descripcion')) {
+            $query->where('titulo_ofertalaboral', 'like', '%' . $request->input('descripcion') . '%');
+        }
+
+        // Filtrar por ubicación utilizando el campo 'ubicacion'
+        if ($request->filled('ubicacion')) {
+            $query->where('ubicacion', 'like', '%' . $request->input('ubicacion') . '%');
+        }
+
+        // Obtener resultados
+        $ofertas = $query->get();
+
+        return response()->json([
+            'mensaje' => 'Búsqueda realizada con éxito.',
+            'ofertas' => $ofertas
+        ], 200);
+    }
 }

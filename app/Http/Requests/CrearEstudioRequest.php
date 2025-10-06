@@ -32,13 +32,8 @@ class CrearEstudioRequest extends FormRequest
 
 
         ];
-        if ($request->hasFile('doc_titulo')) {
-        $file = $request->file('doc_titulo'); // Esto sí es un UploadedFile
-        $nombreArchivo = $file->getClientOriginalName();
+        
 
-        // Guardar archivo
-        $ruta = $file->storeAs('titulos', $nombreArchivo, 'public');
-}
     }
 
 public function messages(): array
