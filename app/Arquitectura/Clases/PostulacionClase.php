@@ -162,42 +162,41 @@ class PostulacionClase {
         return $postulaciones;
     }
 
-    public function actualizarEstadoPostulaciones()
-{
-    try {
-        // Obtener la fecha actual
-        $fechaActual = now();
+    public function actualizarEstadoPostulacionesVencidas()
+    {
+        try {
+            // Obtener la fecha actual
+            $fechaActual = now();
 
-        // Buscar todas las postulaciones donde la fecha coincide con la actual y el estado está vacío
-        $postulaciones = Postulacion::whereDate('fecha', $fechaActual)
-            ->whereNull('estado')
-            ->get();
+            // Buscar todas las postulaciones con estado vacío (null) y ofertas vencidas
+            $postulaciones = Postulacion::whereNull('estado')
+                ->whereHas('ofertaLaboral', function ($query) use ($fechaActual) {
+                    $query->where('fecha_inicio', '<', $fechaActual); // Usar fecha_inicio como fecha de vencimiento
+                })
+                ->get();
 
-        if ($postulaciones->isEmpty()) {
+            if ($postulaciones->isEmpty()) {
+                return [
+                    'mensaje' => 'No hay postulaciones con ofertas vencidas.',
+                    'codigo' => 200
+                ];
+            }
+
+            // Actualizar el estado de las postulaciones encontradas a falso
+            foreach ($postulaciones as $postulacion) {
+                $postulacion->update(['estado' => false]);
+            }
+
             return [
-                'mensaje' => 'No hay postulaciones que cumplan con los criterios.',
-                'codigo' => 200
+                'mensaje' => 'Postulaciones actualizadas correctamente.',
+                'cantidad' => $postulaciones->count()
+            ];
+        } catch (\Exception $e) {
+            return [
+                'mensaje' => $e->getMessage(),
+                'codigo' => $e->getCode() ?: 500
             ];
         }
-
-        // Actualizar el estado de las postulaciones encontradas a falso
-        foreach ($postulaciones as $postulacion) {
-            $postulacion->update(['estado' => false]);
-        }
-
-        return [
-            'mensaje' => 'Postulaciones actualizadas correctamente.',
-            'cantidad' => $postulaciones->count()
-        ];
-    } catch (\Exception $e) {
-        return [
-            'mensaje' => $e->getMessage(),
-            'codigo' => $e->getCode() ?: 500
-        ];
     }
-}
-
-
-
 
 }
