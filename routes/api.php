@@ -79,7 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/capacidad/habilidad', [CapacidadController::class, 'agregarHabilidad']);
     Route::get('/capacidad/habilidad', [CapacidadController::class, 'listarHabilidades']);
-  Route::put('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'actualizarHabilidad']);
+    Route::put('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'actualizarHabilidad']);
     Route::delete('/capacidad/habilidad/{habilidadId}', [CapacidadController::class, 'eliminarHabilidad']);
 
     // Rutas personalizadas para idiomas

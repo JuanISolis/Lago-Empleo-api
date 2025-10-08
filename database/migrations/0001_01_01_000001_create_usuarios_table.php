@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string ('sexo');
             $table->unsignedBigInteger ('contacto');
             $table->string ('direccion')->nullable();
+            $table->boolean('estado')->default(true);
             $table->timestamps();
         });
     }
