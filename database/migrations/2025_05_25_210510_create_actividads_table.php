@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('tipo');
             $table->text('descripcion');
-            $table->date ('fecha');
             $table->string('rol');
             $table->timestamps();
         });

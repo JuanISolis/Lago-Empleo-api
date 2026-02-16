@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('oferta_laborars', function (Blueprint $table) {
+        Schema::create('oferta_laborals', function (Blueprint $table) {
             $table->id();
             $table->string('titulo_ofertalaboral');
             $table->text('descripcion');
@@ -23,11 +23,11 @@ return new class extends Migration
             $table->string('experiencia');
             $table->string('nivel_estudio');
             $table->integer('edad');
-            $table->boolean('estado');
+            $table->boolean('estado')->default(true);
             $table->timestamps();
 
-            $table->unsignedBigInteger('imformacion_empresa_id');
-            $table->foreign('imformacion_empresa_id')->references('id')->on('informacio_empresas');
+            $table->unsignedBigInteger('informacion_empresa_id');
+            $table->foreign('informacion_empresa_id')->references('id')->on('informacion_empresas');
         });
 
        

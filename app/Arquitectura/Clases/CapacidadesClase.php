@@ -1,0 +1,286 @@
+<?php
+
+namespace App\Arquitectura\Clases;
+use App\Arquitectura\Interfaces\MercadoLaboral;
+use App\Models\Idioma;
+use App\Models\Habilidad;
+use App\Models\postulante;
+use App\Models\LibreriaHabilidad;
+use App\Models\LibreriaIdioma;
+
+class CapacidadesClase extends PostulanteClase
+{
+    // Agregar habilidad al postulante
+   public function agregarHabilidad(string $habilidadNombre)
+    {
+        $authUser = auth()->user();
+    
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+    
+        $postulanteId = $authUser->usuario->postulante->id;
+    
+        try {
+            // 1. Busca o crea la habilidad en la librería
+            $libreriaHabilidad = LibreriaHabilidad::firstOrCreate([
+                'habilidad' => $habilidadNombre
+            ]);
+        
+            // 2. Inserta en la tabla habilidades la relación
+            return Habilidad::create([
+                'postulante_id' => $postulanteId,
+                'libreria_habilidades_id' => $libreriaHabilidad->id,
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la habilidad: ' . $e->getMessage());
+        }
+    }
+
+    // Listar habilidades de un postulante
+    public function listarHabilidades()
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        return Habilidad::where('postulante_id', $postulanteId)->with('libreria_habilidad')->get();
+    }
+    // Agregar idioma al postulante
+    public function agregarIdioma(array $datos)
+    {
+        
+        $authUser = auth()->user();
+    
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+    
+        $postulanteId = $authUser->usuario->postulante->id;
+    
+        try {
+            // 1. Busca o crea la idioma en la librería
+            $libreriaIdioma = LibreriaIdioma::firstOrCreate([
+                'idioma' => $datos['idioma'] 
+            ]);
+        
+            // 2. Inserta en la tabla idioma la relación
+            return Idioma::create([
+                'libreria_idiomas_id' => $libreriaIdioma->id,
+                'postulante_id' => $postulanteId,
+                'nivel' => $datos['nivel'],
+            ]);
+        
+        } catch (\Exception $e) {
+            throw new \Exception('Error al agregar la idioma: ' . $e->getMessage());
+        }
+    }
+    // Listar idiomas de un postulante
+    public function listarIdiomas()
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        return Idioma::where('postulante_id', $postulanteId)->with('libreria_idioma')->get();
+    }
+
+    // Actualizar una habilidad del postulante
+    public function actualizarHabilidad(array $datos, $habilidadId)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        $postulante = $authUser->usuario->postulante;
+
+        if (!$postulante) {
+            throw new \Exception('No se encontró el perfil de postulante.', 404);
+        }
+
+        // Buscar la habilidad por id y que pertenezca al postulante
+        $habilidad = Habilidad::where('id', $habilidadId)
+            ->where('postulante_id', $postulante->id)
+            ->first();
+
+        if (!$habilidad) {
+            throw new \Exception('Habilidad no encontrada o no pertenece al usuario.', 404);
+        }
+
+        \Log::info('📦 Datos que van a actualizarse en la BD (servicio - habilidad):', $datos);
+
+        // Si el cliente envía 'habilidad' (texto), aseguramos existencia en libreria y asignamos id
+        if (!empty($datos['habilidad'])) {
+            $libreria = LibreriaHabilidad::firstOrCreate(['habilidad' => $datos['habilidad']]);
+            $habilidad->libreria_habilidades_id = $libreria->id;
+        }
+
+        // Guardar cambios en el modelo (por ahora solo libreria_habilidades_id puede cambiar)
+        $habilidad->save();
+
+        // Cargar relación para devolver dato más amigable
+        $habilidad->load('libreria_habilidad');
+
+        \Log::info('📦 Datos actualizados (habilidad):', $habilidad->toArray());
+
+        return $habilidad;
+    }
+
+    // Eliminar una habilidad del postulante
+    public function eliminarHabilidad($habilidadId)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        // Buscar la habilidad asociada al postulante
+        $habilidad = Habilidad::where('id', $habilidadId)
+            ->where('postulante_id', $postulanteId)
+            ->firstOrFail();
+
+        // Eliminar la habilidad
+        $habilidad->delete();
+
+        return ['message' => 'Habilidad eliminada correctamente'];
+    }
+
+    // Actualizar un idioma del postulante
+    public function actualizarIdioma(array $datos, $idiomaId)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser) {
+            throw new \Exception('Usuario no autenticado', 401);
+        }
+
+        $postulante = $authUser->usuario->postulante;
+        if (!$postulante) {
+            throw new \Exception('No se encontró el perfil de postulante.', 404);
+        }
+
+        $idioma = Idioma::where('id', $idiomaId)
+            ->where('postulante_id', $postulante->id)
+            ->first();
+
+        if (!$idioma) {
+            throw new \Exception('Idioma no encontrado o no pertenece al usuario.', 404);
+        }
+
+        // Si se envía 'idioma' como texto, asegurar que exista en la librería
+        if (!empty($datos['idioma'])) {
+            $libreria = LibreriaIdioma::firstOrCreate(['idioma' => $datos['idioma']]);
+            $idioma->libreria_idiomas_id = $libreria->id;
+        }
+
+        if (!empty($datos['nivel'])) {
+            $idioma->nivel = $datos['nivel'];
+        }
+
+        $idioma->save();
+
+        $idioma->load('libreria_idioma');
+
+        return $idioma;
+    }
+
+    // Eliminar un idioma del postulante
+    public function eliminarIdioma($idiomaId)
+    {
+        $authUser = auth()->user();
+
+        if (!$authUser || !$authUser->usuario || !$authUser->usuario->postulante) {
+            throw new \Exception('El usuario no tiene un perfil de postulante.');
+        }
+
+        $postulanteId = $authUser->usuario->postulante->id;
+
+        $idioma = Idioma::where('id', $idiomaId)
+            ->where('postulante_id', $postulanteId)
+            ->firstOrFail();
+
+        $idioma->delete();
+
+        return ['message' => 'Idioma eliminado correctamente'];
+    }
+}
+
+
+
+
+
+
+
+// class CapacidadesClase extends Usuarioclase
+// {
+//     public $habilidades = [];
+//     public $idiomas = [];
+
+//     public function asignarHabilidades($postulanteId, $libreriaHabilidadId)
+//     {
+//         $habilidad = Habilidad::create([
+//             'postulante_id' => $postulanteId,
+//             'libreria_habilidades_id' => $libreriaHabilidadId,
+//         ]);
+
+//         // guardamos en el array de la clase
+//         $this->habilidades[] = $habilidad;
+
+//         return $habilidad;
+//     }
+
+
+
+//     public function obtenerTodos()
+//     {
+//         // Devuelve todas las habilidades e idiomas
+//         return [
+//             'habilidades' => Habilidad::all(),
+//             'idiomas' => Idioma::all(),
+//         ];
+//     }
+
+//     public function show(int $id)
+//     {
+//         // Busca una habilidad o idioma por ID
+//         $habilidad = Habilidad::find($id);
+//         if ($habilidad) return $habilidad;
+
+//         $idioma = Idioma::find($id);
+//         if ($idioma) return $idioma;
+
+//         throw new \Exception('No se encontró la capacidad');
+//     }
+
+//     public function actualizar(array $datos, string $id)
+//     {
+//         // Actualiza una habilidad o idioma según el tipo
+//         if (isset($datos['tipo']) && $datos['tipo'] === 'habilidad') {
+//             $habilidad = Habilidad::findOrFail($id);
+//             $habilidad->update($datos);
+//             return $habilidad;
+//         } elseif (isset($datos['tipo']) && $datos['tipo'] === 'idioma') {
+//             $idioma = Idioma::findOrFail($id);
+//             $idioma->update($datos);
+//             return $idioma;
+//         }
+//         throw new \Exception('Tipo de capacidad no reconocido');
+//     }
+//     // ...existing code...
+// }
+
+
