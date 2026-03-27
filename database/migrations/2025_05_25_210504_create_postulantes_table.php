@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('postulantes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('usuario_id');
+            $table->foreign('usuario_id')->references('id')->on('usuarios');
             $table->integer ('ci')-> unique ();
             $table->string ('foto_perfil');
             $table->string ('nombre');

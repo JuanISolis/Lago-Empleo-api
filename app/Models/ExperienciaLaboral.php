@@ -11,4 +11,9 @@ class ExperienciaLaboral extends Model
         'fecha_inicio',
         'fecha_fin',
     ];
+
+    public function postulante()
+    {
+        return $this->belongsTo(Postulante::class);
+    }
 }

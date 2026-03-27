@@ -1,0 +1,4 @@
+los helpers (o "funciones de ayuda") son funciones o clases pequeñas y reutilizables que realizan 
+tareas específicas, facilitando la legibilidad y reutilización del código. Se usan comúnmente para 
+evitar repetir lógica, organizar mejor el proyecto, y hacer que el código principal sea más limpio y 
+mantenible.
